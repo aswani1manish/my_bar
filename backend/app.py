@@ -5,8 +5,8 @@ from bson import ObjectId
 import os
 import base64
 from datetime import datetime
-from werkzeug.utils import secure_filename
-from PIL import Image
+import uuid
+from PIL import Image, UnidentifiedImageError
 import io
 
 app = Flask(__name__)
@@ -19,11 +19,6 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
-
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # MongoDB Configuration
 MONGO_URI = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/')
@@ -52,8 +47,9 @@ def save_base64_image(base64_string, prefix='img'):
         image_data = base64.b64decode(base64_string)
         image = Image.open(io.BytesIO(image_data))
         
-        # Generate unique filename
-        filename = f"{prefix}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S_%f')}.png"
+        # Generate unique filename with UUID for security
+        unique_id = uuid.uuid4().hex[:12]
+        filename = f"{prefix}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{unique_id}.png"
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         
         # Resize if too large (max 1024x1024)
@@ -64,7 +60,7 @@ def save_base64_image(base64_string, prefix='img'):
         image.save(filepath, 'PNG', optimize=True)
         
         return filename
-    except Exception as e:
+    except (IOError, ValueError, UnidentifiedImageError) as e:
         print(f"Error saving image: {e}")
         return None
 
