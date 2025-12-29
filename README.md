@@ -113,14 +113,21 @@ The frontend will be available at `http://localhost:8000`
 
 1. **Access the Application**: Open your browser and navigate to `http://localhost:8000`
 
-2. **Add Ingredients**:
+2. **Load Sample Ingredients** (Optional but recommended):
+   ```bash
+   cd backend
+   python3 load_sample_ingredients.py
+   ```
+   This will load 34 common cocktail ingredients including spirits, liqueurs, juices, syrups, and mixers.
+
+3. **Add Ingredients**:
    - Click on "Ingredients" in the navigation
    - Fill in the ingredient details (name, category, description)
    - Upload one or more images
    - Add tags for organization
    - Click "Create"
 
-3. **Create Recipes**:
+4. **Create Recipes**:
    - Navigate to "Recipes"
    - Enter recipe name and description
    - Add ingredients with quantities and units
@@ -129,7 +136,7 @@ The frontend will be available at `http://localhost:8000`
    - Tag your recipe
    - Click "Create"
 
-4. **Organize Collections**:
+5. **Organize Collections**:
    - Go to "Collections"
    - Create a new collection
    - Select recipes to include
@@ -137,10 +144,47 @@ The frontend will be available at `http://localhost:8000`
    - Add tags
    - Click "Create"
 
-5. **Search & Filter**:
+6. **Search & Filter**:
    - Use the search bar to find items by name or description
    - Use the tag filter to find items with specific tags
    - Both filters work across ingredients, recipes, and collections
+
+## Data Loading
+
+### Load Sample Ingredients
+
+The application includes a script to load 34 common cocktail ingredients:
+
+```bash
+cd backend
+python3 load_sample_ingredients.py
+```
+
+Use `--dry-run` to preview what will be loaded without making changes:
+
+```bash
+python3 load_sample_ingredients.py --dry-run
+```
+
+The sample ingredients include:
+- **Spirits**: Gin, Vodka, Rum, Tequila, Bourbon, Scotch, Cognac
+- **Liqueurs**: Triple Sec, Cointreau, Elderflower Liqueur, Amaretto, Kahlúa, Baileys
+- **Vermouth & Aperitifs**: Dry Vermouth, Sweet Vermouth, Campari, Aperol
+- **Bitters**: Angostura Bitters, Orange Bitters
+- **Juices**: Lemon, Lime, Orange, Grapefruit, Cranberry, Pineapple
+- **Syrups**: Simple Syrup, Grenadine, Honey Syrup
+- **Mixers**: Tonic Water, Club Soda, Ginger Beer, Cola, Ginger Ale
+
+### Load from Bar Assistant Repository (Optional)
+
+For a more comprehensive ingredient list, you can load ingredients from the Bar Assistant data repository:
+
+```bash
+cd backend
+python3 load_ingredients.py
+```
+
+Note: This requires internet access and may take a few minutes.
 
 ## API Endpoints
 
