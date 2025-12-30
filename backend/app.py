@@ -8,27 +8,54 @@ from datetime import datetime
 import uuid
 from PIL import Image, UnidentifiedImageError
 import io
+from config import Config
 
 app = Flask(__name__)
-CORS(app)
+
+# Load configuration from environment variables
+config = Config()
+app.config['MAX_CONTENT_LENGTH'] = config.MAX_CONTENT_LENGTH
+app.config['SECRET_KEY'] = config.SECRET_KEY
+app.config['DEBUG'] = config.DEBUG
+
+# Configure CORS with allowed origins
+if config.ALLOWED_ORIGINS == ['*']:
+    CORS(app)
+else:
+    CORS(app, origins=config.ALLOWED_ORIGINS)
 
 # Configure upload folder
-UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
+UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), config.UPLOAD_FOLDER)
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
-
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
 # MongoDB Configuration
-MONGO_URI = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/')
-client = MongoClient(MONGO_URI)
-db = client['neighborhood_sips']
+try:
+    client = MongoClient(config.MONGO_URI, serverSelectionTimeoutMS=5000)
+    # Test connection
+    client.server_info()
+    db = client[config.DATABASE_NAME]
+    print(f"✓ Connected to MongoDB: {config.DATABASE_NAME}")
+except Exception as e:
+    print(f"✗ MongoDB connection error: {e}")
+    print(f"  MONGO_URI: {config.MONGO_URI}")
+    print(f"  NOTE: Application will start but database operations will fail.")
+    print(f"  Please ensure MongoDB is running or configure MongoDB Atlas connection.")
+    # Create a dummy client for graceful degradation
+    client = None
+    db = None
 
-# Collections
-ingredients_collection = db['ingredients']
-recipes_collection = db['recipes']
-collections_collection = db['collections']
+# Collections (only if db is available)
+if db is not None:
+    ingredients_collection = db['ingredients']
+    recipes_collection = db['recipes']
+    collections_collection = db['collections']
+else:
+    # Create None references for collections to prevent attribute errors
+    ingredients_collection = None
+    recipes_collection = None
+    collections_collection = None
 
 # Helper function to convert ObjectId to string
 def serialize_doc(doc):
@@ -396,6 +423,26 @@ def delete_collection(collection_id):
 @app.route('/api/health', methods=['GET'])
 def health_check():
     return jsonify({'status': 'healthy', 'app': 'Neighborhood Sips'})
+
+# ============= FRONTEND SERVING (OPTIONAL) =============
+# Uncomment these routes to serve frontend from the same Flask app
+# This is useful for PythonAnywhere deployment where you want everything in one app
+# 
+# Prerequisites:
+# 1. Copy frontend directory to backend/static: cp -r ../frontend ./static
+# 2. Update static/js/config.js to use relative API URL: apiUrl: '/api'
+#
+# @app.route('/')
+# def index():
+#     return send_from_directory('static', 'index.html')
+#
+# @app.route('/<path:path>')
+# def serve_static(path):
+#     try:
+#         return send_from_directory('static', path)
+#     except:
+#         # For SPA routing, return index.html for unknown routes
+#         return send_from_directory('static', 'index.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

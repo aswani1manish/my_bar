@@ -1,7 +1,10 @@
 var app = angular.module('neighborhoodSipsApp', ['ngRoute']);
 
 // API Configuration
-app.constant('API_URL', 'http://localhost:5000/api');
+// Use APP_CONFIG from config.js if available, otherwise default to localhost
+app.constant('API_URL', (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.apiUrl) 
+    ? APP_CONFIG.apiUrl 
+    : 'http://localhost:5000/api');
 
 // Route Configuration
 app.config(['$routeProvider', function($routeProvider) {
