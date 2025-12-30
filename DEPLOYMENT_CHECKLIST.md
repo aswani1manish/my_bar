@@ -4,14 +4,18 @@ Use this checklist to ensure a smooth deployment to the cloud.
 
 ## Pre-Deployment Preparation
 
-### MongoDB Atlas Setup
-- [ ] Create MongoDB Atlas account
-- [ ] Create a new cluster (M0 Free Tier)
-- [ ] Create database user with username and password
-- [ ] Configure Network Access (allow 0.0.0.0/0 or specific IPs)
-- [ ] Get connection string
-- [ ] Create `neighborhood_sips` database
-- [ ] Test connection from local machine
+### MySQL Database Setup
+- [ ] Choose MySQL option: PythonAnywhere MySQL or External MySQL service
+- [ ] For PythonAnywhere MySQL:
+  - [ ] Set MySQL password in Databases tab
+  - [ ] Note connection details (host, username, database format)
+  - [ ] Create database: `yourusername$neighborhood_sips`
+- [ ] For External MySQL:
+  - [ ] Create MySQL database instance
+  - [ ] Create database named `neighborhood_sips`
+  - [ ] Create database user with privileges
+  - [ ] Configure firewall for PythonAnywhere access
+  - [ ] Note connection details (host, port, username, password)
 
 ### PythonAnywhere Setup
 - [ ] Create PythonAnywhere account
@@ -31,8 +35,12 @@ Use this checklist to ensure a smooth deployment to the cloud.
 
 ### Configuration
 - [ ] Create `.env` file in backend directory
-- [ ] Add MongoDB Atlas connection string to `.env`
-- [ ] Set `DATABASE_NAME=neighborhood_sips`
+- [ ] Add MySQL connection details to `.env`:
+  - [ ] `MYSQL_HOST` (PythonAnywhere or external host)
+  - [ ] `MYSQL_PORT` (usually 3306)
+  - [ ] `MYSQL_USER` (your MySQL username)
+  - [ ] `MYSQL_PASSWORD` (your MySQL password)
+  - [ ] `MYSQL_DATABASE` (database name)
 - [ ] Set `FLASK_ENV=production`
 - [ ] Set `FLASK_DEBUG=False`
 - [ ] Add PythonAnywhere domain to `ALLOWED_ORIGINS`
@@ -49,6 +57,14 @@ Use this checklist to ensure a smooth deployment to the cloud.
 - [ ] Save all changes
 - [ ] Click "Reload" button
 
+### Database Initialization
+- [ ] Run `python init_db.py` to create tables
+- [ ] Verify tables created successfully:
+  - [ ] ingredients
+  - [ ] recipes
+  - [ ] collections
+- [ ] Reload web app after initialization
+
 ### Initial Data
 - [ ] Run `python3 load_sample_ingredients.py` (optional)
 - [ ] Verify data loaded successfully
@@ -57,7 +73,7 @@ Use this checklist to ensure a smooth deployment to the cloud.
 - [ ] Test health endpoint: `https://yourusername.pythonanywhere.com/api/health`
 - [ ] Test ingredients endpoint: `https://yourusername.pythonanywhere.com/api/ingredients`
 - [ ] Check error logs if issues occur
-- [ ] Verify MongoDB connection works
+- [ ] Verify MySQL connection works
 
 ## Frontend Deployment
 
@@ -105,7 +121,7 @@ Use this checklist to ensure a smooth deployment to the cloud.
 - [ ] Check page load times
 - [ ] Verify images load correctly
 - [ ] Monitor error logs
-- [ ] Check MongoDB Atlas metrics
+- [ ] Check MySQL database size and performance
 - [ ] Verify database connections close properly
 
 ### Security
@@ -114,7 +130,8 @@ Use this checklist to ensure a smooth deployment to the cloud.
 - [ ] Check CORS settings are restrictive (not `*`)
 - [ ] Verify HTTPS is working
 - [ ] Test that only allowed origins can access API
-- [ ] Review MongoDB Atlas Network Access rules
+- [ ] Review MySQL access permissions
+- [ ] Use strong MySQL password
 
 ### Documentation
 - [ ] Update README with deployment URL
@@ -128,9 +145,10 @@ If you encounter issues, check:
 1. **Error Logs**: PythonAnywhere Web tab → Error log
 2. **Server Log**: PythonAnywhere Web tab → Server log
 3. **Browser Console**: F12 → Console tab
-4. **MongoDB Connection**: Test from PythonAnywhere console
+4. **MySQL Connection**: Test from PythonAnywhere console with `python init_db.py`
 5. **CORS Issues**: Check `ALLOWED_ORIGINS` in `.env`
 6. **Static Files**: Verify paths match your username
+7. **Database Tables**: Ensure `init_db.py` ran successfully
 
 ## Rollback Plan
 
@@ -155,7 +173,7 @@ Deployment is successful when:
 - [ ] Search and filter work properly
 - [ ] Mobile responsive design works
 - [ ] No errors in logs
-- [ ] MongoDB Atlas shows connections
+- [ ] MySQL database connections working
 
 ---
 

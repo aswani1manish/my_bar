@@ -9,7 +9,7 @@ Your Neighborhood Sips application is now ready for cloud deployment!
 All necessary changes have been implemented to support hosting the application with:
 - **Frontend**: PythonAnywhere (or any static hosting service)
 - **Backend**: PythonAnywhere (Flask application)
-- **Database**: MongoDB Atlas (cloud MongoDB)
+- **Database**: MySQL (PythonAnywhere MySQL or external MySQL service)
 
 ---
 
@@ -19,7 +19,7 @@ All necessary changes have been implemented to support hosting the application w
 The comprehensive, step-by-step guide for deploying to the cloud. This is your main reference document.
 
 **What's inside:**
-- MongoDB Atlas setup (with screenshots guidance)
+- MySQL database setup (PythonAnywhere or external)
 - PythonAnywhere backend configuration
 - Frontend deployment (2 options)
 - Testing procedures
@@ -78,13 +78,16 @@ Template for environment variables. **Copy this to `.env` and update with your v
 cd backend
 cp .env.example .env
 
-# Edit with your MongoDB Atlas credentials
+# Edit with your MySQL credentials
 nano .env
 ```
 
 **Required variables:**
-- `MONGO_URI`: Your MongoDB Atlas connection string
-- `DATABASE_NAME`: Database name (default: `neighborhood_sips`)
+- `MYSQL_HOST`: MySQL server hostname
+- `MYSQL_PORT`: MySQL server port (usually 3306)
+- `MYSQL_USER`: MySQL username
+- `MYSQL_PASSWORD`: MySQL password
+- `MYSQL_DATABASE`: Database name (default: `neighborhood_sips`)
 - `ALLOWED_ORIGINS`: Your PythonAnywhere domain
 
 #### `backend/wsgi.py`
@@ -111,12 +114,16 @@ This hosts both frontend and backend on the same PythonAnywhere web app.
 
 **Time: ~30 minutes**
 
-1. **Setup MongoDB Atlas** (5 min)
+1. **Setup MySQL Database** (5 min)
    ```
-   - Sign up at https://www.mongodb.com/cloud/atlas
-   - Create free M0 cluster
-   - Create database user
-   - Get connection string
+   For PythonAnywhere MySQL:
+   - Go to Databases tab
+   - Set MySQL password
+   - Create database: yourusername$neighborhood_sips
+   
+   For External MySQL:
+   - Create MySQL database instance
+   - Note connection credentials
    ```
 
 2. **Deploy Backend to PythonAnywhere** (15 min)
@@ -131,14 +138,14 @@ This hosts both frontend and backend on the same PythonAnywhere web app.
    
    # Configure
    cp .env.example .env
-   nano .env  # Add MongoDB Atlas connection string
+   nano .env  # Add MySQL connection details
    
-   # Run deployment helper
-   ./deploy_pythonanywhere.sh
+   # Initialize database
+   python init_db.py
    ```
 
 3. **Configure Web App** (5 min)
-   - Follow instructions from deployment script
+   - Create new web app (Manual, Python 3.10)
    - Update WSGI file
    - Set virtualenv path
    - Add static files mapping
@@ -167,7 +174,7 @@ Use PythonAnywhere for backend, separate service for frontend.
 
 **Time: ~30 minutes**
 
-1. **Setup MongoDB Atlas** (same as Option A)
+1. **Setup MySQL Database** (same as Option A)
 
 2. **Deploy Backend** (same as Option A steps 2-3)
 
@@ -213,7 +220,7 @@ cd backend
 **What it does:**
 - Checks virtual environment
 - Validates configuration
-- Tests MongoDB connection
+- Tests MySQL connection
 - Provides setup instructions
 
 ---
@@ -225,11 +232,12 @@ cd backend
 Create `backend/.env` with these variables:
 
 ```bash
-# MongoDB Atlas Connection
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/?retryWrites=true&w=majority
-
-# Database Configuration
-DATABASE_NAME=neighborhood_sips
+# MySQL Configuration
+MYSQL_HOST=yourusername.mysql.pythonanywhere-services.com  # or external host
+MYSQL_PORT=3306
+MYSQL_USER=yourusername  # or external username
+MYSQL_PASSWORD=your_password
+MYSQL_DATABASE=yourusername$neighborhood_sips  # or 'neighborhood_sips' for external
 
 # Flask Configuration
 FLASK_ENV=production
@@ -259,7 +267,7 @@ var APP_CONFIG = {
 ### Backend (`backend/app.py`)
 - ✅ Now uses `Config` class for configuration
 - ✅ Configurable CORS origins (not open to all)
-- ✅ Graceful MongoDB connection handling
+- ✅ Graceful MySQL connection handling with connection pooling
 - ✅ Better error messages
 - ✅ Optional frontend serving routes (commented)
 
@@ -312,12 +320,14 @@ python3 -m http.server 8000
 
 ### External Resources
 - **PythonAnywhere Help**: https://help.pythonanywhere.com/
-- **MongoDB Atlas Docs**: https://docs.atlas.mongodb.com/
+- **PythonAnywhere MySQL**: https://help.pythonanywhere.com/pages/MySQLdb/
+- **MySQL Documentation**: https://dev.mysql.com/doc/
 - **Flask Deployment**: https://flask.palletsprojects.com/deploying/
 
 ### Common Issues
 See the **Troubleshooting** section in [DEPLOYMENT.md](DEPLOYMENT.md) for:
-- MongoDB connection errors
+- MySQL connection errors
+- Database table creation issues
 - CORS issues
 - Image upload problems
 - 500 Internal Server Errors
@@ -331,11 +341,11 @@ See the **Troubleshooting** section in [DEPLOYMENT.md](DEPLOYMENT.md) for:
    - Keep [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md) handy
 
 2. **Create accounts**
-   - MongoDB Atlas: https://www.mongodb.com/cloud/atlas/register
    - PythonAnywhere: https://www.pythonanywhere.com/registration/register/beginner/
+   - (Optional) External MySQL service if not using PythonAnywhere MySQL
 
 3. **Follow the deployment guide**
-   - MongoDB Atlas setup: ~5 minutes
+   - MySQL database setup: ~5 minutes
    - Backend deployment: ~15 minutes
    - Frontend deployment: ~5 minutes
    - Testing: ~5 minutes

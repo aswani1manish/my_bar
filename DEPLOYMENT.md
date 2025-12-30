@@ -1,15 +1,15 @@
 # Cloud Deployment Guide for Neighborhood Sips
 
-This guide provides step-by-step instructions for deploying the Neighborhood Sips application to the cloud:
+This guide provides step-by-step instructions for deploying the Neighborhood Sips application to the cloud as a brand new installation:
 - **Backend**: PythonAnywhere (Flask application)
-- **Database**: MongoDB Atlas (Cloud MongoDB)
+- **Database**: MySQL (PythonAnywhere MySQL or external MySQL service)
 - **Frontend**: PythonAnywhere (Static files)
 
 ---
 
 ## Table of Contents
 1. [Prerequisites](#prerequisites)
-2. [Part 1: MongoDB Atlas Setup](#part-1-mongodb-atlas-setup)
+2. [Part 1: MySQL Database Setup](#part-1-mysql-database-setup)
 3. [Part 2: Backend Deployment on PythonAnywhere](#part-2-backend-deployment-on-pythonanywhere)
 4. [Part 3: Frontend Deployment on PythonAnywhere](#part-3-frontend-deployment-on-pythonanywhere)
 5. [Part 4: Testing the Deployment](#part-4-testing-the-deployment)
@@ -21,90 +21,66 @@ This guide provides step-by-step instructions for deploying the Neighborhood Sip
 
 Before you begin, make sure you have:
 
-1. **MongoDB Atlas Account** (free tier available)
-   - Sign up at: https://www.mongodb.com/cloud/atlas/register
-
-2. **PythonAnywhere Account** (free tier available)
+1. **PythonAnywhere Account** (free tier available)
    - Sign up at: https://www.pythonanywhere.com/registration/register/beginner/
+   - Free tier includes one MySQL database
 
-3. **Git** installed on your local machine (to clone/push code)
+2. **Git** installed on your local machine (optional, for cloning code)
 
-4. **Your application code** ready to deploy
+3. **Your application code** ready to deploy
 
 ---
 
-## Part 1: MongoDB Atlas Setup
+## Part 1: MySQL Database Setup
 
-### Step 1.1: Create a MongoDB Atlas Cluster
+### Option A: Use PythonAnywhere MySQL (Recommended for Beginners)
 
-1. Log in to [MongoDB Atlas](https://cloud.mongodb.com/)
+PythonAnywhere provides a MySQL database with your free account.
 
-2. Click **"Build a Database"** or **"Create"**
+#### Step 1.1: Initialize MySQL Database on PythonAnywhere
 
-3. Choose **"Shared"** (Free tier - M0)
+1. Log in to [PythonAnywhere](https://www.pythonanywhere.com/)
 
-4. Select your cloud provider and region (choose the closest to your users)
+2. Go to the **"Databases"** tab
 
-5. Click **"Create Cluster"** (this may take a few minutes)
+3. You'll see your MySQL hostname (e.g., `yourusername.mysql.pythonanywhere-services.com`)
 
-### Step 1.2: Configure Database Access
+4. Set a MySQL password if you haven't already
 
-1. In the left sidebar, click **"Database Access"**
-
-2. Click **"Add New Database User"**
-
-3. Choose **"Password"** authentication
-
-4. Set username and password (save these securely!)
+5. Note down these credentials:
    ```
-   Example:
-   Username: neighborhood_sips_user
-   Password: YourSecurePassword123!
+   Host: yourusername.mysql.pythonanywhere-services.com
+   Username: yourusername
+   Password: [your MySQL password]
+   Database: yourusername$neighborhood_sips
    ```
+   
+   **Note:** The database `yourusername$neighborhood_sips` will be created automatically when you run the `init_db.py` script during backend setup (Step 2.8). Manual creation is not required.
 
-5. Set **"Built-in Role"** to **"Read and write to any database"**
+### Option B: Use External MySQL Service
 
-6. Click **"Add User"**
+If you prefer to use an external MySQL service (e.g., AWS RDS, DigitalOcean, Azure):
 
-### Step 1.3: Configure Network Access
+#### Step 1.1: Create MySQL Database
 
-1. In the left sidebar, click **"Network Access"**
+1. Sign up for your preferred MySQL hosting service
 
-2. Click **"Add IP Address"**
+2. Create a new MySQL database instance
 
-3. Click **"Allow Access from Anywhere"** (0.0.0.0/0)
-   - Note: For production, restrict this to PythonAnywhere IP ranges
+3. Create a database named `neighborhood_sips`
 
-4. Click **"Confirm"**
+4. Create a database user with full privileges on the database
 
-### Step 1.4: Get Your Connection String
+5. Configure firewall/security groups to allow connections from PythonAnywhere
 
-1. Go back to **"Database"** in the left sidebar
-
-2. Click **"Connect"** on your cluster
-
-3. Choose **"Connect your application"**
-
-4. Copy the connection string (it looks like this):
+6. Note down the connection credentials:
    ```
-   mongodb+srv://username:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
+   Host: your-mysql-host.com
+   Port: 3306
+   Username: your_username
+   Password: your_password
+   Database: neighborhood_sips
    ```
-
-5. Replace `<password>` with your actual database user password
-
-6. **Save this connection string** - you'll need it for the backend configuration
-
-### Step 1.5: Create the Database
-
-1. Click **"Browse Collections"** on your cluster
-
-2. Click **"Add My Own Data"**
-
-3. Database name: `neighborhood_sips`
-
-4. Collection name: `ingredients` (we'll create others automatically)
-
-5. Click **"Create"**
 
 ---
 
@@ -159,12 +135,15 @@ pip install -r requirements.txt
    ```
 
 2. Add the following configuration (update with your values):
+
+   **For PythonAnywhere MySQL:**
    ```bash
-   # MongoDB Atlas Connection String
-   MONGO_URI=mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
-   
-   # Database name
-   DATABASE_NAME=neighborhood_sips
+   # MySQL Configuration
+   MYSQL_HOST=yourusername.mysql.pythonanywhere-services.com
+   MYSQL_PORT=3306
+   MYSQL_USER=yourusername
+   MYSQL_PASSWORD=your_mysql_password
+   MYSQL_DATABASE=yourusername$neighborhood_sips
    
    # Flask Configuration
    FLASK_ENV=production
@@ -178,7 +157,33 @@ pip install -r requirements.txt
    UPLOAD_FOLDER=uploads
    ```
 
-3. Save and exit (Ctrl+X, then Y, then Enter)
+   **For External MySQL Service:**
+   ```bash
+   # MySQL Configuration
+   MYSQL_HOST=your-mysql-host.com
+   MYSQL_PORT=3306
+   MYSQL_USER=your_username
+   MYSQL_PASSWORD=your_password
+   MYSQL_DATABASE=neighborhood_sips
+   
+   # Flask Configuration
+   FLASK_ENV=production
+   FLASK_DEBUG=False
+   
+   # CORS Configuration (update with your PythonAnywhere domain)
+   ALLOWED_ORIGINS=https://yourusername.pythonanywhere.com
+   
+   # Upload Configuration
+   MAX_CONTENT_LENGTH=16777216
+   UPLOAD_FOLDER=uploads
+   ```
+
+3. **Important:** Replace all placeholders:
+   - `yourusername` with your PythonAnywhere username
+   - `your_mysql_password` with your MySQL password
+   - For external MySQL, update host, username, and password accordingly
+
+4. Save and exit (Ctrl+X, then Y, then Enter)
 
 ### Step 2.4: Create Web App on PythonAnywhere
 
@@ -242,7 +247,30 @@ pip install -r requirements.txt
 
 3. **Replace `yourusername`** with your PythonAnywhere username
 
-### Step 2.8: Reload Web App
+### Step 2.8: Initialize Database Schema
+
+Before reloading the web app, we need to initialize the database tables.
+
+In a PythonAnywhere Bash console:
+
+```bash
+cd ~/my_bar/backend
+workon my_bar_env
+python init_db.py
+```
+
+This will create the necessary tables:
+- `ingredients` - Stores ingredient data
+- `recipes` - Stores recipe data  
+- `collections` - Stores collection data
+
+You should see output like:
+```
+✓ Database 'yourusername$neighborhood_sips' initialized successfully
+✓ Tables created: ingredients, recipes, collections
+```
+
+### Step 2.9: Reload Web App
 
 1. Scroll to the top of the **"Web"** tab
 
@@ -250,7 +278,7 @@ pip install -r requirements.txt
 
 3. Your backend API should now be live at: `https://yourusername.pythonanywhere.com/api/`
 
-### Step 2.9: Load Sample Data (Optional)
+### Step 2.10: Load Sample Data (Optional)
 
 In a PythonAnywhere Bash console:
 
@@ -400,23 +428,56 @@ Your frontend should now be accessible at: `https://yourusername.pythonanywhere.
 ### Issue: "Internal Server Error" (500)
 
 **Solution:**
-1. Check the error log on PythonAnywhere
-2. Verify your `.env` file has the correct MongoDB connection string
+1. Check the error log on PythonAnywhere (Web tab → Error log link)
+2. Verify your `.env` file has the correct MySQL connection details
 3. Ensure virtual environment is activated and all dependencies are installed
 4. Check WSGI file path matches your username
+5. Verify database tables exist by running `python init_db.py`
 
-### Issue: "MongoDB connection timeout"
+### Issue: "MySQL connection refused" or "Can't connect to MySQL server"
 
 **Solution:**
-1. Verify MongoDB Atlas Network Access allows PythonAnywhere IPs
-2. Check your connection string is correct (username, password, cluster URL)
-3. Ensure database user has proper permissions
-4. Test connection from PythonAnywhere console:
-   ```python
-   from pymongo import MongoClient
-   client = MongoClient("your-connection-string")
-   print(client.server_info())
+1. For PythonAnywhere MySQL:
+   - Verify MySQL hostname is correct (should be `yourusername.mysql.pythonanywhere-services.com`)
+   - Check MySQL password is set in Databases tab
+   - Ensure database name format is `yourusername$database_name`
+   
+2. For external MySQL:
+   - Verify the host, port, username, and password in `.env`
+   - Check that the MySQL server allows connections from PythonAnywhere IPs
+   - Test connection from PythonAnywhere console:
+     ```python
+     # Simple connection test (for troubleshooting)
+     import mysql.connector
+     from mysql.connector import Error
+     from config import Config
+     
+     try:
+         config = Config()
+         conn = mysql.connector.connect(
+             host=config.MYSQL_HOST,
+             port=config.MYSQL_PORT,
+             user=config.MYSQL_USER,
+             password=config.MYSQL_PASSWORD,
+             database=config.MYSQL_DATABASE
+         )
+         print("✓ Connected successfully!")
+         conn.close()
+     except Error as err:
+         print(f"✗ Connection failed: {err}")
+     ```
+
+### Issue: "Table doesn't exist"
+
+**Solution:**
+1. Run the database initialization script:
+   ```bash
+   cd ~/my_bar/backend
+   workon my_bar_env
+   python init_db.py
    ```
+2. Check the output to ensure tables were created successfully
+3. Reload the web app
 
 ### Issue: "CORS error" in browser console
 
@@ -447,14 +508,21 @@ Your frontend should now be accessible at: `https://yourusername.pythonanywhere.
 ### Backend (.env file)
 
 ```bash
-# Required
-MONGO_URI=mongodb+srv://user:pass@cluster.mongodb.net/?retryWrites=true&w=majority
-DATABASE_NAME=neighborhood_sips
+# Required - MySQL Configuration
+MYSQL_HOST=yourusername.mysql.pythonanywhere-services.com  # or external host
+MYSQL_PORT=3306
+MYSQL_USER=yourusername  # or external username
+MYSQL_PASSWORD=your_password
+MYSQL_DATABASE=yourusername$neighborhood_sips  # or 'neighborhood_sips' for external
 
-# Optional (with defaults)
+# Required - Flask Configuration
 FLASK_ENV=production
 FLASK_DEBUG=False
+
+# Required - CORS Configuration
 ALLOWED_ORIGINS=https://yourusername.pythonanywhere.com
+
+# Optional (with defaults)
 MAX_CONTENT_LENGTH=16777216
 UPLOAD_FOLDER=uploads
 ```
@@ -473,15 +541,16 @@ var APP_CONFIG = {
 
 Before going to production:
 
-- [ ] Change MongoDB password to a strong password
-- [ ] Restrict MongoDB Atlas Network Access to specific IPs (PythonAnywhere ranges)
+- [ ] Use a strong MySQL password (not the default)
+- [ ] For external MySQL, restrict access to specific IPs if possible
 - [ ] Set `FLASK_DEBUG=False` in production
 - [ ] Use specific ALLOWED_ORIGINS (not `*`)
 - [ ] Enable HTTPS (PythonAnywhere provides this by default)
 - [ ] Keep `.env` file secure (never commit to Git)
 - [ ] Regularly update dependencies for security patches
-- [ ] Set up database backups in MongoDB Atlas
+- [ ] Set up database backups (PythonAnywhere has daily backups for paid plans)
 - [ ] Monitor application logs for errors
+- [ ] Use environment-specific secrets and keys
 
 ---
 
@@ -516,8 +585,9 @@ python3 load_sample_ingredients.py
 ## Support and Resources
 
 - **PythonAnywhere Help**: https://help.pythonanywhere.com/
-- **MongoDB Atlas Documentation**: https://docs.atlas.mongodb.com/
+- **PythonAnywhere MySQL Guide**: https://help.pythonanywhere.com/pages/MySQLdb/
 - **Flask Deployment Guide**: https://flask.palletsprojects.com/en/latest/deploying/
+- **MySQL Documentation**: https://dev.mysql.com/doc/
 - **GitHub Repository**: https://github.com/aswani1manish/my_bar
 
 ---
