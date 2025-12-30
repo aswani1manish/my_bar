@@ -158,7 +158,6 @@ def get_ingredients():
             ing['tags'] = json.loads(ing['tags']) if isinstance(ing['tags'], str) else ing['tags']
         if ing.get('images'):
             ing['images'] = json.loads(ing['images']) if isinstance(ing['images'], str) else ing['images']
-        ing = serialize_doc(ing)
     
     cursor.close()
     conn.close()
@@ -366,7 +365,6 @@ def get_recipes():
             recipe['images'] = json.loads(recipe['images']) if isinstance(recipe['images'], str) else recipe['images']
         if recipe.get('ingredients'):
             recipe['ingredients'] = json.loads(recipe['ingredients']) if isinstance(recipe['ingredients'], str) else recipe['ingredients']
-        recipe = serialize_doc(recipe)
     
     cursor.close()
     conn.close()
@@ -581,7 +579,6 @@ def get_collections():
             coll['images'] = json.loads(coll['images']) if isinstance(coll['images'], str) else coll['images']
         if coll.get('recipe_ids'):
             coll['recipe_ids'] = json.loads(coll['recipe_ids']) if isinstance(coll['recipe_ids'], str) else coll['recipe_ids']
-        coll = serialize_doc(coll)
     
     cursor.close()
     conn.close()
