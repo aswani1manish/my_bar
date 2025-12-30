@@ -18,12 +18,7 @@ This is a condensed version of the deployment guide. For full details, see [DEPL
    - Host: `yourusername.mysql.pythonanywhere-services.com`
    - Username: `yourusername`
    - Database: `yourusername$neighborhood_sips`
-4. Click **"Start a console on"** your database
-5. Create database:
-   ```sql
-   CREATE DATABASE yourusername$neighborhood_sips;
-   exit
-   ```
+4. The database will be created automatically when you run `python init_db.py` during backend setup
 
 ### Option B: External MySQL Service
 

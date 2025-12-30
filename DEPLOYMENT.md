@@ -54,17 +54,8 @@ PythonAnywhere provides a MySQL database with your free account.
    Password: [your MySQL password]
    Database: yourusername$neighborhood_sips
    ```
-
-6. Click **"Start a console on"** and select your MySQL database
-
-7. In the MySQL console, create the database:
-   ```sql
-   CREATE DATABASE yourusername$neighborhood_sips;
-   ```
    
-   Replace `yourusername` with your actual PythonAnywhere username.
-
-8. Type `exit` to leave the MySQL console
+   **Note:** The database will be created automatically by the `init_db.py` script during backend setup. You can optionally create it manually now, but it's not required.
 
 ### Option B: Use External MySQL Service
 
@@ -456,6 +447,7 @@ Your frontend should now be accessible at: `https://yourusername.pythonanywhere.
    - Check that the MySQL server allows connections from PythonAnywhere IPs
    - Test connection from PythonAnywhere console:
      ```python
+     # Simple connection test (for troubleshooting)
      import mysql.connector
      from config import Config
      

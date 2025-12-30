@@ -161,7 +161,7 @@ The application includes 34 pre-defined cocktail ingredients:
 
 ### Prerequisites
 - Python 3.8+
-- MySQL 8.0+
+- MySQL 5.7+ (MySQL 8.0+ recommended)
 - Modern web browser
 
 ### Setup
