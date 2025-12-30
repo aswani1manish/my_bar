@@ -458,16 +458,20 @@ Your frontend should now be accessible at: `https://yourusername.pythonanywhere.
      ```python
      import mysql.connector
      from config import Config
-     config = Config()
-     conn = mysql.connector.connect(
-         host=config.MYSQL_HOST,
-         port=config.MYSQL_PORT,
-         user=config.MYSQL_USER,
-         password=config.MYSQL_PASSWORD,
-         database=config.MYSQL_DATABASE
-     )
-     print("Connected successfully!")
-     conn.close()
+     
+     try:
+         config = Config()
+         conn = mysql.connector.connect(
+             host=config.MYSQL_HOST,
+             port=config.MYSQL_PORT,
+             user=config.MYSQL_USER,
+             password=config.MYSQL_PASSWORD,
+             database=config.MYSQL_DATABASE
+         )
+         print("✓ Connected successfully!")
+         conn.close()
+     except mysql.connector.Error as err:
+         print(f"✗ Connection failed: {err}")
      ```
 
 ### Issue: "Table doesn't exist"
