@@ -41,12 +41,15 @@ try:
         port=config.MYSQL_PORT,
         user=config.MYSQL_USER,
         password=config.MYSQL_PASSWORD,
-        database=config.MYSQL_DATABASE
+        database=config.MYSQL_DATABASE,
+        autocommit=False,
+        consume_results=True
     )
     # Test connection
     conn = db_pool.get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT 1")
+    cursor.fetchall()  # Consume results
     cursor.close()
     conn.close()
     print(f"✓ Connected to MySQL: {config.MYSQL_DATABASE}")
