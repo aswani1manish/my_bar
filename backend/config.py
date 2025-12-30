@@ -11,9 +11,12 @@ load_dotenv()
 class Config:
     """Application configuration"""
     
-    # MongoDB Configuration
-    MONGO_URI = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/')
-    DATABASE_NAME = os.environ.get('DATABASE_NAME', 'neighborhood_sips')
+    # MySQL Configuration
+    MYSQL_HOST = os.environ.get('MYSQL_HOST', 'localhost')
+    MYSQL_PORT = int(os.environ.get('MYSQL_PORT', '3306'))
+    MYSQL_USER = os.environ.get('MYSQL_USER', 'root')
+    MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD', '')
+    MYSQL_DATABASE = os.environ.get('MYSQL_DATABASE', 'neighborhood_sips')
     
     # Flask Configuration
     SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')

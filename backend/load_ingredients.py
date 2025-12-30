@@ -9,10 +9,8 @@ import sys
 import json
 import requests
 from datetime import datetime
-from pymongo import MongoClient
-
-# MongoDB Configuration
-MONGO_URI = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/')
+import mysql.connector
+from config import Config
 
 # Bar Assistant data repository - using direct raw URLs
 GITHUB_RAW_BASE = "https://raw.githubusercontent.com/bar-assistant/data/v5/data/ingredients"
@@ -137,16 +135,22 @@ def load_ingredients_to_db(dry_run=False):
     if dry_run:
         print("\n=== DRY RUN MODE - No data will be saved ===\n")
     else:
-        # Connect to MongoDB
-        print(f"\nConnecting to MongoDB at {MONGO_URI}")
+        # Connect to MySQL
+        config = Config()
+        print(f"\nConnecting to MySQL at {config.MYSQL_HOST}:{config.MYSQL_PORT}")
         try:
-            client = MongoClient(MONGO_URI)
-            db = client['neighborhood_sips']
-            ingredients_collection = db['ingredients']
-            print("✓ Connected to MongoDB")
-        except Exception as e:
-            print(f"✗ Error connecting to MongoDB: {e}")
-            print("Make sure MongoDB is running!")
+            conn = mysql.connector.connect(
+                host=config.MYSQL_HOST,
+                port=config.MYSQL_PORT,
+                user=config.MYSQL_USER,
+                password=config.MYSQL_PASSWORD,
+                database=config.MYSQL_DATABASE
+            )
+            cursor = conn.cursor(dictionary=True)
+            print("✓ Connected to MySQL")
+        except mysql.connector.Error as e:
+            print(f"✗ Error connecting to MySQL: {e}")
+            print("Make sure MySQL is running and database is initialized (run init_db.py)!")
             return 0
     
     # Process each ingredient file
@@ -176,7 +180,8 @@ def load_ingredients_to_db(dry_run=False):
             loaded_count += 1
         else:
             # Check if ingredient already exists
-            existing = ingredients_collection.find_one({'name': ingredient['name']})
+            cursor.execute("SELECT id FROM ingredients WHERE name = %s", (ingredient['name'],))
+            existing = cursor.fetchone()
             if existing:
                 print(f"  ⚠ Skipping {ingredient['name']}: Already exists")
                 skipped_count += 1
@@ -184,12 +189,30 @@ def load_ingredients_to_db(dry_run=False):
             
             # Insert into database
             try:
-                ingredients_collection.insert_one(ingredient)
+                query = """
+                    INSERT INTO ingredients (name, description, category, tags, images, created_at, updated_at)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """
+                params = (
+                    ingredient['name'],
+                    ingredient['description'],
+                    ingredient['category'],
+                    json.dumps(ingredient['tags']),
+                    json.dumps(ingredient['images']),
+                    ingredient['created_at'],
+                    ingredient['updated_at']
+                )
+                cursor.execute(query, params)
+                conn.commit()
                 print(f"  ✓ Loaded: {ingredient['name']} ({ingredient['category']})")
                 loaded_count += 1
-            except Exception as e:
+            except mysql.connector.Error as e:
                 print(f"  ✗ Error loading {ingredient['name']}: {e}")
                 skipped_count += 1
+    
+    if not dry_run:
+        cursor.close()
+        conn.close()
     
     print(f"\n{'=' * 60}")
     print(f"Summary:")
@@ -198,7 +221,7 @@ def load_ingredients_to_db(dry_run=False):
     print(f"  - Skipped: {skipped_count}")
     
     if not dry_run:
-        print(f"\n✓ Ingredients loaded into 'neighborhood_sips' database")
+        print(f"\n✓ Ingredients loaded into '{config.MYSQL_DATABASE}' database")
     
     return loaded_count
 

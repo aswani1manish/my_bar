@@ -2,14 +2,14 @@
 
 A web application for managing your cocktail bar - ingredients, recipes, and collections.
 
-**Neighborhood Sips** is your personal cocktail mixologist brand management system, built with AngularJS frontend, Python Flask backend, and MongoDB for persistent storage.
+**Neighborhood Sips** is your personal cocktail mixologist brand management system, built with AngularJS frontend, Python Flask backend, and MySQL for persistent storage.
 
 ## Deployment Options
 
 ### ☁️ Cloud Deployment (Recommended)
 Deploy to the cloud for production use:
 - **Backend**: PythonAnywhere
-- **Database**: MongoDB Atlas
+- **Database**: MySQL (e.g., PythonAnywhere MySQL, AWS RDS, etc.)
 - **Frontend**: PythonAnywhere or static hosting
 
 📖 **[Complete Cloud Deployment Guide](DEPLOYMENT.md)**
@@ -54,18 +54,18 @@ See [Local Installation](#installation--setup-local) below.
 
 - **Frontend**: AngularJS 1.8.2, Bootstrap 5, Font Awesome
 - **Backend**: Python 3.x, Flask 3.0.0, Flask-CORS
-- **Database**: MongoDB (NoSQL)
+- **Database**: MySQL 8.0+ (RDBMS)
 - **Image Processing**: Pillow
 
 ## Prerequisites
 
 ### For Local Development
 - Python 3.8 or higher
-- MongoDB 4.0 or higher
+- MySQL 8.0 or higher
 - Modern web browser (Chrome, Firefox, Safari, Edge)
 
 ### For Cloud Deployment
-- MongoDB Atlas account (free tier available)
+- MySQL database (e.g., PythonAnywhere MySQL, AWS RDS, etc.)
 - PythonAnywhere account (free tier available)
 - See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions
 
@@ -78,22 +78,36 @@ git clone https://github.com/aswani1manish/my_bar.git
 cd my_bar
 ```
 
-### 2. Setup MongoDB
+### 2. Setup MySQL
 
-Install and start MongoDB:
+Install and start MySQL:
 
 ```bash
 # On macOS with Homebrew
-brew install mongodb-community
-brew services start mongodb-community
+brew install mysql
+brew services start mysql
 
 # On Ubuntu/Debian
-sudo apt-get install mongodb
-sudo systemctl start mongodb
+sudo apt-get install mysql-server
+sudo systemctl start mysql
 
 # On Windows
-# Download from https://www.mongodb.com/try/download/community
-# Install and start MongoDB service
+# Download from https://dev.mysql.com/downloads/mysql/
+# Install and start MySQL service
+```
+
+Create the database:
+
+```bash
+# Log into MySQL
+mysql -u root -p
+
+# Create database and user (optional)
+CREATE DATABASE neighborhood_sips;
+CREATE USER 'neighborhood_sips_user'@'localhost' IDENTIFIED BY 'your_password';
+GRANT ALL PRIVILEGES ON neighborhood_sips.* TO 'neighborhood_sips_user'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
 ```
 
 ### 3. Setup Backend
@@ -107,6 +121,9 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Initialize the database schema
+python init_db.py
 
 # Start the Flask server
 python app.py
@@ -235,12 +252,26 @@ Note: This requires internet access and may take a few minutes.
 
 ## Configuration
 
-### MongoDB Connection
+### MySQL Connection
 
-By default, the app connects to MongoDB at `mongodb://localhost:27017/`. To use a different MongoDB instance, set the `MONGO_URI` environment variable:
+By default, the app connects to MySQL at `localhost:3306` with root user and no password. To use a different MySQL configuration, set these environment variables:
 
 ```bash
-export MONGO_URI="mongodb://username:password@host:port/database"
+export MYSQL_HOST="your-mysql-host"
+export MYSQL_PORT="3306"
+export MYSQL_USER="your-username"
+export MYSQL_PASSWORD="your-password"
+export MYSQL_DATABASE="neighborhood_sips"
+```
+
+Or create a `.env` file in the `backend` directory:
+
+```
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_USER=root
+MYSQL_PASSWORD=
+MYSQL_DATABASE=neighborhood_sips
 ```
 
 ### CORS Configuration
