@@ -4,6 +4,21 @@ A web application for managing your cocktail bar - ingredients, recipes, and col
 
 **Neighborhood Sips** is your personal cocktail mixologist brand management system, built with AngularJS frontend, Python Flask backend, and MongoDB for persistent storage.
 
+## Deployment Options
+
+### ☁️ Cloud Deployment (Recommended)
+Deploy to the cloud for production use:
+- **Backend**: PythonAnywhere
+- **Database**: MongoDB Atlas
+- **Frontend**: PythonAnywhere or static hosting
+
+📖 **[Complete Cloud Deployment Guide](DEPLOYMENT.md)**
+
+### 💻 Local Development
+Run on your local machine for development and testing.
+
+See [Local Installation](#installation--setup-local) below.
+
 ## Features
 
 ### 1. Ingredients Management
@@ -44,11 +59,17 @@ A web application for managing your cocktail bar - ingredients, recipes, and col
 
 ## Prerequisites
 
+### For Local Development
 - Python 3.8 or higher
 - MongoDB 4.0 or higher
 - Modern web browser (Chrome, Firefox, Safari, Edge)
 
-## Installation & Setup
+### For Cloud Deployment
+- MongoDB Atlas account (free tier available)
+- PythonAnywhere account (free tier available)
+- See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions
+
+## Installation & Setup (Local)
 
 ### 1. Clone the Repository
 

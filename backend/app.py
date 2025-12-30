@@ -8,22 +8,39 @@ from datetime import datetime
 import uuid
 from PIL import Image, UnidentifiedImageError
 import io
+from config import Config
 
 app = Flask(__name__)
-CORS(app)
+
+# Load configuration from environment variables
+config = Config()
+app.config['MAX_CONTENT_LENGTH'] = config.MAX_CONTENT_LENGTH
+app.config['SECRET_KEY'] = config.SECRET_KEY
+app.config['DEBUG'] = config.DEBUG
+
+# Configure CORS with allowed origins
+if config.ALLOWED_ORIGINS == ['*']:
+    CORS(app)
+else:
+    CORS(app, origins=config.ALLOWED_ORIGINS)
 
 # Configure upload folder
-UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
+UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), config.UPLOAD_FOLDER)
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
-
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
 # MongoDB Configuration
-MONGO_URI = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/')
-client = MongoClient(MONGO_URI)
-db = client['neighborhood_sips']
+try:
+    client = MongoClient(config.MONGO_URI, serverSelectionTimeoutMS=5000)
+    # Test connection
+    client.server_info()
+    db = client[config.DATABASE_NAME]
+    print(f"✓ Connected to MongoDB: {config.DATABASE_NAME}")
+except Exception as e:
+    print(f"✗ MongoDB connection error: {e}")
+    print(f"  MONGO_URI: {config.MONGO_URI}")
+    db = None
 
 # Collections
 ingredients_collection = db['ingredients']
