@@ -6,11 +6,10 @@ Based on common cocktail ingredients for bar management
 
 import os
 import sys
+import json
 from datetime import datetime
-from pymongo import MongoClient
-
-# MongoDB Configuration
-MONGO_URI = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/')
+import mysql.connector
+from config import Config
 
 # Sample ingredients database
 SAMPLE_INGREDIENTS = [
@@ -302,7 +301,7 @@ SAMPLE_INGREDIENTS = [
 ]
 
 def load_sample_ingredients(dry_run=False):
-    """Load sample ingredients into MongoDB"""
+    """Load sample ingredients into MySQL"""
     
     if dry_run:
         print("\n=== DRY RUN MODE - No data will be saved ===\n")
@@ -311,16 +310,22 @@ def load_sample_ingredients(dry_run=False):
         print(f"\nTotal: {len(SAMPLE_INGREDIENTS)} ingredients")
         return len(SAMPLE_INGREDIENTS)
     
-    # Connect to MongoDB
-    print(f"\nConnecting to MongoDB at {MONGO_URI}")
+    # Connect to MySQL
+    config = Config()
+    print(f"\nConnecting to MySQL at {config.MYSQL_HOST}:{config.MYSQL_PORT}")
     try:
-        client = MongoClient(MONGO_URI)
-        db = client['neighborhood_sips']
-        ingredients_collection = db['ingredients']
-        print("✓ Connected to MongoDB")
-    except Exception as e:
-        print(f"✗ Error connecting to MongoDB: {e}")
-        print("Make sure MongoDB is running!")
+        conn = mysql.connector.connect(
+            host=config.MYSQL_HOST,
+            port=config.MYSQL_PORT,
+            user=config.MYSQL_USER,
+            password=config.MYSQL_PASSWORD,
+            database=config.MYSQL_DATABASE
+        )
+        cursor = conn.cursor(dictionary=True)
+        print("✓ Connected to MySQL")
+    except mysql.connector.Error as e:
+        print(f"✗ Error connecting to MySQL: {e}")
+        print("Make sure MySQL is running and database is initialized (run init_db.py)!")
         return 0
     
     # Load ingredients
@@ -330,35 +335,48 @@ def load_sample_ingredients(dry_run=False):
     
     for ing_data in SAMPLE_INGREDIENTS:
         # Check if ingredient already exists
-        existing = ingredients_collection.find_one({'name': ing_data['name']})
+        cursor.execute("SELECT id FROM ingredients WHERE name = %s", (ing_data['name'],))
+        existing = cursor.fetchone()
         if existing:
             print(f"  ⚠ Skipping {ing_data['name']}: Already exists")
             skipped_count += 1
             continue
         
-        # Add metadata
-        ingredient = {
-            **ing_data,
-            'images': [],
-            'created_at': datetime.utcnow(),
-            'updated_at': datetime.utcnow()
-        }
+        # Prepare ingredient data
+        now = datetime.utcnow()
         
         # Insert into database
         try:
-            ingredients_collection.insert_one(ingredient)
-            print(f"  ✓ Loaded: {ingredient['name']} ({ingredient['category']})")
+            query = """
+                INSERT INTO ingredients (name, description, category, tags, images, created_at, updated_at)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """
+            params = (
+                ing_data['name'],
+                ing_data['description'],
+                ing_data['category'],
+                json.dumps(ing_data['tags']),
+                json.dumps([]),
+                now,
+                now
+            )
+            cursor.execute(query, params)
+            conn.commit()
+            print(f"  ✓ Loaded: {ing_data['name']} ({ing_data['category']})")
             loaded_count += 1
-        except Exception as e:
-            print(f"  ✗ Error loading {ingredient['name']}: {e}")
+        except mysql.connector.Error as e:
+            print(f"  ✗ Error loading {ing_data['name']}: {e}")
             skipped_count += 1
+    
+    cursor.close()
+    conn.close()
     
     print(f"\n{'=' * 60}")
     print(f"Summary:")
     print(f"  - Total ingredients: {len(SAMPLE_INGREDIENTS)}")
     print(f"  - Loaded: {loaded_count}")
     print(f"  - Skipped: {skipped_count}")
-    print(f"\n✓ Ingredients loaded into 'neighborhood_sips' database")
+    print(f"\n✓ Ingredients loaded into '{config.MYSQL_DATABASE}' database")
     
     return loaded_count
 
