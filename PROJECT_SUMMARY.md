@@ -30,7 +30,7 @@ Groups of related recipes:
 
 ### Backend (Python/Flask)
 - **Framework**: Flask 3.0.0
-- **Database**: MongoDB (NoSQL) via PyMongo 4.6.1
+- **Database**: MySQL (RDBMS) via mysql-connector-python
 - **Image Processing**: Pillow 10.1.0
 - **CORS**: Flask-CORS 4.0.0
 - **Features**:
@@ -161,22 +161,36 @@ The application includes 34 pre-defined cocktail ingredients:
 
 ### Prerequisites
 - Python 3.8+
-- MongoDB 4.0+
+- MySQL 8.0+
 - Modern web browser
 
 ### Setup
 ```bash
-# 1. Install MongoDB and start it
-sudo service mongodb start
+# 1. Install MySQL and start it
+# On Ubuntu/Debian
+sudo apt-get install mysql-server
+sudo systemctl start mysql
 
-# 2. Install backend dependencies
+# On macOS with Homebrew
+brew install mysql
+brew services start mysql
+
+# 2. Create database
+mysql -u root -p
+CREATE DATABASE neighborhood_sips;
+EXIT;
+
+# 3. Install backend dependencies
 cd backend
 pip install -r requirements.txt
 
-# 3. Load sample ingredients
+# 4. Initialize database schema
+python3 init_db.py
+
+# 5. Load sample ingredients
 python3 load_sample_ingredients.py
 
-# 4. Start backend (Terminal 1)
+# 6. Start backend (Terminal 1)
 python3 app.py
 # Backend runs on http://localhost:5000
 
@@ -244,7 +258,8 @@ python3 test_functional.py   # Test full CRUD operations
 - File size limits (16MB max)
 - Allowed file types (png, jpg, jpeg, gif, webp)
 - Image resizing to prevent large uploads
-- MongoDB injection protection via PyMongo
+- SQL injection protection via parameterized queries
+- Secure MySQL connection with credentials
 
 ## Future Enhancements
 
