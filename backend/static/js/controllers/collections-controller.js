@@ -115,10 +115,11 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
     // Get recipe names in collection
     $scope.getRecipeNames = function(recipeIds) {
         if (!recipeIds || recipeIds.length === 0) return 'No recipes';
-        
+        console.log('all recipes' + $scope.recipes.length);
+        console.log('collection recipe ids' + recipeIds.length);
         var names = recipeIds.map(function(id) {
             var recipe = $scope.recipes.find(function(r) { return r._id === id; });
-            alert ('ID' + id + ' ' + recipe + ' name' + recipe.name);
+            console.log(id + ' ' + recipe);
             return recipe ? recipe.name : 'Unknown';
         });
         
