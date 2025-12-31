@@ -105,9 +105,8 @@ def test_copy_recipe_images_preserves_filenames():
             f.write('different content')
         
         # Capture stdout to check for warning
-        import io
         old_stdout = sys.stdout
-        sys.stdout = captured_output = io.StringIO()
+        sys.stdout = captured_output = StringIO()
         
         # Call the function again with collision
         result2 = copy_recipe_images(recipe_folder2, upload_folder)
