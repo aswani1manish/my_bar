@@ -263,7 +263,7 @@ Here's how to insert a collection using Python with mysql.connector:
 ```python
 import mysql.connector
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Database connection
 conn = mysql.connector.connect(
@@ -290,7 +290,7 @@ query = """
 """
 
 # Execute
-now = datetime.utcnow()
+now = datetime.now(timezone.utc)
 params = (
     collection_data['name'],
     collection_data['description'],
