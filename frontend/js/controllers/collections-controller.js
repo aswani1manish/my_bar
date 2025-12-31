@@ -91,26 +91,26 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
     //     }
     // };
 
-    // Add tag
-    $scope.addTag = function() {
-        if ($scope.newTag && $scope.newTag.trim()) {
-            if (!$scope.currentCollection.tags) {
-                $scope.currentCollection.tags = [];
-            }
-            if ($scope.currentCollection.tags.indexOf($scope.newTag.trim()) === -1) {
-                $scope.currentCollection.tags.push($scope.newTag.trim());
-            }
-            $scope.newTag = '';
-        }
-    };
+    // // Add tag
+    // $scope.addTag = function() {
+    //     if ($scope.newTag && $scope.newTag.trim()) {
+    //         if (!$scope.currentCollection.tags) {
+    //             $scope.currentCollection.tags = [];
+    //         }
+    //         if ($scope.currentCollection.tags.indexOf($scope.newTag.trim()) === -1) {
+    //             $scope.currentCollection.tags.push($scope.newTag.trim());
+    //         }
+    //         $scope.newTag = '';
+    //     }
+    // };
 
-    // Remove tag
-    $scope.removeTag = function(tag) {
-        var index = $scope.currentCollection.tags.indexOf(tag);
-        if (index > -1) {
-            $scope.currentCollection.tags.splice(index, 1);
-        }
-    };
+    // // Remove tag
+    // $scope.removeTag = function(tag) {
+    //     var index = $scope.currentCollection.tags.indexOf(tag);
+    //     if (index > -1) {
+    //         $scope.currentCollection.tags.splice(index, 1);
+    //     }
+    // };
 
     // Get recipe names in collection
     $scope.getRecipeNames = function(recipeIds) {
@@ -129,21 +129,21 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
         return API_URL + '/uploads/' + filename;
     };
 
-    // Reset form
-    $scope.resetForm = function() {
-        $scope.currentCollection = {
-            recipe_ids: [],
-            tags: [],
-            images: [],
-            removed_images: []
-        };
-        $scope.isEditing = false;
-        $scope.newTag = '';
-        $scope.selectedRecipes = {};
-    };
+    // // Reset form
+    // $scope.resetForm = function() {
+    //     $scope.currentCollection = {
+    //         recipe_ids: [],
+    //         tags: [],
+    //         images: [],
+    //         removed_images: []
+    //     };
+    //     $scope.isEditing = false;
+    //     $scope.newTag = '';
+    //     $scope.selectedRecipes = {};
+    // };
 
     // Initialize
-    $scope.resetForm();
+    // $scope.resetForm();
     $scope.loadCollections();
     $scope.loadRecipes();
 }]);

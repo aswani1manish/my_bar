@@ -78,54 +78,54 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     //     }
     // };
 
-    // Add ingredient to recipe
-    $scope.addIngredientToRecipe = function() {
-        if ($scope.newIngredient.ingredient_id && $scope.newIngredient.quantity && $scope.newIngredient.unit) {
-            if (!$scope.currentRecipe.ingredients) {
-                $scope.currentRecipe.ingredients = [];
-            }
+    // // Add ingredient to recipe
+    // $scope.addIngredientToRecipe = function() {
+    //     if ($scope.newIngredient.ingredient_id && $scope.newIngredient.quantity && $scope.newIngredient.unit) {
+    //         if (!$scope.currentRecipe.ingredients) {
+    //             $scope.currentRecipe.ingredients = [];
+    //         }
             
-            // Find ingredient name
-            var ingredient = $scope.ingredients.find(function(ing) {
-                return ing._id === $scope.newIngredient.ingredient_id;
-            });
+    //         // Find ingredient name
+    //         var ingredient = $scope.ingredients.find(function(ing) {
+    //             return ing._id === $scope.newIngredient.ingredient_id;
+    //         });
             
-            $scope.currentRecipe.ingredients.push({
-                ingredient_id: $scope.newIngredient.ingredient_id,
-                ingredient_name: ingredient ? ingredient.name : '',
-                quantity: $scope.newIngredient.quantity,
-                unit: $scope.newIngredient.unit
-            });
+    //         $scope.currentRecipe.ingredients.push({
+    //             ingredient_id: $scope.newIngredient.ingredient_id,
+    //             ingredient_name: ingredient ? ingredient.name : '',
+    //             quantity: $scope.newIngredient.quantity,
+    //             unit: $scope.newIngredient.unit
+    //         });
             
-            $scope.newIngredient = {};
-        }
-    };
+    //         $scope.newIngredient = {};
+    //     }
+    // };
 
-    // Remove ingredient from recipe
-    $scope.removeIngredientFromRecipe = function(index) {
-        $scope.currentRecipe.ingredients.splice(index, 1);
-    };
+    // // Remove ingredient from recipe
+    // $scope.removeIngredientFromRecipe = function(index) {
+    //     $scope.currentRecipe.ingredients.splice(index, 1);
+    // };
 
-    // Add tag
-    $scope.addTag = function() {
-        if ($scope.newTag && $scope.newTag.trim()) {
-            if (!$scope.currentRecipe.tags) {
-                $scope.currentRecipe.tags = [];
-            }
-            if ($scope.currentRecipe.tags.indexOf($scope.newTag.trim()) === -1) {
-                $scope.currentRecipe.tags.push($scope.newTag.trim());
-            }
-            $scope.newTag = '';
-        }
-    };
+    // // Add tag
+    // $scope.addTag = function() {
+    //     if ($scope.newTag && $scope.newTag.trim()) {
+    //         if (!$scope.currentRecipe.tags) {
+    //             $scope.currentRecipe.tags = [];
+    //         }
+    //         if ($scope.currentRecipe.tags.indexOf($scope.newTag.trim()) === -1) {
+    //             $scope.currentRecipe.tags.push($scope.newTag.trim());
+    //         }
+    //         $scope.newTag = '';
+    //     }
+    // };
 
-    // Remove tag
-    $scope.removeTag = function(tag) {
-        var index = $scope.currentRecipe.tags.indexOf(tag);
-        if (index > -1) {
-            $scope.currentRecipe.tags.splice(index, 1);
-        }
-    };
+    // // Remove tag
+    // $scope.removeTag = function(tag) {
+    //     var index = $scope.currentRecipe.tags.indexOf(tag);
+    //     if (index > -1) {
+    //         $scope.currentRecipe.tags.splice(index, 1);
+    //     }
+    // };
 
     // Get ingredient name by ID
     $scope.getIngredientName = function(ingredientId) {
@@ -140,21 +140,21 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         return API_URL + '/uploads/' + filename;
     };
 
-    // Reset form
-    $scope.resetForm = function() {
-        $scope.currentRecipe = {
-            ingredients: [],
-            tags: [],
-            images: [],
-            removed_images: []
-        };
-        $scope.isEditing = false;
-        $scope.newTag = '';
-        $scope.newIngredient = {};
-    };
+    // // Reset form
+    // $scope.resetForm = function() {
+    //     $scope.currentRecipe = {
+    //         ingredients: [],
+    //         tags: [],
+    //         images: [],
+    //         removed_images: []
+    //     };
+    //     $scope.isEditing = false;
+    //     $scope.newTag = '';
+    //     $scope.newIngredient = {};
+    // };
 
     // Initialize
-    $scope.resetForm();
+    // $scope.resetForm();
     $scope.loadRecipes();
     $scope.loadIngredients();
 }]);

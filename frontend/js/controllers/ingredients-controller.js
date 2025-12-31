@@ -67,44 +67,44 @@ app.controller('IngredientsController', ['$scope', 'ApiService', 'API_URL', func
     //     }
     // };
 
-    // Add tag
-    $scope.addTag = function() {
-        if ($scope.newTag && $scope.newTag.trim()) {
-            if (!$scope.currentIngredient.tags) {
-                $scope.currentIngredient.tags = [];
-            }
-            if ($scope.currentIngredient.tags.indexOf($scope.newTag.trim()) === -1) {
-                $scope.currentIngredient.tags.push($scope.newTag.trim());
-            }
-            $scope.newTag = '';
-        }
-    };
+    // // Add tag
+    // $scope.addTag = function() {
+    //     if ($scope.newTag && $scope.newTag.trim()) {
+    //         if (!$scope.currentIngredient.tags) {
+    //             $scope.currentIngredient.tags = [];
+    //         }
+    //         if ($scope.currentIngredient.tags.indexOf($scope.newTag.trim()) === -1) {
+    //             $scope.currentIngredient.tags.push($scope.newTag.trim());
+    //         }
+    //         $scope.newTag = '';
+    //     }
+    // };
 
-    // Remove tag
-    $scope.removeTag = function(tag) {
-        var index = $scope.currentIngredient.tags.indexOf(tag);
-        if (index > -1) {
-            $scope.currentIngredient.tags.splice(index, 1);
-        }
-    };
+    // // Remove tag
+    // $scope.removeTag = function(tag) {
+    //     var index = $scope.currentIngredient.tags.indexOf(tag);
+    //     if (index > -1) {
+    //         $scope.currentIngredient.tags.splice(index, 1);
+    //     }
+    // };
 
     // Get image URL
     $scope.getImageUrl = function(filename) {
         return API_URL + '/uploads/' + filename;
     };
 
-    // Reset form
-    $scope.resetForm = function() {
-        $scope.currentIngredient = {
-            tags: [],
-            images: [],
-            removed_images: []
-        };
-        $scope.isEditing = false;
-        $scope.newTag = '';
-    };
+    // // Reset form
+    // $scope.resetForm = function() {
+    //     $scope.currentIngredient = {
+    //         tags: [],
+    //         images: [],
+    //         removed_images: []
+    //     };
+    //     $scope.isEditing = false;
+    //     $scope.newTag = '';
+    // };
 
     // Initialize
-    $scope.resetForm();
+    // $scope.resetForm();
     $scope.loadIngredients();
 }]);
