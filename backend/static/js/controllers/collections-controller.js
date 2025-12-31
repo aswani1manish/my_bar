@@ -131,7 +131,15 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
         var recipe = $scope.recipes.find(function(r) { return r.id === recipeId; });
         return recipe ? recipe.name : 'Unknown';
     };
+
+    $scope.getIngredientNamesForRecipeId = function(recipeId) {
         
+        var recipe = $scope.recipes.find(function(r) { return r.id === recipeId; });
+        console.log(recipeId);
+        var ingr_names = recipe.ingredients.map(ingr => ingr.name).join(',');
+        console.log(ingr_names);
+        return ingr_names;
+    };
 
 
     // Get image URL
