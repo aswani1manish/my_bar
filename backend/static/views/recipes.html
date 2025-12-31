@@ -51,8 +51,8 @@
                         
                         <p class="card-text">{{ recipe.description || 'No description' }}</p>
                         
-                        <ul class="small">Ingredients ({{ recipe.ingredients.length }}): {{ getIngredientNamesForRecipe(recipe)}}
-                        </ul>
+                        <p class="card-text"><b>Ingredients ({{ recipe.ingredients.length }}): {{ getIngredientNamesForRecipe(recipe)}}
+                        </b></p>
                         
                         <div ng-if="recipe.tags && recipe.tags.length > 0">
                             <span class="badge bg-info me-1" ng-repeat="tag in recipe.tags track by $index">{{ tag }}</span>
