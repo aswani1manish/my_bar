@@ -140,7 +140,7 @@
     <div class="col-12">
         <h4>All Recipes ({{ recipes.length }})</h4>
         <div class="row">
-            <div class="col-md-6 col-lg-4 mb-3" ng-repeat="recipe in recipes">
+            <div class="col-md-6 col-lg-4 mb-3" ng-repeat="recipe in recipes track by recipe.id">
                 <div class="card h-100">
                     <div class="card-header bg-success text-white">
                         <h5 class="mb-0">{{ recipe.name }}</h5>
