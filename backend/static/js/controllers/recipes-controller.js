@@ -12,6 +12,7 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     $scope.newIngredient = {};
     $scope.apiUrl = API_URL;
     $scope.selectedRecipe = {};
+    $scope.recipeModal = null;
 
     // Load all recipes
     $scope.loadRecipes = function() {
@@ -184,8 +185,10 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         $scope.selectedRecipe = recipe;
         var modalElement = document.getElementById('recipeDetailsModal');
         if (modalElement) {
-            var modal = new bootstrap.Modal(modalElement);
-            modal.show();
+            if (!$scope.recipeModal) {
+                $scope.recipeModal = new bootstrap.Modal(modalElement);
+            }
+            $scope.recipeModal.show();
         }
     };
 
