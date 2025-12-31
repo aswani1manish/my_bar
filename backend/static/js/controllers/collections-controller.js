@@ -117,11 +117,8 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
     $scope.getRecipeNames = function(recipeIds) {
         if (!recipeIds || recipeIds.length === 0) return 'No recipes';
         
-        console.log('all recipes' + $scope.recipes.length);
-
         var names = recipeIds.map(function(id) {
             var recipe = $scope.recipes.find(function(r) { return r.id === id; });
-            console.log(id + ' ' + recipe);
             return recipe ? recipe.name : 'Unknown';
         });
         
@@ -131,9 +128,7 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
     // Get recipe name based on ID
     $scope.getRecipeName = function(recipeId) {
         
-        console.log('all recipes' + $scope.recipes.length);
         var recipe = $scope.recipes.find(function(r) { return r.id === recipeId; });
-        console.log(id + ' ' + recipe);
         return recipe ? recipe.name : 'Unknown';
     };
         
