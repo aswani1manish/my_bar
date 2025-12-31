@@ -14,6 +14,9 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
 
     // Load all recipes
     $scope.loadRecipes = function() {
+        
+        // Load collections first, then recipes.
+        $scope.loadCollections();
         ApiService.getRecipes($scope.searchQuery, $scope.tagSearch).then(function(response) {
             $scope.allRecipes = response.data;
             $scope.filterRecipesByCollection();
@@ -192,5 +195,4 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     // $scope.resetForm();
     $scope.loadRecipes();
     $scope.loadIngredients();
-    $scope.loadCollections();
 }]);
