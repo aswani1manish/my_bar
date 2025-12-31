@@ -124,7 +124,7 @@
                         
                         <p class="small"> 
                             <li ng-repeat="recipeId in collection.recipe_ids track by $index">
-                               {{ getRecipeName(recipeId) }} 
+                               {{ getRecipeName(recipeId) }} ( {{getIngredientNamesForRecipeId(recipeId)}} )
                             </li></p>
                         
                         <div ng-if="collection.tags && collection.tags.length > 0">
