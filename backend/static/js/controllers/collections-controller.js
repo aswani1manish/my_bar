@@ -23,6 +23,7 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
     $scope.loadRecipes = function() {
         ApiService.getRecipes('', '').then(function(response) {
             $scope.recipes = response.data;
+            console.log($scope.recipes);
         }, function(error) {
             console.error('Error loading recipes:', error);
         });
@@ -115,7 +116,7 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
     // Get recipe names in collection
     $scope.getRecipeNames = function(recipeIds) {
         if (!recipeIds || recipeIds.length === 0) return 'No recipes';
-        $scope.loadRecipes();
+        
         console.log('all recipes' + $scope.recipes.length);
         console.log('collection recipe ids' + recipeIds.length);
         var names = recipeIds.map(function(id) {
