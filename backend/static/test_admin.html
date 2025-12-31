@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recipe Admin Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        button { padding: 8px 16px; margin: 5px; cursor: pointer; }
+        input, textarea, select { margin: 5px 0; padding: 5px; width: 300px; display: block; }
+        .result { background: #f0f0f0; padding: 10px; margin-top: 10px; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Recipe Management Admin - Test UI</h1>
+    
+    <div class="section">
+        <h2>1. Create Recipe</h2>
+        <input type="text" id="createName" placeholder="Recipe Name">
+        <textarea id="createDesc" placeholder="Description"></textarea>
+        <button onclick="createRecipe()">Create Recipe</button>
+        <div id="createResult" class="result"></div>
+    </div>
+    
+    <div class="section">
+        <h2>2. Get Recipe by ID</h2>
+        <input type="number" id="getRecipeId" placeholder="Recipe ID">
+        <button onclick="getRecipe()">Get Recipe</button>
+        <div id="getResult" class="result"></div>
+    </div>
+    
+    <div class="section">
+        <h2>3. List All Recipes</h2>
+        <button onclick="listRecipes()">List Recipes</button>
+        <div id="listResult" class="result"></div>
+    </div>
+    
+    <div class="section">
+        <h2>4. Get Ingredients (for recipe selection)</h2>
+        <button onclick="listIngredients()">List Ingredients</button>
+        <div id="ingredientsResult" class="result"></div>
+    </div>
+    
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        
+        async function createRecipe() {
+            const name = document.getElementById('createName').value;
+            const description = document.getElementById('createDesc').value;
+            
+            if (!name) {
+                document.getElementById('createResult').innerHTML = '<span class="error">Please enter a recipe name</span>';
+                return;
+            }
+            
+            const data = {
+                name: name,
+                description: description,
+                instructions: "Test instructions",
+                ingredients: [
+                    {name: "Gin", quantity: "2", unit: "oz"},
+                    {name: "Tonic Water", quantity: "4", unit: "oz"}
+                ],
+                tags: ["test", "simple"]
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/recipes`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                document.getElementById('createResult').innerHTML = 
+                    `<span class="success">Recipe created with ID: ${result.id}</span><br><pre>${JSON.stringify(result, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('createResult').innerHTML = 
+                    `<span class="error">Error: ${error.message}</span>`;
+            }
+        }
+        
+        async function getRecipe() {
+            const id = document.getElementById('getRecipeId').value;
+            if (!id) {
+                document.getElementById('getResult').innerHTML = '<span class="error">Please enter a recipe ID</span>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/recipes/${id}`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('getResult').innerHTML = 
+                        `<span class="success">Recipe found:</span><br><pre>${JSON.stringify(result, null, 2)}</pre>`;
+                } else {
+                    document.getElementById('getResult').innerHTML = 
+                        `<span class="error">Recipe not found</span>`;
+                }
+            } catch (error) {
+                document.getElementById('getResult').innerHTML = 
+                    `<span class="error">Error: ${error.message}</span>`;
+            }
+        }
+        
+        async function listRecipes() {
+            try {
+                const response = await fetch(`${API_URL}/recipes`);
+                const recipes = await response.json();
+                
+                let html = `<span class="success">Found ${recipes.length} recipes:</span><br>`;
+                recipes.forEach(r => {
+                    html += `<div style="margin: 10px 0; padding: 10px; border: 1px solid #ddd;">
+                        <strong>${r.name}</strong> (ID: ${r.id})<br>
+                        Description: ${r.description || 'N/A'}<br>
+                        Ingredients: ${r.ingredients.length}<br>
+                        Tags: ${r.tags.join(', ')}
+                    </div>`;
+                });
+                
+                document.getElementById('listResult').innerHTML = html;
+            } catch (error) {
+                document.getElementById('listResult').innerHTML = 
+                    `<span class="error">Error: ${error.message}</span>`;
+            }
+        }
+        
+        async function listIngredients() {
+            try {
+                const response = await fetch(`${API_URL}/ingredients`);
+                const ingredients = await response.json();
+                
+                let html = `<span class="success">Found ${ingredients.length} ingredients:</span><br>`;
+                html += '<select size="10" style="width: 400px;">';
+                ingredients.forEach(ing => {
+                    html += `<option>${ing.name} (${ing.category || 'N/A'})</option>`;
+                });
+                html += '</select>';
+                
+                document.getElementById('ingredientsResult').innerHTML = html;
+            } catch (error) {
+                document.getElementById('ingredientsResult').innerHTML = 
+                    `<span class="error">Error: ${error.message}</span>`;
+            }
+        }
+    </script>
+</body>
+</html>
