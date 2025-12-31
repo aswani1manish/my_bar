@@ -10,10 +10,6 @@ app.constant('API_URL', (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.apiUrl)
 app.config(['$routeProvider', function($routeProvider) {
     $routeProvider
         .when('/', {
-            templateUrl: 'views/home.html',
-            controller: 'MainController'
-        })
-        .when('/recipes', {
             templateUrl: 'views/recipes.html',
             controller: 'RecipesController'
         })
