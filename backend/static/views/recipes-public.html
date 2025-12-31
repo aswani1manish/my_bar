@@ -1,0 +1,137 @@
+<div class="row">
+    <div class="col-12">
+        <h2><i class="fas fa-glass-martini-alt"></i> Recipes Management</h2>
+        <hr>
+    </div>
+</div>
+
+<!-- Search and Filter -->
+<div class="row mb-4">
+    <div class="col-md-4 mb-2">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search recipes..." 
+                   ng-model="searchQuery" ng-change="search()">
+            <button class="btn btn-outline-secondary" type="button" ng-click="search()">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+    <div class="col-md-4 mb-2">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Filter by tags (comma-separated)..." 
+                   ng-model="tagSearch" ng-change="search()">
+            <button class="btn btn-outline-secondary" type="button" ng-click="search()">
+                <i class="fas fa-filter"></i>
+            </button>
+        </div>
+    </div>
+    <div class="col-md-4 mb-2">
+        <select class="form-select" ng-model="selectedCollection" ng-change="filterRecipesByCollection()">
+            <option value="">Show all</option>
+            <option ng-repeat="collection in collections" value="{{ collection.id }}">{{ collection.name }}</option>
+        </select>
+    </div>
+</div>
+
+<!-- Recipes List -->
+<div class="row">
+    <div class="col-12">
+        <h4>All Recipes ({{ recipes.length }})</h4>
+        <div class="row">
+            <div class="col-md-6 col-lg-4 mb-3" ng-repeat="recipe in recipes track by $index">
+                <div class="card h-100">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">{{ recipe.name }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Recipe Images -->
+                        <p class="card-text"><b>Images ({{ recipe.images.length }}): {{ recipe.images }}</b></p>
+                        <span class="badge bg-info me-1" ng-repeat="img in recipe.images track by $index">{{getImageUrl(img)}}</span>
+                        <div class="item-image-gallery mb-2" ng-if="recipe.images && recipe.images.length > 0">
+                            <img ng-repeat="img in recipe.images track by $index" ng-src="{{getImageUrl(img)}}" alt="{{recipe.name}}" style="width: 80px; height: 80px;">
+                        </div>
+                        
+                        <p class="card-text">{{ recipe.description || 'No description' }}</p>
+                        
+                        <p class="card-text"><b>Ingredients ({{ recipe.ingredients.length }}): {{ getIngredientNamesForRecipe(recipe)}}</b></p>
+                        
+                        <div ng-if="recipe.tags && recipe.tags.length > 0">
+                            <span class="badge bg-info me-1" ng-repeat="tag in recipe.tags track by $index">{{ tag }}</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-sm btn-primary" ng-click="showRecipeDetails(recipe)">
+                            <i class="fas fa-eye"></i> See recipe details
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12" ng-if="recipes.length === 0">
+                <div class="alert alert-info">No recipes found.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recipe Details Modal -->
+<div class="modal fade" id="recipeDetailsModal" tabindex="-1" aria-labelledby="recipeDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="recipeDetailsModalLabel">{{ selectedRecipe.name }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Recipe Images -->
+                <div class="mb-3" ng-if="selectedRecipe.images && selectedRecipe.images.length > 0">
+                    <h6><i class="fas fa-images"></i> Images</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        <img ng-repeat="img in selectedRecipe.images" 
+                             ng-src="{{getImageUrl(img)}}" 
+                             alt="{{selectedRecipe.name}}" 
+                             class="img-thumbnail"
+                             style="width: 150px; height: 150px; object-fit: cover;">
+                    </div>
+                </div>
+
+                <!-- Recipe Description -->
+                <div class="mb-3" ng-if="selectedRecipe.description">
+                    <h6><i class="fas fa-info-circle"></i> Description</h6>
+                    <p>{{ selectedRecipe.description }}</p>
+                </div>
+
+                <!-- Recipe Ingredients -->
+                <div class="mb-3" ng-if="selectedRecipe.ingredients && selectedRecipe.ingredients.length > 0">
+                    <h6><i class="fas fa-list"></i> Ingredients ({{ selectedRecipe.ingredients.length }})</h6>
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="ingr in selectedRecipe.ingredients track by $index">
+                            <strong>{{ ingr.name }}</strong>
+                            <span ng-if="ingr.amount && ingr.units">: {{ ingr.amount }} {{ ingr.units }}</span>
+                            <span ng-if="ingr.amount && !ingr.units">: {{ ingr.amount }}</span>
+                            <span ng-if="!ingr.amount && ingr.units">: {{ ingr.units }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Recipe Instructions -->
+                <div class="mb-3" ng-if="selectedRecipe.instructions">
+                    <h6><i class="fas fa-tasks"></i> Instructions</h6>
+                    <p style="white-space: pre-wrap;">{{ selectedRecipe.instructions }}</p>
+                </div>
+
+                <!-- Recipe Tags -->
+                <div class="mb-3" ng-if="selectedRecipe.tags && selectedRecipe.tags.length > 0">
+                    <h6><i class="fas fa-tags"></i> Tags</h6>
+                    <div>
+                        <span class="badge bg-info me-1 mb-1" ng-repeat="tag in selectedRecipe.tags track by $index">{{ tag }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

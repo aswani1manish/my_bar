@@ -30,15 +30,15 @@ app.factory('ApiService', ['$http', 'API_URL', function($http, API_URL) {
         getRecipe: function(id) {
             return $http.get(API_URL + '/recipes/' + id);
         },
-        // createRecipe: function(recipe) {
-        //     return $http.post(API_URL + '/recipes', recipe);
-        // },
-        // updateRecipe: function(id, recipe) {
-        //     return $http.put(API_URL + '/recipes/' + id, recipe);
-        // },
-        // deleteRecipe: function(id) {
-        //     return $http.delete(API_URL + '/recipes/' + id);
-        // },
+        createRecipe: function(recipe) {
+            return $http.post(API_URL + '/recipes', recipe);
+        },
+        updateRecipe: function(id, recipe) {
+            return $http.put(API_URL + '/recipes/' + id, recipe);
+        },
+        deleteRecipe: function(id) {
+            return $http.delete(API_URL + '/recipes/' + id);
+        },
         
         // Collections
         getCollections: function(search, tags) {
