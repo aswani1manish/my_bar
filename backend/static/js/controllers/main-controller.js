@@ -1,4 +1,4 @@
 app.controller('MainController', ['$scope', function($scope) {
     $scope.appName = 'Neighborhood Sips';
-    $scope.tagline = 'Your Personal Cocktail Mixologist Brand';
+    $scope.tagline = 'Your Neighborhood Cocktail Mixologist';
 }]);
