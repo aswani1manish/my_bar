@@ -93,23 +93,23 @@ def save_base64_image(base64_string, prefix='img'):
         # Remove data URL prefix if present
         if ',' in base64_string:
             base64_string = base64_string.split(',')[1]
-        
+
         # Decode base64
         image_data = base64.b64decode(base64_string)
         image = Image.open(io.BytesIO(image_data))
-        
+
         # Generate unique filename with UUID for security
         unique_id = uuid.uuid4().hex[:12]
         filename = f"{prefix}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{unique_id}.png"
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        
+
         # Resize if too large (max 1024x1024)
         max_size = (1024, 1024)
         image.thumbnail(max_size, Image.Resampling.LANCZOS)
-        
+
         # Save image
         image.save(filepath, 'PNG', optimize=True)
-        
+
         return filename
     except (IOError, ValueError, UnidentifiedImageError) as e:
         print(f"Error saving image: {e}")
@@ -126,18 +126,18 @@ def uploaded_file(filename):
 def get_ingredients():
     search = request.args.get('search', '')
     tags = request.args.get('tags', '')
-    
+
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    
+
     query = "SELECT * FROM ingredients WHERE 1=1"
     params = []
-    
+
     if search:
         query += " AND (name LIKE %s OR description LIKE %s)"
         search_param = f"%{search}%"
         params.extend([search_param, search_param])
-    
+
     if tags:
         tag_list = [t.strip() for t in tags.split(',')]
         # Check if any of the tags are in the JSON array
@@ -146,35 +146,35 @@ def get_ingredients():
             tag_conditions.append("JSON_CONTAINS(tags, %s)")
             params.append(json.dumps(tag))
         query += f" AND ({' OR '.join(tag_conditions)})"
-    
+
     query += " ORDER BY created_at DESC"
-    
+
     cursor.execute(query, params)
     ingredients = cursor.fetchall()
-    
+
     # Parse JSON fields
     for ing in ingredients:
         if ing.get('tags'):
             ing['tags'] = json.loads(ing['tags']) if isinstance(ing['tags'], str) else ing['tags']
         if ing.get('images'):
             ing['images'] = json.loads(ing['images']) if isinstance(ing['images'], str) else ing['images']
-    
+
     cursor.close()
     conn.close()
-    
+
     return jsonify(ingredients)
 
 @app.route('/api/ingredients/<int:ingredient_id>', methods=['GET'])
 def get_ingredient(ingredient_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    
+
     cursor.execute("SELECT * FROM ingredients WHERE id = %s", (ingredient_id,))
     ingredient = cursor.fetchone()
-    
+
     cursor.close()
     conn.close()
-    
+
     if ingredient:
         # Parse JSON fields
         if ingredient.get('tags'):
@@ -187,7 +187,7 @@ def get_ingredient(ingredient_id):
 @app.route('/api/ingredients', methods=['POST'])
 def create_ingredient():
     data = request.json
-    
+
     # Handle image uploads
     images = []
     if 'images' in data and data['images']:
@@ -196,10 +196,10 @@ def create_ingredient():
                 filename = save_base64_image(img_data, 'ingredient')
                 if filename:
                     images.append(filename)
-    
+
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
     query = """
         INSERT INTO ingredients (name, description, category, tags, images, created_at, updated_at)
         VALUES (%s, %s, %s, %s, %s, %s, %s)
@@ -214,14 +214,14 @@ def create_ingredient():
         now,
         now
     )
-    
+
     cursor.execute(query, params)
     conn.commit()
     ingredient_id = cursor.lastrowid
-    
+
     cursor.close()
     conn.close()
-    
+
     ingredient = {
         'id': ingredient_id,
         'name': data.get('name'),
@@ -232,27 +232,27 @@ def create_ingredient():
         'created_at': now.isoformat(),
         'updated_at': now.isoformat()
     }
-    
+
     return jsonify(ingredient), 201
 
 @app.route('/api/ingredients/<int:ingredient_id>', methods=['PUT'])
 def update_ingredient(ingredient_id):
     data = request.json
-    
+
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    
+
     # Get existing ingredient to preserve old images
     cursor.execute("SELECT images FROM ingredients WHERE id = %s", (ingredient_id,))
     existing = cursor.fetchone()
-    
+
     if not existing:
         cursor.close()
         conn.close()
         return jsonify({'error': 'Ingredient not found'}), 404
-    
+
     images = json.loads(existing['images']) if isinstance(existing['images'], str) else (existing['images'] or [])
-    
+
     # Handle new image uploads
     if 'images' in data and data['images']:
         for img_data in data['images']:
@@ -263,7 +263,7 @@ def update_ingredient(ingredient_id):
             elif img_data:  # Existing image filename
                 if img_data not in images:
                     images.append(img_data)
-    
+
     # Handle image removals
     if 'removed_images' in data and data['removed_images']:
         for img in data['removed_images']:
@@ -274,9 +274,9 @@ def update_ingredient(ingredient_id):
                     os.remove(os.path.join(app.config['UPLOAD_FOLDER'], img))
                 except:
                     pass
-    
+
     query = """
-        UPDATE ingredients 
+        UPDATE ingredients
         SET name = %s, description = %s, category = %s, tags = %s, images = %s, updated_at = %s
         WHERE id = %s
     """
@@ -290,17 +290,17 @@ def update_ingredient(ingredient_id):
         now,
         ingredient_id
     )
-    
+
     cursor.execute(query, params)
     conn.commit()
-    
+
     # Fetch updated ingredient
     cursor.execute("SELECT * FROM ingredients WHERE id = %s", (ingredient_id,))
     ingredient = cursor.fetchone()
-    
+
     cursor.close()
     conn.close()
-    
+
     if ingredient:
         # Parse JSON fields
         if ingredient.get('tags'):
@@ -314,14 +314,14 @@ def update_ingredient(ingredient_id):
 def delete_ingredient(ingredient_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
     cursor.execute("DELETE FROM ingredients WHERE id = %s", (ingredient_id,))
     deleted_count = cursor.rowcount
     conn.commit()
-    
+
     cursor.close()
     conn.close()
-    
+
     if deleted_count:
         return jsonify({'message': 'Ingredient deleted successfully'})
     return jsonify({'error': 'Ingredient not found'}), 404
@@ -332,18 +332,18 @@ def delete_ingredient(ingredient_id):
 def get_recipes():
     search = request.args.get('search', '')
     tags = request.args.get('tags', '')
-    
+
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    
+
     query = "SELECT * FROM recipes WHERE 1=1"
     params = []
-    
+
     if search:
         query += " AND (name LIKE %s OR description LIKE %s)"
         search_param = f"%{search}%"
         params.extend([search_param, search_param])
-    
+
     if tags:
         tag_list = [t.strip() for t in tags.split(',')]
         tag_conditions = []
@@ -351,12 +351,12 @@ def get_recipes():
             tag_conditions.append("JSON_CONTAINS(tags, %s)")
             params.append(json.dumps(tag))
         query += f" AND ({' OR '.join(tag_conditions)})"
-    
+
     query += " ORDER BY created_at DESC"
-    
+
     cursor.execute(query, params)
     recipes = cursor.fetchall()
-    
+
     # Parse JSON fields
     for recipe in recipes:
         if recipe.get('tags'):
@@ -365,23 +365,23 @@ def get_recipes():
             recipe['images'] = json.loads(recipe['images']) if isinstance(recipe['images'], str) else recipe['images']
         if recipe.get('ingredients'):
             recipe['ingredients'] = json.loads(recipe['ingredients']) if isinstance(recipe['ingredients'], str) else recipe['ingredients']
-    
+
     cursor.close()
     conn.close()
-    
+
     return jsonify(recipes)
 
 @app.route('/api/recipes/<int:recipe_id>', methods=['GET'])
 def get_recipe(recipe_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    
+
     cursor.execute("SELECT * FROM recipes WHERE id = %s", (recipe_id,))
     recipe = cursor.fetchone()
-    
+
     cursor.close()
     conn.close()
-    
+
     if recipe:
         # Parse JSON fields
         if recipe.get('tags'):
@@ -396,7 +396,7 @@ def get_recipe(recipe_id):
 @app.route('/api/recipes', methods=['POST'])
 def create_recipe():
     data = request.json
-    
+
     # Handle image uploads
     images = []
     if 'images' in data and data['images']:
@@ -405,10 +405,10 @@ def create_recipe():
                 filename = save_base64_image(img_data, 'recipe')
                 if filename:
                     images.append(filename)
-    
+
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
     query = """
         INSERT INTO recipes (name, description, ingredients, instructions, tags, images, created_at, updated_at)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
@@ -424,14 +424,14 @@ def create_recipe():
         now,
         now
     )
-    
+
     cursor.execute(query, params)
     conn.commit()
     recipe_id = cursor.lastrowid
-    
+
     cursor.close()
     conn.close()
-    
+
     recipe = {
         'id': recipe_id,
         'name': data.get('name'),
@@ -443,27 +443,27 @@ def create_recipe():
         'created_at': now.isoformat(),
         'updated_at': now.isoformat()
     }
-    
+
     return jsonify(recipe), 201
 
 @app.route('/api/recipes/<int:recipe_id>', methods=['PUT'])
 def update_recipe(recipe_id):
     data = request.json
-    
+
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    
+
     # Get existing recipe to preserve old images
     cursor.execute("SELECT images FROM recipes WHERE id = %s", (recipe_id,))
     existing = cursor.fetchone()
-    
+
     if not existing:
         cursor.close()
         conn.close()
         return jsonify({'error': 'Recipe not found'}), 404
-    
+
     images = json.loads(existing['images']) if isinstance(existing['images'], str) else (existing['images'] or [])
-    
+
     # Handle new image uploads
     if 'images' in data and data['images']:
         for img_data in data['images']:
@@ -474,7 +474,7 @@ def update_recipe(recipe_id):
             elif img_data:  # Existing image filename
                 if img_data not in images:
                     images.append(img_data)
-    
+
     # Handle image removals
     if 'removed_images' in data and data['removed_images']:
         for img in data['removed_images']:
@@ -485,9 +485,9 @@ def update_recipe(recipe_id):
                     os.remove(os.path.join(app.config['UPLOAD_FOLDER'], img))
                 except:
                     pass
-    
+
     query = """
-        UPDATE recipes 
+        UPDATE recipes
         SET name = %s, description = %s, ingredients = %s, instructions = %s, tags = %s, images = %s, updated_at = %s
         WHERE id = %s
     """
@@ -502,17 +502,17 @@ def update_recipe(recipe_id):
         now,
         recipe_id
     )
-    
+
     cursor.execute(query, params)
     conn.commit()
-    
+
     # Fetch updated recipe
     cursor.execute("SELECT * FROM recipes WHERE id = %s", (recipe_id,))
     recipe = cursor.fetchone()
-    
+
     cursor.close()
     conn.close()
-    
+
     if recipe:
         # Parse JSON fields
         if recipe.get('tags'):
@@ -528,14 +528,14 @@ def update_recipe(recipe_id):
 def delete_recipe(recipe_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
     cursor.execute("DELETE FROM recipes WHERE id = %s", (recipe_id,))
     deleted_count = cursor.rowcount
     conn.commit()
-    
+
     cursor.close()
     conn.close()
-    
+
     if deleted_count:
         return jsonify({'message': 'Recipe deleted successfully'})
     return jsonify({'error': 'Recipe not found'}), 404
@@ -546,18 +546,18 @@ def delete_recipe(recipe_id):
 def get_collections():
     search = request.args.get('search', '')
     tags = request.args.get('tags', '')
-    
+
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    
+
     query = "SELECT * FROM collections WHERE 1=1"
     params = []
-    
+
     if search:
         query += " AND (name LIKE %s OR description LIKE %s)"
         search_param = f"%{search}%"
         params.extend([search_param, search_param])
-    
+
     if tags:
         tag_list = [t.strip() for t in tags.split(',')]
         tag_conditions = []
@@ -565,12 +565,12 @@ def get_collections():
             tag_conditions.append("JSON_CONTAINS(tags, %s)")
             params.append(json.dumps(tag))
         query += f" AND ({' OR '.join(tag_conditions)})"
-    
+
     query += " ORDER BY created_at DESC"
-    
+
     cursor.execute(query, params)
     collections = cursor.fetchall()
-    
+
     # Parse JSON fields
     for coll in collections:
         if coll.get('tags'):
@@ -579,23 +579,23 @@ def get_collections():
             coll['images'] = json.loads(coll['images']) if isinstance(coll['images'], str) else coll['images']
         if coll.get('recipe_ids'):
             coll['recipe_ids'] = json.loads(coll['recipe_ids']) if isinstance(coll['recipe_ids'], str) else coll['recipe_ids']
-    
+
     cursor.close()
     conn.close()
-    
+
     return jsonify(collections)
 
 @app.route('/api/collections/<int:collection_id>', methods=['GET'])
 def get_collection(collection_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    
+
     cursor.execute("SELECT * FROM collections WHERE id = %s", (collection_id,))
     collection = cursor.fetchone()
-    
+
     cursor.close()
     conn.close()
-    
+
     if collection:
         # Parse JSON fields
         if collection.get('tags'):
@@ -610,7 +610,7 @@ def get_collection(collection_id):
 @app.route('/api/collections', methods=['POST'])
 def create_collection():
     data = request.json
-    
+
     # Handle image uploads
     images = []
     if 'images' in data and data['images']:
@@ -619,10 +619,10 @@ def create_collection():
                 filename = save_base64_image(img_data, 'collection')
                 if filename:
                     images.append(filename)
-    
+
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
     query = """
         INSERT INTO collections (name, description, recipe_ids, tags, images, created_at, updated_at)
         VALUES (%s, %s, %s, %s, %s, %s, %s)
@@ -637,14 +637,14 @@ def create_collection():
         now,
         now
     )
-    
+
     cursor.execute(query, params)
     conn.commit()
     collection_id = cursor.lastrowid
-    
+
     cursor.close()
     conn.close()
-    
+
     collection = {
         'id': collection_id,
         'name': data.get('name'),
@@ -655,27 +655,27 @@ def create_collection():
         'created_at': now.isoformat(),
         'updated_at': now.isoformat()
     }
-    
+
     return jsonify(collection), 201
 
 @app.route('/api/collections/<int:collection_id>', methods=['PUT'])
 def update_collection(collection_id):
     data = request.json
-    
+
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    
+
     # Get existing collection to preserve old images
     cursor.execute("SELECT images FROM collections WHERE id = %s", (collection_id,))
     existing = cursor.fetchone()
-    
+
     if not existing:
         cursor.close()
         conn.close()
         return jsonify({'error': 'Collection not found'}), 404
-    
+
     images = json.loads(existing['images']) if isinstance(existing['images'], str) else (existing['images'] or [])
-    
+
     # Handle new image uploads
     if 'images' in data and data['images']:
         for img_data in data['images']:
@@ -686,7 +686,7 @@ def update_collection(collection_id):
             elif img_data:  # Existing image filename
                 if img_data not in images:
                     images.append(img_data)
-    
+
     # Handle image removals
     if 'removed_images' in data and data['removed_images']:
         for img in data['removed_images']:
@@ -697,9 +697,9 @@ def update_collection(collection_id):
                     os.remove(os.path.join(app.config['UPLOAD_FOLDER'], img))
                 except:
                     pass
-    
+
     query = """
-        UPDATE collections 
+        UPDATE collections
         SET name = %s, description = %s, recipe_ids = %s, tags = %s, images = %s, updated_at = %s
         WHERE id = %s
     """
@@ -713,17 +713,17 @@ def update_collection(collection_id):
         now,
         collection_id
     )
-    
+
     cursor.execute(query, params)
     conn.commit()
-    
+
     # Fetch updated collection
     cursor.execute("SELECT * FROM collections WHERE id = %s", (collection_id,))
     collection = cursor.fetchone()
-    
+
     cursor.close()
     conn.close()
-    
+
     if collection:
         # Parse JSON fields
         if collection.get('tags'):
@@ -739,14 +739,14 @@ def update_collection(collection_id):
 def delete_collection(collection_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
     cursor.execute("DELETE FROM collections WHERE id = %s", (collection_id,))
     deleted_count = cursor.rowcount
     conn.commit()
-    
+
     cursor.close()
     conn.close()
-    
+
     if deleted_count:
         return jsonify({'message': 'Collection deleted successfully'})
     return jsonify({'error': 'Collection not found'}), 404
@@ -759,22 +759,22 @@ def health_check():
 # ============= FRONTEND SERVING (OPTIONAL) =============
 # Uncomment these routes to serve frontend from the same Flask app
 # This is useful for PythonAnywhere deployment where you want everything in one app
-# 
+#
 # Prerequisites:
 # 1. Copy frontend directory to backend/static: cp -r ../frontend ./static
 # 2. Update static/js/config.js to use relative API URL: apiUrl: '/api'
 #
-# @app.route('/')
-# def index():
-#     return send_from_directory('static', 'index.html')
-#
-# @app.route('/<path:path>')
-# def serve_static(path):
-#     try:
-#         return send_from_directory('static', path)
-#     except:
-#         # For SPA routing, return index.html for unknown routes
-#         return send_from_directory('static', 'index.html')
+@app.route('/')
+def index():
+ return send_from_directory('static', 'index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+ try:
+     return send_from_directory('static', path)
+ except:
+     # For SPA routing, return index.html for unknown routes
+     return send_from_directory('static', 'index.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

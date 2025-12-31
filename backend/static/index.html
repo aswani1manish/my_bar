@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="neighborhoodSipsApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neighborhood Sips - Cocktail Bar Manager</title>
+    
+    <!-- Bootstrap CSS for responsive design -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+</head>
+<body ng-controller="MainController">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#!/">
+                <i class="fas fa-cocktail"></i> Neighborhood Sips
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#!/ingredients">
+                            <i class="fas fa-lemon"></i> Ingredients
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#!/recipes">
+                            <i class="fas fa-glass-martini-alt"></i> Recipes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#!/collections">
+                            <i class="fas fa-folder-open"></i> Collections
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div ng-view></div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- App Configuration -->
+    <script src="js/config.js"></script>
+    
+    <!-- App Scripts -->
+    <script src="js/app.js"></script>
+    <script src="js/controllers/main-controller.js"></script>
+    <script src="js/controllers/ingredients-controller.js"></script>
+    <script src="js/controllers/recipes-controller.js"></script>
+    <script src="js/controllers/collections-controller.js"></script>
+    <script src="js/services/api-service.js"></script>
+    <script src="js/directives/image-upload.js"></script>
+</body>
+</html>
