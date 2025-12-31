@@ -130,7 +130,7 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     // Get ingredient name by ID
     $scope.getIngredientName = function(ingredientId) {
         var ingredient = $scope.ingredients.find(function(ing) {
-            return ing._id === ingredientId;
+            return ing.id === ingredientId;
         });
         return ingredient ? ingredient.name : 'Unknown';
     };
