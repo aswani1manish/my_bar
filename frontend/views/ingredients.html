@@ -27,8 +27,8 @@
     </div>
 </div>
 
-<!-- Add/Edit Form -->
-<div class="row mb-4">
+<!-- Add/Edit Form - COMMENTED OUT -->
+<!-- <div class="row mb-4">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
@@ -53,7 +53,6 @@
                         <textarea class="form-control" ng-model="currentIngredient.description" rows="2"></textarea>
                     </div>
                     
-                    <!-- Image Upload Component -->
                     <image-upload images="currentIngredient.images" 
                                   removed-images="currentIngredient.removed_images"
                                   api-url="{{apiUrl}}">
@@ -87,7 +86,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <!-- Ingredients List -->
 <div class="row">
@@ -119,13 +118,17 @@
                         <td>
                             <span class="badge bg-info me-1" ng-repeat="tag in ingredient.tags">{{ tag }}</span>
                         </td>
-                        <td>
+                        <!-- Edit/Delete Actions - COMMENTED OUT -->
+                        <!-- <td>
                             <button class="btn btn-sm btn-warning me-1" ng-click="editIngredient(ingredient)">
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button class="btn btn-sm btn-danger" ng-click="deleteIngredient(ingredient._id)">
                                 <i class="fas fa-trash"></i>
                             </button>
+                        </td> -->
+                        <td>
+                            <span class="text-muted">Read-only</span>
                         </td>
                     </tr>
                     <tr ng-if="ingredients.length === 0">

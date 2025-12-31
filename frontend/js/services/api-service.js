@@ -10,15 +10,15 @@ app.factory('ApiService', ['$http', 'API_URL', function($http, API_URL) {
         getIngredient: function(id) {
             return $http.get(API_URL + '/ingredients/' + id);
         },
-        createIngredient: function(ingredient) {
-            return $http.post(API_URL + '/ingredients', ingredient);
-        },
-        updateIngredient: function(id, ingredient) {
-            return $http.put(API_URL + '/ingredients/' + id, ingredient);
-        },
-        deleteIngredient: function(id) {
-            return $http.delete(API_URL + '/ingredients/' + id);
-        },
+        // createIngredient: function(ingredient) {
+        //     return $http.post(API_URL + '/ingredients', ingredient);
+        // },
+        // updateIngredient: function(id, ingredient) {
+        //     return $http.put(API_URL + '/ingredients/' + id, ingredient);
+        // },
+        // deleteIngredient: function(id) {
+        //     return $http.delete(API_URL + '/ingredients/' + id);
+        // },
         
         // Recipes
         getRecipes: function(search, tags) {
@@ -30,15 +30,15 @@ app.factory('ApiService', ['$http', 'API_URL', function($http, API_URL) {
         getRecipe: function(id) {
             return $http.get(API_URL + '/recipes/' + id);
         },
-        createRecipe: function(recipe) {
-            return $http.post(API_URL + '/recipes', recipe);
-        },
-        updateRecipe: function(id, recipe) {
-            return $http.put(API_URL + '/recipes/' + id, recipe);
-        },
-        deleteRecipe: function(id) {
-            return $http.delete(API_URL + '/recipes/' + id);
-        },
+        // createRecipe: function(recipe) {
+        //     return $http.post(API_URL + '/recipes', recipe);
+        // },
+        // updateRecipe: function(id, recipe) {
+        //     return $http.put(API_URL + '/recipes/' + id, recipe);
+        // },
+        // deleteRecipe: function(id) {
+        //     return $http.delete(API_URL + '/recipes/' + id);
+        // },
         
         // Collections
         getCollections: function(search, tags) {
@@ -49,15 +49,15 @@ app.factory('ApiService', ['$http', 'API_URL', function($http, API_URL) {
         },
         getCollection: function(id) {
             return $http.get(API_URL + '/collections/' + id);
-        },
-        createCollection: function(collection) {
-            return $http.post(API_URL + '/collections', collection);
-        },
-        updateCollection: function(id, collection) {
-            return $http.put(API_URL + '/collections/' + id, collection);
-        },
-        deleteCollection: function(id) {
-            return $http.delete(API_URL + '/collections/' + id);
         }
+        // createCollection: function(collection) {
+        //     return $http.post(API_URL + '/collections', collection);
+        // },
+        // updateCollection: function(id, collection) {
+        //     return $http.put(API_URL + '/collections/' + id, collection);
+        // },
+        // deleteCollection: function(id) {
+        //     return $http.delete(API_URL + '/collections/' + id);
+        // }
     };
 }]);

@@ -22,50 +22,50 @@ app.controller('IngredientsController', ['$scope', 'ApiService', 'API_URL', func
         $scope.loadIngredients();
     };
 
-    // Create or update ingredient
-    $scope.saveIngredient = function() {
-        if (!$scope.currentIngredient.name) {
-            alert('Please enter an ingredient name');
-            return;
-        }
+    // // Create or update ingredient
+    // $scope.saveIngredient = function() {
+    //     if (!$scope.currentIngredient.name) {
+    //         alert('Please enter an ingredient name');
+    //         return;
+    //     }
 
-        if ($scope.isEditing) {
-            ApiService.updateIngredient($scope.currentIngredient._id, $scope.currentIngredient).then(function(response) {
-                $scope.loadIngredients();
-                $scope.resetForm();
-            }, function(error) {
-                console.error('Error updating ingredient:', error);
-                alert('Error updating ingredient');
-            });
-        } else {
-            ApiService.createIngredient($scope.currentIngredient).then(function(response) {
-                $scope.loadIngredients();
-                $scope.resetForm();
-            }, function(error) {
-                console.error('Error creating ingredient:', error);
-                alert('Error creating ingredient');
-            });
-        }
-    };
+    //     if ($scope.isEditing) {
+    //         ApiService.updateIngredient($scope.currentIngredient._id, $scope.currentIngredient).then(function(response) {
+    //             $scope.loadIngredients();
+    //             $scope.resetForm();
+    //         }, function(error) {
+    //             console.error('Error updating ingredient:', error);
+    //             alert('Error updating ingredient');
+    //         });
+    //     } else {
+    //         ApiService.createIngredient($scope.currentIngredient).then(function(response) {
+    //             $scope.loadIngredients();
+    //             $scope.resetForm();
+    //         }, function(error) {
+    //             console.error('Error creating ingredient:', error);
+    //             alert('Error creating ingredient');
+    //         });
+    //     }
+    // };
 
-    // Edit ingredient
-    $scope.editIngredient = function(ingredient) {
-        $scope.currentIngredient = angular.copy(ingredient);
-        $scope.isEditing = true;
-        window.scrollTo(0, 0);
-    };
+    // // Edit ingredient
+    // $scope.editIngredient = function(ingredient) {
+    //     $scope.currentIngredient = angular.copy(ingredient);
+    //     $scope.isEditing = true;
+    //     window.scrollTo(0, 0);
+    // };
 
-    // Delete ingredient
-    $scope.deleteIngredient = function(id) {
-        if (confirm('Are you sure you want to delete this ingredient?')) {
-            ApiService.deleteIngredient(id).then(function(response) {
-                $scope.loadIngredients();
-            }, function(error) {
-                console.error('Error deleting ingredient:', error);
-                alert('Error deleting ingredient');
-            });
-        }
-    };
+    // // Delete ingredient
+    // $scope.deleteIngredient = function(id) {
+    //     if (confirm('Are you sure you want to delete this ingredient?')) {
+    //         ApiService.deleteIngredient(id).then(function(response) {
+    //             $scope.loadIngredients();
+    //         }, function(error) {
+    //             console.error('Error deleting ingredient:', error);
+    //             alert('Error deleting ingredient');
+    //         });
+    //     }
+    // };
 
     // Add tag
     $scope.addTag = function() {

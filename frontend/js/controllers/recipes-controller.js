@@ -33,50 +33,50 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         $scope.loadRecipes();
     };
 
-    // Create or update recipe
-    $scope.saveRecipe = function() {
-        if (!$scope.currentRecipe.name) {
-            alert('Please enter a recipe name');
-            return;
-        }
+    // // Create or update recipe
+    // $scope.saveRecipe = function() {
+    //     if (!$scope.currentRecipe.name) {
+    //         alert('Please enter a recipe name');
+    //         return;
+    //     }
 
-        if ($scope.isEditing) {
-            ApiService.updateRecipe($scope.currentRecipe._id, $scope.currentRecipe).then(function(response) {
-                $scope.loadRecipes();
-                $scope.resetForm();
-            }, function(error) {
-                console.error('Error updating recipe:', error);
-                alert('Error updating recipe');
-            });
-        } else {
-            ApiService.createRecipe($scope.currentRecipe).then(function(response) {
-                $scope.loadRecipes();
-                $scope.resetForm();
-            }, function(error) {
-                console.error('Error creating recipe:', error);
-                alert('Error creating recipe');
-            });
-        }
-    };
+    //     if ($scope.isEditing) {
+    //         ApiService.updateRecipe($scope.currentRecipe._id, $scope.currentRecipe).then(function(response) {
+    //             $scope.loadRecipes();
+    //             $scope.resetForm();
+    //         }, function(error) {
+    //             console.error('Error updating recipe:', error);
+    //             alert('Error updating recipe');
+    //         });
+    //     } else {
+    //         ApiService.createRecipe($scope.currentRecipe).then(function(response) {
+    //             $scope.loadRecipes();
+    //             $scope.resetForm();
+    //         }, function(error) {
+    //             console.error('Error creating recipe:', error);
+    //             alert('Error creating recipe');
+    //         });
+    //     }
+    // };
 
-    // Edit recipe
-    $scope.editRecipe = function(recipe) {
-        $scope.currentRecipe = angular.copy(recipe);
-        $scope.isEditing = true;
-        window.scrollTo(0, 0);
-    };
+    // // Edit recipe
+    // $scope.editRecipe = function(recipe) {
+    //     $scope.currentRecipe = angular.copy(recipe);
+    //     $scope.isEditing = true;
+    //     window.scrollTo(0, 0);
+    // };
 
-    // Delete recipe
-    $scope.deleteRecipe = function(id) {
-        if (confirm('Are you sure you want to delete this recipe?')) {
-            ApiService.deleteRecipe(id).then(function(response) {
-                $scope.loadRecipes();
-            }, function(error) {
-                console.error('Error deleting recipe:', error);
-                alert('Error deleting recipe');
-            });
-        }
-    };
+    // // Delete recipe
+    // $scope.deleteRecipe = function(id) {
+    //     if (confirm('Are you sure you want to delete this recipe?')) {
+    //         ApiService.deleteRecipe(id).then(function(response) {
+    //             $scope.loadRecipes();
+    //         }, function(error) {
+    //             console.error('Error deleting recipe:', error);
+    //             alert('Error deleting recipe');
+    //         });
+    //     }
+    // };
 
     // Add ingredient to recipe
     $scope.addIngredientToRecipe = function() {

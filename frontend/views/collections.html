@@ -27,8 +27,8 @@
     </div>
 </div>
 
-<!-- Add/Edit Form -->
-<div class="row mb-4">
+<!-- Add/Edit Form - COMMENTED OUT -->
+<!-- <div class="row mb-4">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
@@ -67,7 +67,6 @@
                         </div>
                     </div>
                     
-                    <!-- Image Upload Component -->
                     <image-upload images="currentCollection.images" 
                                   removed-images="currentCollection.removed_images"
                                   api-url="{{apiUrl}}">
@@ -101,7 +100,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <!-- Collections List -->
 <div class="row">
@@ -128,13 +127,17 @@
                             <span class="badge bg-secondary me-1" ng-repeat="tag in collection.tags">{{ tag }}</span>
                         </div>
                     </div>
-                    <div class="card-footer">
+                    <!-- Edit/Delete Actions - COMMENTED OUT -->
+                    <!-- <div class="card-footer">
                         <button class="btn btn-sm btn-warning me-1" ng-click="editCollection(collection)">
                             <i class="fas fa-edit"></i> Edit
                         </button>
                         <button class="btn btn-sm btn-danger" ng-click="deleteCollection(collection._id)">
                             <i class="fas fa-trash"></i> Delete
                         </button>
+                    </div> -->
+                    <div class="card-footer">
+                        <span class="text-muted">Read-only</span>
                     </div>
                 </div>
             </div>
