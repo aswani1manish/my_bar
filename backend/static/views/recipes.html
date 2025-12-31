@@ -140,7 +140,7 @@
     <div class="col-12">
         <h4>All Recipes ({{ recipes.length }})</h4>
         <div class="row">
-            <div class="col-md-6 col-lg-4 mb-3" ng-repeat="recipe in recipes track by recipe.id">
+            <div class="col-md-6 col-lg-4 mb-3" ng-repeat="recipe in recipes track by $index">
                 <div class="card h-100">
                     <div class="card-header bg-success text-white">
                         <h5 class="mb-0">{{ recipe.name }}</h5>
@@ -155,7 +155,7 @@
                         
                         <h6>Ingredients: {{ recipe.ingredients.length }} </h6> 
                         <ul class="small">
-                            <li ng-repeat="ingr in recipe.ingredients track by ingr.id">
+                            <li ng-repeat="ingr in recipe.ingredients track by $index">
                                Ingredient: {{ ingr.name) }} 
                             </li>
                         </ul>
@@ -166,7 +166,7 @@
                         </div>
                         
                         <div ng-if="recipe.tags && recipe.tags.length > 0">
-                            <span class="badge bg-info me-1" ng-repeat="tag in recipe.tags">{{ tag }}</span>
+                            <span class="badge bg-info me-1" ng-repeat="tag in recipe.tags track by $index">{{ tag }}</span>
                         </div>
                     </div>
                     <!-- Edit/Delete Actions - COMMENTED OUT -->
