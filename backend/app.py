@@ -184,147 +184,147 @@ def get_ingredient(ingredient_id):
         return jsonify(serialize_doc(ingredient))
     return jsonify({'error': 'Ingredient not found'}), 404
 
-@app.route('/api/ingredients', methods=['POST'])
-def create_ingredient():
-    data = request.json
+# @app.route('/api/ingredients', methods=['POST'])
+# def create_ingredient():
+#     data = request.json
 
-    # Handle image uploads
-    images = []
-    if 'images' in data and data['images']:
-        for img_data in data['images']:
-            if img_data:
-                filename = save_base64_image(img_data, 'ingredient')
-                if filename:
-                    images.append(filename)
+#     # Handle image uploads
+#     images = []
+#     if 'images' in data and data['images']:
+#         for img_data in data['images']:
+#             if img_data:
+#                 filename = save_base64_image(img_data, 'ingredient')
+#                 if filename:
+#                     images.append(filename)
 
-    conn = get_db_connection()
-    cursor = conn.cursor()
+#     conn = get_db_connection()
+#     cursor = conn.cursor()
 
-    query = """
-        INSERT INTO ingredients (name, description, category, tags, images, created_at, updated_at)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-    """
-    now = datetime.utcnow()
-    params = (
-        data.get('name'),
-        data.get('description', ''),
-        data.get('category', ''),
-        json.dumps(data.get('tags', [])),
-        json.dumps(images),
-        now,
-        now
-    )
+#     query = """
+#         INSERT INTO ingredients (name, description, category, tags, images, created_at, updated_at)
+#         VALUES (%s, %s, %s, %s, %s, %s, %s)
+#     """
+#     now = datetime.utcnow()
+#     params = (
+#         data.get('name'),
+#         data.get('description', ''),
+#         data.get('category', ''),
+#         json.dumps(data.get('tags', [])),
+#         json.dumps(images),
+#         now,
+#         now
+#     )
 
-    cursor.execute(query, params)
-    conn.commit()
-    ingredient_id = cursor.lastrowid
+#     cursor.execute(query, params)
+#     conn.commit()
+#     ingredient_id = cursor.lastrowid
 
-    cursor.close()
-    conn.close()
+#     cursor.close()
+#     conn.close()
 
-    ingredient = {
-        'id': ingredient_id,
-        'name': data.get('name'),
-        'description': data.get('description', ''),
-        'category': data.get('category', ''),
-        'tags': data.get('tags', []),
-        'images': images,
-        'created_at': now.isoformat(),
-        'updated_at': now.isoformat()
-    }
+#     ingredient = {
+#         'id': ingredient_id,
+#         'name': data.get('name'),
+#         'description': data.get('description', ''),
+#         'category': data.get('category', ''),
+#         'tags': data.get('tags', []),
+#         'images': images,
+#         'created_at': now.isoformat(),
+#         'updated_at': now.isoformat()
+#     }
 
-    return jsonify(ingredient), 201
+#     return jsonify(ingredient), 201
 
-@app.route('/api/ingredients/<int:ingredient_id>', methods=['PUT'])
-def update_ingredient(ingredient_id):
-    data = request.json
+# @app.route('/api/ingredients/<int:ingredient_id>', methods=['PUT'])
+# def update_ingredient(ingredient_id):
+#     data = request.json
 
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+#     conn = get_db_connection()
+#     cursor = conn.cursor(dictionary=True)
 
-    # Get existing ingredient to preserve old images
-    cursor.execute("SELECT images FROM ingredients WHERE id = %s", (ingredient_id,))
-    existing = cursor.fetchone()
+#     # Get existing ingredient to preserve old images
+#     cursor.execute("SELECT images FROM ingredients WHERE id = %s", (ingredient_id,))
+#     existing = cursor.fetchone()
 
-    if not existing:
-        cursor.close()
-        conn.close()
-        return jsonify({'error': 'Ingredient not found'}), 404
+#     if not existing:
+#         cursor.close()
+#         conn.close()
+#         return jsonify({'error': 'Ingredient not found'}), 404
 
-    images = json.loads(existing['images']) if isinstance(existing['images'], str) else (existing['images'] or [])
+#     images = json.loads(existing['images']) if isinstance(existing['images'], str) else (existing['images'] or [])
 
-    # Handle new image uploads
-    if 'images' in data and data['images']:
-        for img_data in data['images']:
-            if img_data and img_data.startswith('data:'):
-                filename = save_base64_image(img_data, 'ingredient')
-                if filename:
-                    images.append(filename)
-            elif img_data:  # Existing image filename
-                if img_data not in images:
-                    images.append(img_data)
+#     # Handle new image uploads
+#     if 'images' in data and data['images']:
+#         for img_data in data['images']:
+#             if img_data and img_data.startswith('data:'):
+#                 filename = save_base64_image(img_data, 'ingredient')
+#                 if filename:
+#                     images.append(filename)
+#             elif img_data:  # Existing image filename
+#                 if img_data not in images:
+#                     images.append(img_data)
 
-    # Handle image removals
-    if 'removed_images' in data and data['removed_images']:
-        for img in data['removed_images']:
-            if img in images:
-                images.remove(img)
-                # Delete file from disk
-                try:
-                    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], img))
-                except:
-                    pass
+#     # Handle image removals
+#     if 'removed_images' in data and data['removed_images']:
+#         for img in data['removed_images']:
+#             if img in images:
+#                 images.remove(img)
+#                 # Delete file from disk
+#                 try:
+#                     os.remove(os.path.join(app.config['UPLOAD_FOLDER'], img))
+#                 except:
+#                     pass
 
-    query = """
-        UPDATE ingredients
-        SET name = %s, description = %s, category = %s, tags = %s, images = %s, updated_at = %s
-        WHERE id = %s
-    """
-    now = datetime.utcnow()
-    params = (
-        data.get('name'),
-        data.get('description', ''),
-        data.get('category', ''),
-        json.dumps(data.get('tags', [])),
-        json.dumps(images),
-        now,
-        ingredient_id
-    )
+#     query = """
+#         UPDATE ingredients
+#         SET name = %s, description = %s, category = %s, tags = %s, images = %s, updated_at = %s
+#         WHERE id = %s
+#     """
+#     now = datetime.utcnow()
+#     params = (
+#         data.get('name'),
+#         data.get('description', ''),
+#         data.get('category', ''),
+#         json.dumps(data.get('tags', [])),
+#         json.dumps(images),
+#         now,
+#         ingredient_id
+#     )
 
-    cursor.execute(query, params)
-    conn.commit()
+#     cursor.execute(query, params)
+#     conn.commit()
 
-    # Fetch updated ingredient
-    cursor.execute("SELECT * FROM ingredients WHERE id = %s", (ingredient_id,))
-    ingredient = cursor.fetchone()
+#     # Fetch updated ingredient
+#     cursor.execute("SELECT * FROM ingredients WHERE id = %s", (ingredient_id,))
+#     ingredient = cursor.fetchone()
 
-    cursor.close()
-    conn.close()
+#     cursor.close()
+#     conn.close()
 
-    if ingredient:
-        # Parse JSON fields
-        if ingredient.get('tags'):
-            ingredient['tags'] = json.loads(ingredient['tags']) if isinstance(ingredient['tags'], str) else ingredient['tags']
-        if ingredient.get('images'):
-            ingredient['images'] = json.loads(ingredient['images']) if isinstance(ingredient['images'], str) else ingredient['images']
-        return jsonify(serialize_doc(ingredient))
-    return jsonify({'error': 'Ingredient not found'}), 404
+#     if ingredient:
+#         # Parse JSON fields
+#         if ingredient.get('tags'):
+#             ingredient['tags'] = json.loads(ingredient['tags']) if isinstance(ingredient['tags'], str) else ingredient['tags']
+#         if ingredient.get('images'):
+#             ingredient['images'] = json.loads(ingredient['images']) if isinstance(ingredient['images'], str) else ingredient['images']
+#         return jsonify(serialize_doc(ingredient))
+#     return jsonify({'error': 'Ingredient not found'}), 404
 
-@app.route('/api/ingredients/<int:ingredient_id>', methods=['DELETE'])
-def delete_ingredient(ingredient_id):
-    conn = get_db_connection()
-    cursor = conn.cursor()
+# @app.route('/api/ingredients/<int:ingredient_id>', methods=['DELETE'])
+# def delete_ingredient(ingredient_id):
+#     conn = get_db_connection()
+#     cursor = conn.cursor()
 
-    cursor.execute("DELETE FROM ingredients WHERE id = %s", (ingredient_id,))
-    deleted_count = cursor.rowcount
-    conn.commit()
+#     cursor.execute("DELETE FROM ingredients WHERE id = %s", (ingredient_id,))
+#     deleted_count = cursor.rowcount
+#     conn.commit()
 
-    cursor.close()
-    conn.close()
+#     cursor.close()
+#     conn.close()
 
-    if deleted_count:
-        return jsonify({'message': 'Ingredient deleted successfully'})
-    return jsonify({'error': 'Ingredient not found'}), 404
+#     if deleted_count:
+#         return jsonify({'message': 'Ingredient deleted successfully'})
+#     return jsonify({'error': 'Ingredient not found'}), 404
 
 # ============= RECIPES ENDPOINTS =============
 
@@ -393,152 +393,152 @@ def get_recipe(recipe_id):
         return jsonify(serialize_doc(recipe))
     return jsonify({'error': 'Recipe not found'}), 404
 
-@app.route('/api/recipes', methods=['POST'])
-def create_recipe():
-    data = request.json
+# @app.route('/api/recipes', methods=['POST'])
+# def create_recipe():
+#     data = request.json
 
-    # Handle image uploads
-    images = []
-    if 'images' in data and data['images']:
-        for img_data in data['images']:
-            if img_data:
-                filename = save_base64_image(img_data, 'recipe')
-                if filename:
-                    images.append(filename)
+#     # Handle image uploads
+#     images = []
+#     if 'images' in data and data['images']:
+#         for img_data in data['images']:
+#             if img_data:
+#                 filename = save_base64_image(img_data, 'recipe')
+#                 if filename:
+#                     images.append(filename)
 
-    conn = get_db_connection()
-    cursor = conn.cursor()
+#     conn = get_db_connection()
+#     cursor = conn.cursor()
 
-    query = """
-        INSERT INTO recipes (name, description, ingredients, instructions, tags, images, created_at, updated_at)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-    """
-    now = datetime.utcnow()
-    params = (
-        data.get('name'),
-        data.get('description', ''),
-        json.dumps(data.get('ingredients', [])),
-        data.get('instructions', ''),
-        json.dumps(data.get('tags', [])),
-        json.dumps(images),
-        now,
-        now
-    )
+#     query = """
+#         INSERT INTO recipes (name, description, ingredients, instructions, tags, images, created_at, updated_at)
+#         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+#     """
+#     now = datetime.utcnow()
+#     params = (
+#         data.get('name'),
+#         data.get('description', ''),
+#         json.dumps(data.get('ingredients', [])),
+#         data.get('instructions', ''),
+#         json.dumps(data.get('tags', [])),
+#         json.dumps(images),
+#         now,
+#         now
+#     )
 
-    cursor.execute(query, params)
-    conn.commit()
-    recipe_id = cursor.lastrowid
+#     cursor.execute(query, params)
+#     conn.commit()
+#     recipe_id = cursor.lastrowid
 
-    cursor.close()
-    conn.close()
+#     cursor.close()
+#     conn.close()
 
-    recipe = {
-        'id': recipe_id,
-        'name': data.get('name'),
-        'description': data.get('description', ''),
-        'ingredients': data.get('ingredients', []),
-        'instructions': data.get('instructions', ''),
-        'tags': data.get('tags', []),
-        'images': images,
-        'created_at': now.isoformat(),
-        'updated_at': now.isoformat()
-    }
+#     recipe = {
+#         'id': recipe_id,
+#         'name': data.get('name'),
+#         'description': data.get('description', ''),
+#         'ingredients': data.get('ingredients', []),
+#         'instructions': data.get('instructions', ''),
+#         'tags': data.get('tags', []),
+#         'images': images,
+#         'created_at': now.isoformat(),
+#         'updated_at': now.isoformat()
+#     }
 
-    return jsonify(recipe), 201
+#     return jsonify(recipe), 201
 
-@app.route('/api/recipes/<int:recipe_id>', methods=['PUT'])
-def update_recipe(recipe_id):
-    data = request.json
+# @app.route('/api/recipes/<int:recipe_id>', methods=['PUT'])
+# def update_recipe(recipe_id):
+#     data = request.json
 
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+#     conn = get_db_connection()
+#     cursor = conn.cursor(dictionary=True)
 
-    # Get existing recipe to preserve old images
-    cursor.execute("SELECT images FROM recipes WHERE id = %s", (recipe_id,))
-    existing = cursor.fetchone()
+#     # Get existing recipe to preserve old images
+#     cursor.execute("SELECT images FROM recipes WHERE id = %s", (recipe_id,))
+#     existing = cursor.fetchone()
 
-    if not existing:
-        cursor.close()
-        conn.close()
-        return jsonify({'error': 'Recipe not found'}), 404
+#     if not existing:
+#         cursor.close()
+#         conn.close()
+#         return jsonify({'error': 'Recipe not found'}), 404
 
-    images = json.loads(existing['images']) if isinstance(existing['images'], str) else (existing['images'] or [])
+#     images = json.loads(existing['images']) if isinstance(existing['images'], str) else (existing['images'] or [])
 
-    # Handle new image uploads
-    if 'images' in data and data['images']:
-        for img_data in data['images']:
-            if img_data and img_data.startswith('data:'):
-                filename = save_base64_image(img_data, 'recipe')
-                if filename:
-                    images.append(filename)
-            elif img_data:  # Existing image filename
-                if img_data not in images:
-                    images.append(img_data)
+#     # Handle new image uploads
+#     if 'images' in data and data['images']:
+#         for img_data in data['images']:
+#             if img_data and img_data.startswith('data:'):
+#                 filename = save_base64_image(img_data, 'recipe')
+#                 if filename:
+#                     images.append(filename)
+#             elif img_data:  # Existing image filename
+#                 if img_data not in images:
+#                     images.append(img_data)
 
-    # Handle image removals
-    if 'removed_images' in data and data['removed_images']:
-        for img in data['removed_images']:
-            if img in images:
-                images.remove(img)
-                # Delete file from disk
-                try:
-                    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], img))
-                except:
-                    pass
+#     # Handle image removals
+#     if 'removed_images' in data and data['removed_images']:
+#         for img in data['removed_images']:
+#             if img in images:
+#                 images.remove(img)
+#                 # Delete file from disk
+#                 try:
+#                     os.remove(os.path.join(app.config['UPLOAD_FOLDER'], img))
+#                 except:
+#                     pass
 
-    query = """
-        UPDATE recipes
-        SET name = %s, description = %s, ingredients = %s, instructions = %s, tags = %s, images = %s, updated_at = %s
-        WHERE id = %s
-    """
-    now = datetime.utcnow()
-    params = (
-        data.get('name'),
-        data.get('description', ''),
-        json.dumps(data.get('ingredients', [])),
-        data.get('instructions', ''),
-        json.dumps(data.get('tags', [])),
-        json.dumps(images),
-        now,
-        recipe_id
-    )
+#     query = """
+#         UPDATE recipes
+#         SET name = %s, description = %s, ingredients = %s, instructions = %s, tags = %s, images = %s, updated_at = %s
+#         WHERE id = %s
+#     """
+#     now = datetime.utcnow()
+#     params = (
+#         data.get('name'),
+#         data.get('description', ''),
+#         json.dumps(data.get('ingredients', [])),
+#         data.get('instructions', ''),
+#         json.dumps(data.get('tags', [])),
+#         json.dumps(images),
+#         now,
+#         recipe_id
+#     )
 
-    cursor.execute(query, params)
-    conn.commit()
+#     cursor.execute(query, params)
+#     conn.commit()
 
-    # Fetch updated recipe
-    cursor.execute("SELECT * FROM recipes WHERE id = %s", (recipe_id,))
-    recipe = cursor.fetchone()
+#     # Fetch updated recipe
+#     cursor.execute("SELECT * FROM recipes WHERE id = %s", (recipe_id,))
+#     recipe = cursor.fetchone()
 
-    cursor.close()
-    conn.close()
+#     cursor.close()
+#     conn.close()
 
-    if recipe:
-        # Parse JSON fields
-        if recipe.get('tags'):
-            recipe['tags'] = json.loads(recipe['tags']) if isinstance(recipe['tags'], str) else recipe['tags']
-        if recipe.get('images'):
-            recipe['images'] = json.loads(recipe['images']) if isinstance(recipe['images'], str) else recipe['images']
-        if recipe.get('ingredients'):
-            recipe['ingredients'] = json.loads(recipe['ingredients']) if isinstance(recipe['ingredients'], str) else recipe['ingredients']
-        return jsonify(serialize_doc(recipe))
-    return jsonify({'error': 'Recipe not found'}), 404
+#     if recipe:
+#         # Parse JSON fields
+#         if recipe.get('tags'):
+#             recipe['tags'] = json.loads(recipe['tags']) if isinstance(recipe['tags'], str) else recipe['tags']
+#         if recipe.get('images'):
+#             recipe['images'] = json.loads(recipe['images']) if isinstance(recipe['images'], str) else recipe['images']
+#         if recipe.get('ingredients'):
+#             recipe['ingredients'] = json.loads(recipe['ingredients']) if isinstance(recipe['ingredients'], str) else recipe['ingredients']
+#         return jsonify(serialize_doc(recipe))
+#     return jsonify({'error': 'Recipe not found'}), 404
 
-@app.route('/api/recipes/<int:recipe_id>', methods=['DELETE'])
-def delete_recipe(recipe_id):
-    conn = get_db_connection()
-    cursor = conn.cursor()
+# @app.route('/api/recipes/<int:recipe_id>', methods=['DELETE'])
+# def delete_recipe(recipe_id):
+#     conn = get_db_connection()
+#     cursor = conn.cursor()
 
-    cursor.execute("DELETE FROM recipes WHERE id = %s", (recipe_id,))
-    deleted_count = cursor.rowcount
-    conn.commit()
+#     cursor.execute("DELETE FROM recipes WHERE id = %s", (recipe_id,))
+#     deleted_count = cursor.rowcount
+#     conn.commit()
 
-    cursor.close()
-    conn.close()
+#     cursor.close()
+#     conn.close()
 
-    if deleted_count:
-        return jsonify({'message': 'Recipe deleted successfully'})
-    return jsonify({'error': 'Recipe not found'}), 404
+#     if deleted_count:
+#         return jsonify({'message': 'Recipe deleted successfully'})
+#     return jsonify({'error': 'Recipe not found'}), 404
 
 # ============= COLLECTIONS ENDPOINTS =============
 
@@ -607,149 +607,149 @@ def get_collection(collection_id):
         return jsonify(serialize_doc(collection))
     return jsonify({'error': 'Collection not found'}), 404
 
-@app.route('/api/collections', methods=['POST'])
-def create_collection():
-    data = request.json
+# @app.route('/api/collections', methods=['POST'])
+# def create_collection():
+#     data = request.json
 
-    # Handle image uploads
-    images = []
-    if 'images' in data and data['images']:
-        for img_data in data['images']:
-            if img_data:
-                filename = save_base64_image(img_data, 'collection')
-                if filename:
-                    images.append(filename)
+#     # Handle image uploads
+#     images = []
+#     if 'images' in data and data['images']:
+#         for img_data in data['images']:
+#             if img_data:
+#                 filename = save_base64_image(img_data, 'collection')
+#                 if filename:
+#                     images.append(filename)
 
-    conn = get_db_connection()
-    cursor = conn.cursor()
+#     conn = get_db_connection()
+#     cursor = conn.cursor()
 
-    query = """
-        INSERT INTO collections (name, description, recipe_ids, tags, images, created_at, updated_at)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-    """
-    now = datetime.utcnow()
-    params = (
-        data.get('name'),
-        data.get('description', ''),
-        json.dumps(data.get('recipe_ids', [])),
-        json.dumps(data.get('tags', [])),
-        json.dumps(images),
-        now,
-        now
-    )
+#     query = """
+#         INSERT INTO collections (name, description, recipe_ids, tags, images, created_at, updated_at)
+#         VALUES (%s, %s, %s, %s, %s, %s, %s)
+#     """
+#     now = datetime.utcnow()
+#     params = (
+#         data.get('name'),
+#         data.get('description', ''),
+#         json.dumps(data.get('recipe_ids', [])),
+#         json.dumps(data.get('tags', [])),
+#         json.dumps(images),
+#         now,
+#         now
+#     )
 
-    cursor.execute(query, params)
-    conn.commit()
-    collection_id = cursor.lastrowid
+#     cursor.execute(query, params)
+#     conn.commit()
+#     collection_id = cursor.lastrowid
 
-    cursor.close()
-    conn.close()
+#     cursor.close()
+#     conn.close()
 
-    collection = {
-        'id': collection_id,
-        'name': data.get('name'),
-        'description': data.get('description', ''),
-        'recipe_ids': data.get('recipe_ids', []),
-        'tags': data.get('tags', []),
-        'images': images,
-        'created_at': now.isoformat(),
-        'updated_at': now.isoformat()
-    }
+#     collection = {
+#         'id': collection_id,
+#         'name': data.get('name'),
+#         'description': data.get('description', ''),
+#         'recipe_ids': data.get('recipe_ids', []),
+#         'tags': data.get('tags', []),
+#         'images': images,
+#         'created_at': now.isoformat(),
+#         'updated_at': now.isoformat()
+#     }
 
-    return jsonify(collection), 201
+#     return jsonify(collection), 201
 
-@app.route('/api/collections/<int:collection_id>', methods=['PUT'])
-def update_collection(collection_id):
-    data = request.json
+# @app.route('/api/collections/<int:collection_id>', methods=['PUT'])
+# def update_collection(collection_id):
+#     data = request.json
 
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+#     conn = get_db_connection()
+#     cursor = conn.cursor(dictionary=True)
 
-    # Get existing collection to preserve old images
-    cursor.execute("SELECT images FROM collections WHERE id = %s", (collection_id,))
-    existing = cursor.fetchone()
+#     # Get existing collection to preserve old images
+#     cursor.execute("SELECT images FROM collections WHERE id = %s", (collection_id,))
+#     existing = cursor.fetchone()
 
-    if not existing:
-        cursor.close()
-        conn.close()
-        return jsonify({'error': 'Collection not found'}), 404
+#     if not existing:
+#         cursor.close()
+#         conn.close()
+#         return jsonify({'error': 'Collection not found'}), 404
 
-    images = json.loads(existing['images']) if isinstance(existing['images'], str) else (existing['images'] or [])
+#     images = json.loads(existing['images']) if isinstance(existing['images'], str) else (existing['images'] or [])
 
-    # Handle new image uploads
-    if 'images' in data and data['images']:
-        for img_data in data['images']:
-            if img_data and img_data.startswith('data:'):
-                filename = save_base64_image(img_data, 'collection')
-                if filename:
-                    images.append(filename)
-            elif img_data:  # Existing image filename
-                if img_data not in images:
-                    images.append(img_data)
+#     # Handle new image uploads
+#     if 'images' in data and data['images']:
+#         for img_data in data['images']:
+#             if img_data and img_data.startswith('data:'):
+#                 filename = save_base64_image(img_data, 'collection')
+#                 if filename:
+#                     images.append(filename)
+#             elif img_data:  # Existing image filename
+#                 if img_data not in images:
+#                     images.append(img_data)
 
-    # Handle image removals
-    if 'removed_images' in data and data['removed_images']:
-        for img in data['removed_images']:
-            if img in images:
-                images.remove(img)
-                # Delete file from disk
-                try:
-                    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], img))
-                except:
-                    pass
+#     # Handle image removals
+#     if 'removed_images' in data and data['removed_images']:
+#         for img in data['removed_images']:
+#             if img in images:
+#                 images.remove(img)
+#                 # Delete file from disk
+#                 try:
+#                     os.remove(os.path.join(app.config['UPLOAD_FOLDER'], img))
+#                 except:
+#                     pass
 
-    query = """
-        UPDATE collections
-        SET name = %s, description = %s, recipe_ids = %s, tags = %s, images = %s, updated_at = %s
-        WHERE id = %s
-    """
-    now = datetime.utcnow()
-    params = (
-        data.get('name'),
-        data.get('description', ''),
-        json.dumps(data.get('recipe_ids', [])),
-        json.dumps(data.get('tags', [])),
-        json.dumps(images),
-        now,
-        collection_id
-    )
+#     query = """
+#         UPDATE collections
+#         SET name = %s, description = %s, recipe_ids = %s, tags = %s, images = %s, updated_at = %s
+#         WHERE id = %s
+#     """
+#     now = datetime.utcnow()
+#     params = (
+#         data.get('name'),
+#         data.get('description', ''),
+#         json.dumps(data.get('recipe_ids', [])),
+#         json.dumps(data.get('tags', [])),
+#         json.dumps(images),
+#         now,
+#         collection_id
+#     )
 
-    cursor.execute(query, params)
-    conn.commit()
+#     cursor.execute(query, params)
+#     conn.commit()
 
-    # Fetch updated collection
-    cursor.execute("SELECT * FROM collections WHERE id = %s", (collection_id,))
-    collection = cursor.fetchone()
+#     # Fetch updated collection
+#     cursor.execute("SELECT * FROM collections WHERE id = %s", (collection_id,))
+#     collection = cursor.fetchone()
 
-    cursor.close()
-    conn.close()
+#     cursor.close()
+#     conn.close()
 
-    if collection:
-        # Parse JSON fields
-        if collection.get('tags'):
-            collection['tags'] = json.loads(collection['tags']) if isinstance(collection['tags'], str) else collection['tags']
-        if collection.get('images'):
-            collection['images'] = json.loads(collection['images']) if isinstance(collection['images'], str) else collection['images']
-        if collection.get('recipe_ids'):
-            collection['recipe_ids'] = json.loads(collection['recipe_ids']) if isinstance(collection['recipe_ids'], str) else collection['recipe_ids']
-        return jsonify(serialize_doc(collection))
-    return jsonify({'error': 'Collection not found'}), 404
+#     if collection:
+#         # Parse JSON fields
+#         if collection.get('tags'):
+#             collection['tags'] = json.loads(collection['tags']) if isinstance(collection['tags'], str) else collection['tags']
+#         if collection.get('images'):
+#             collection['images'] = json.loads(collection['images']) if isinstance(collection['images'], str) else collection['images']
+#         if collection.get('recipe_ids'):
+#             collection['recipe_ids'] = json.loads(collection['recipe_ids']) if isinstance(collection['recipe_ids'], str) else collection['recipe_ids']
+#         return jsonify(serialize_doc(collection))
+#     return jsonify({'error': 'Collection not found'}), 404
 
-@app.route('/api/collections/<int:collection_id>', methods=['DELETE'])
-def delete_collection(collection_id):
-    conn = get_db_connection()
-    cursor = conn.cursor()
+# @app.route('/api/collections/<int:collection_id>', methods=['DELETE'])
+# def delete_collection(collection_id):
+#     conn = get_db_connection()
+#     cursor = conn.cursor()
 
-    cursor.execute("DELETE FROM collections WHERE id = %s", (collection_id,))
-    deleted_count = cursor.rowcount
-    conn.commit()
+#     cursor.execute("DELETE FROM collections WHERE id = %s", (collection_id,))
+#     deleted_count = cursor.rowcount
+#     conn.commit()
 
-    cursor.close()
-    conn.close()
+#     cursor.close()
+#     conn.close()
 
-    if deleted_count:
-        return jsonify({'message': 'Collection deleted successfully'})
-    return jsonify({'error': 'Collection not found'}), 404
+#     if deleted_count:
+#         return jsonify({'message': 'Collection deleted successfully'})
+#     return jsonify({'error': 'Collection not found'}), 404
 
 # Health check endpoint
 @app.route('/api/health', methods=['GET'])
