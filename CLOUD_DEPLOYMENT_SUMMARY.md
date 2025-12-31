@@ -21,7 +21,7 @@ This document summarizes all changes made to enable cloud deployment of the Neig
   - Manages MongoDB URI, CORS origins, upload settings
   - Uses python-dotenv for environment variable management
 
-#### `frontend/js/config.js`
+#### `backend/static/js/config.js`
 - **Purpose**: Dynamic API URL configuration for frontend
 - **Features**:
   - Allows switching between local and cloud API endpoints
@@ -49,7 +49,7 @@ This document summarizes all changes made to enable cloud deployment of the Neig
 #### `configure_frontend.sh`
 - **Purpose**: Configure frontend API URL
 - **Features**:
-  - Updates `frontend/js/config.js` with specified API URL
+  - Updates `backend/static/js/config.js` with specified API URL
   - Supports local and production URLs
   - Provides deployment instructions
 

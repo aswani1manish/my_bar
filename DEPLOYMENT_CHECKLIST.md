@@ -82,16 +82,16 @@ Use this checklist to ensure a smooth deployment to the cloud.
   ```bash
   ./configure_frontend.sh https://yourusername.pythonanywhere.com/api
   ```
-- [ ] Verify `frontend/js/config.js` has correct API URL
+- [ ] Verify `backend/static/js/config.js` has correct API URL
 
 ### Deployment Option A: Serve from Backend
-- [ ] Copy frontend to backend: `cp -r frontend backend/static`
-- [ ] Update `app.py` to serve frontend routes
+- [ ] Frontend files are already in `backend/static`
+- [ ] Update `app.py` to serve frontend routes (uncomment if needed)
 - [ ] Update `static/js/config.js` to use relative API URL (`/api`)
 - [ ] Reload web app
 
 ### Deployment Option B: Separate Hosting
-- [ ] Upload frontend to separate static hosting service
+- [ ] Upload `backend/static` directory to separate static hosting service
 - [ ] Verify API URL is configured correctly
 - [ ] Test CORS configuration
 

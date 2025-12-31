@@ -761,7 +761,7 @@ def health_check():
 # This is useful for PythonAnywhere deployment where you want everything in one app
 #
 # Prerequisites:
-# 1. Copy frontend directory to backend/static: cp -r ../frontend ./static
+# 1. Frontend files are already in backend/static directory
 # 2. Update static/js/config.js to use relative API URL: apiUrl: '/api'
 #
 @app.route('/')
