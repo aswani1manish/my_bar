@@ -27,6 +27,7 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
         ApiService.getRecipes('', '').then(function(response) {
             $scope.recipes = response.data;
             console.log('loaded recipes ' + $scope.recipes);
+            $scope.loadCollections();
         }, function(error) {
             console.error('Error loading recipes:', error);
         });
@@ -152,5 +153,6 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
     // Initialize
     // $scope.resetForm();
     $scope.loadRecipes();
-    $scope.loadCollections();
+    //Need to call this inside load recipes to ensure that recipes are loaded first, before collections. Hence commented out.
+    //$scope.loadCollections(); 
 }]);
