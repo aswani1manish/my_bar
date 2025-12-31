@@ -6,6 +6,7 @@ import sys
 import os
 import tempfile
 import shutil
+from io import StringIO
 
 # Add the backend directory to Python path
 sys.path.insert(0, os.path.dirname(__file__))
@@ -90,6 +91,37 @@ def test_copy_recipe_images_preserves_filenames():
             print("✓ PASS: Non-image files (data.json) were not copied")
         else:
             print("✗ FAIL: Non-image file (data.json) was copied")
+            all_passed = False
+        
+        print()
+        
+        # Test 5: Test collision detection - create a second recipe with same image name
+        recipe_folder2 = os.path.join(temp_dir, 'recipe2')
+        os.makedirs(recipe_folder2)
+        
+        # Create an image with same name as existing one
+        collision_file = os.path.join(recipe_folder2, 'margarita.jpg')
+        with open(collision_file, 'w') as f:
+            f.write('different content')
+        
+        # Capture stdout to check for warning
+        import io
+        old_stdout = sys.stdout
+        sys.stdout = captured_output = io.StringIO()
+        
+        # Call the function again with collision
+        result2 = copy_recipe_images(recipe_folder2, upload_folder)
+        
+        # Restore stdout
+        sys.stdout = old_stdout
+        output = captured_output.getvalue()
+        
+        # Check that warning was printed
+        if 'Warning' in output and 'margarita.jpg' in output:
+            print("✓ PASS: Collision warning is displayed for duplicate filenames")
+        else:
+            print("✗ FAIL: No collision warning for duplicate filename")
+            print(f"  Output: {output}")
             all_passed = False
     
     print("=" * 80)

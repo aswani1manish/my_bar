@@ -109,6 +109,10 @@ def copy_recipe_images(recipe_folder, upload_folder):
                 # Use the original filename
                 dest_path = os.path.join(upload_folder, filename)
                 
+                # Warn if file already exists (collision)
+                if os.path.exists(dest_path):
+                    print(f"  ⚠ Warning: {filename} already exists, will be overwritten")
+                
                 # Copy the image
                 shutil.copy2(file_path, dest_path)
                 images.append(filename)
