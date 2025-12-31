@@ -46,7 +46,7 @@
                     <div class="card-body">
                         <!-- Recipe Images -->
                         <div class="item-image-gallery mb-2" ng-if="recipe.images && recipe.images.length > 0">
-                            <img ng-repeat="img in recipe.images track by $index" ng-src="{{getImageUrl(img)}}" alt="{{recipe.name}}" style="width: 3200px; height: 320px;">
+                            <img ng-repeat="img in recipe.images track by $index" ng-src="{{getImageUrl(img)}}" alt="{{recipe.name}}" style="width: 320px; height: 320px; object-fit: contain;">
                         </div>
                         
                         <p class="card-text">{{ recipe.description || 'No description' }}</p>
