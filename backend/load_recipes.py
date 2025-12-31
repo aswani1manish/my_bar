@@ -187,7 +187,7 @@ def copy_recipe_images(recipe_folder, upload_folder):
                     print(f"  ⚠ Warning: {filename} already exists, will be overwritten")
                 
                 # Copy the image
-                shutil.copy2(file_path, dest_path)
+                # shutil.copy2(file_path, dest_path)
                 images.append(filename)
             except Exception as e:
                 print(f"  ⚠ Error copying image {filename}: {e}")
