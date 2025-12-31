@@ -45,15 +45,15 @@
                     </div>
                     <div class="card-body">
                         <!-- Recipe Images -->
+                        <p class="card-text"><b>Images ({{ recipe.images.length }}): </b></p>
+                        <span class="badge bg-info me-1" ng-repeat="img in recipe.images track by $index">{{getImageUrl(img)}}</span>
                         <div class="item-image-gallery mb-2" ng-if="recipe.images && recipe.images.length > 0">
-                            <span class="badge bg-info me-1" ng-repeat="img in recipe.images track by $index">{{getImageUrl(img)}}</span>
                             <img ng-repeat="img in recipe.images track by $index" ng-src="{{getImageUrl(img)}}" alt="{{recipe.name}}" style="width: 80px; height: 80px;">
                         </div>
                         
                         <p class="card-text">{{ recipe.description || 'No description' }}</p>
                         
-                        <p class="card-text"><b>Ingredients ({{ recipe.ingredients.length }}): {{ getIngredientNamesForRecipe(recipe)}}
-                        </b></p>
+                        <p class="card-text"><b>Ingredients ({{ recipe.ingredients.length }}): {{ getIngredientNamesForRecipe(recipe)}}</b></p>
                         
                         <div ng-if="recipe.tags && recipe.tags.length > 0">
                             <span class="badge bg-info me-1" ng-repeat="tag in recipe.tags track by $index">{{ tag }}</span>
