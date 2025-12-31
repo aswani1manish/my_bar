@@ -1,10 +1,13 @@
 app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function($scope, ApiService, API_URL) {
     $scope.recipes = [];
+    $scope.allRecipes = [];
     $scope.ingredients = [];
+    $scope.collections = [];
     $scope.currentRecipe = {};
     $scope.isEditing = false;
     $scope.searchQuery = '';
     $scope.tagSearch = '';
+    $scope.selectedCollection = '';
     $scope.newTag = '';
     $scope.newIngredient = {};
     $scope.apiUrl = API_URL;
@@ -12,7 +15,8 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     // Load all recipes
     $scope.loadRecipes = function() {
         ApiService.getRecipes($scope.searchQuery, $scope.tagSearch).then(function(response) {
-            $scope.recipes = response.data;
+            $scope.allRecipes = response.data;
+            $scope.filterRecipesByCollection();
         }, function(error) {
             console.error('Error loading recipes:', error);
             alert('Error loading recipes. Make sure the backend is running.');
@@ -26,6 +30,37 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         }, function(error) {
             console.error('Error loading ingredients:', error);
         });
+    };
+
+    // Load all collections for dropdown
+    $scope.loadCollections = function() {
+        ApiService.getCollections('', '').then(function(response) {
+            $scope.collections = response.data;
+        }, function(error) {
+            console.error('Error loading collections:', error);
+        });
+    };
+
+    // Filter recipes by selected collection
+    $scope.filterRecipesByCollection = function() {
+        if (!$scope.selectedCollection) {
+            // Show all recipes when no collection is selected
+            $scope.recipes = $scope.allRecipes;
+        } else {
+            // Find the selected collection
+            var collection = $scope.collections.find(function(c) {
+                return c.id === parseInt($scope.selectedCollection);
+            });
+            
+            if (collection && collection.recipe_ids) {
+                // Filter recipes to only those in the collection
+                $scope.recipes = $scope.allRecipes.filter(function(recipe) {
+                    return collection.recipe_ids.indexOf(recipe.id) !== -1;
+                });
+            } else {
+                $scope.recipes = [];
+            }
+        }
     };
 
     // Search recipes
@@ -157,4 +192,5 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     // $scope.resetForm();
     $scope.loadRecipes();
     $scope.loadIngredients();
+    $scope.loadCollections();
 }]);
