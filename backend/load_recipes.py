@@ -12,7 +12,6 @@ import os
 import sys
 import json
 import shutil
-import uuid
 from datetime import datetime
 import mysql.connector
 from config import Config
@@ -107,16 +106,12 @@ def copy_recipe_images(recipe_folder, upload_folder):
         # Check if it's an image file
         if os.path.isfile(file_path) and filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp')):
             try:
-                # Generate a unique filename using timestamp and UUID (16 chars for better uniqueness)
-                ext = os.path.splitext(filename)[1]
-                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-                unique_id = uuid.uuid4().hex[:16]
-                unique_filename = f"recipe_{timestamp}_{unique_id}{ext}"
-                dest_path = os.path.join(upload_folder, unique_filename)
+                # Use the original filename
+                dest_path = os.path.join(upload_folder, filename)
                 
                 # Copy the image
                 shutil.copy2(file_path, dest_path)
-                images.append(unique_filename)
+                images.append(filename)
             except Exception as e:
                 print(f"  ⚠ Error copying image {filename}: {e}")
     
