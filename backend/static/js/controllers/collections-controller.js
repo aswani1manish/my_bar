@@ -135,9 +135,7 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
     $scope.getIngredientNamesForRecipeId = function(recipeId) {
         
         var recipe = $scope.recipes.find(function(r) { return r.id === recipeId; });
-        console.log(recipeId);
-        var ingr_names = recipe.ingredients.map(ingr => ingr.name).join(',');
-        console.log(ingr_names);
+        var ingr_names = recipe.ingredients.map(ingr => ingr.name).join(', ');
         return ingr_names;
     };
 
