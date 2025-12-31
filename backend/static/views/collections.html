@@ -122,10 +122,9 @@
                         
                         <h6>Recipes ({{ collection.recipe_ids.length }}):</h6>
                         
-                        <p class="small"> 
-                            <li ng-repeat="recipeId in collection.recipe_ids track by $index">
-                               {{ getRecipeName(recipeId) }} ( {{getIngredientNamesForRecipeId(recipeId)}} )
-                            </li></p>
+                        <p class="small" ng-repeat="recipeId in collection.recipe_ids track by $index"> 
+                            {{ $index+1 }}. {{ getRecipeName(recipeId) }} - {{getIngredientNamesForRecipeId(recipeId)}}
+                            </p>
                         
                         <div ng-if="collection.tags && collection.tags.length > 0">
                             <span class="badge bg-secondary me-1" ng-repeat="tag in collection.tags">{{ tag }}</span>
