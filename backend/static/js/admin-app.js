@@ -1,4 +1,4 @@
-var app = angular.module('neighborhoodSipsApp', ['ngRoute']);
+var app = angular.module('neighborhoodSipsAdminApp', ['ngRoute']);
 
 // API Configuration
 // Use APP_CONFIG from config.js if available, otherwise default to localhost
@@ -10,12 +10,16 @@ app.constant('API_URL', (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.apiUrl)
 app.config(['$routeProvider', function($routeProvider) {
     $routeProvider
         .when('/', {
-            templateUrl: 'views/home.html',
+            templateUrl: 'views/admin-home.html',
             controller: 'MainController'
         })
-        .when('/recipes', {
-            templateUrl: 'views/recipes.html',
-            controller: 'RecipesController'
+        .when('/ingredients', {
+            templateUrl: 'views/ingredients.html',
+            controller: 'IngredientsController'
+        })
+        .when('/collections', {
+            templateUrl: 'views/collections.html',
+            controller: 'CollectionsController'
         })
         .otherwise({
             redirectTo: '/'
