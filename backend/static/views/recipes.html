@@ -230,7 +230,7 @@
                     <h6><i class="fas fa-list"></i> Ingredients ({{ selectedRecipe.ingredients.length }})</h6>
                     <ul class="list-group">
                         <li class="list-group-item" ng-repeat="ingr in selectedRecipe.ingredients track by $index">
-                            <strong>{{ ingr.name }}</strong>: {{ ingr.amount }} {{ ingr.units }}
+                            <strong>{{ ingr.name }}</strong><span ng-if="ingr.amount || ingr.units">: {{ ingr.amount }} {{ ingr.units }}</span>
                         </li>
                     </ul>
                 </div>

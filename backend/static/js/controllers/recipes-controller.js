@@ -182,8 +182,11 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     // Show recipe details in modal
     $scope.showRecipeDetails = function(recipe) {
         $scope.selectedRecipe = recipe;
-        var modal = new bootstrap.Modal(document.getElementById('recipeDetailsModal'));
-        modal.show();
+        var modalElement = document.getElementById('recipeDetailsModal');
+        if (modalElement) {
+            var modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        }
     };
 
     // // Reset form
