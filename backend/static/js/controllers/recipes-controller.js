@@ -167,6 +167,12 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     //     }
     // };
 
+    // Get ingredient names in recipe
+    $scope.getIngredientNamesForRecipe = function(recipe) {
+        var names = recipe.ingredients.map(ingr => ingr.name);
+        return names.join(', ');
+    };
+    
     // Get ingredient name by ID
     $scope.getIngredientName = function(ingredientId) {
         var ingredient = $scope.ingredients.find(function(ing) {
