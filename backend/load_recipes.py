@@ -12,6 +12,7 @@ import os
 import sys
 import json
 import shutil
+import uuid
 from datetime import datetime
 import mysql.connector
 from config import Config
@@ -106,9 +107,11 @@ def copy_recipe_images(recipe_folder, upload_folder):
         # Check if it's an image file
         if os.path.isfile(file_path) and filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp')):
             try:
-                # Generate a unique filename
+                # Generate a unique filename using timestamp and UUID
                 ext = os.path.splitext(filename)[1]
-                unique_filename = f"recipe_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}{ext}"
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                unique_id = str(uuid.uuid4())[:8]
+                unique_filename = f"recipe_{timestamp}_{unique_id}{ext}"
                 dest_path = os.path.join(upload_folder, unique_filename)
                 
                 # Copy the image
@@ -197,6 +200,10 @@ def load_recipes_to_db(data_dir, dry_run=False, copy_images=False):
     
     if dry_run:
         print("\n=== DRY RUN MODE - No data will be saved ===\n")
+        config = None
+        conn = None
+        cursor = None
+        upload_folder = None
     else:
         # Connect to MySQL
         config = Config()
@@ -207,7 +214,9 @@ def load_recipes_to_db(data_dir, dry_run=False, copy_images=False):
                 port=config.MYSQL_PORT,
                 user=config.MYSQL_USER,
                 password=config.MYSQL_PASSWORD,
-                database=config.MYSQL_DATABASE
+                database=config.MYSQL_DATABASE,
+                connection_timeout=30,
+                autocommit=False
             )
             cursor = conn.cursor(dictionary=True)
             print("✓ Connected to MySQL")
@@ -301,8 +310,7 @@ def load_recipes_to_db(data_dir, dry_run=False, copy_images=False):
     print(f"  - Loaded: {loaded_count}")
     print(f"  - Skipped: {skipped_count}")
     
-    if not dry_run:
-        config = Config()
+    if not dry_run and config:
         print(f"\n✓ Recipes loaded into '{config.MYSQL_DATABASE}' database")
     
     return loaded_count
