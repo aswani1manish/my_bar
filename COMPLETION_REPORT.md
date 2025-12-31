@@ -64,13 +64,13 @@ A complete full-stack web application for managing the "Neighborhood Sips" cockt
 
 ### Frontend (AngularJS)
 **Files Created:**
-- `frontend/index.html` - Main HTML page
-- `frontend/css/style.css` - Custom styles
-- `frontend/js/app.js` - App configuration
-- `frontend/js/controllers/` - 4 controllers
-- `frontend/js/services/api-service.js` - HTTP service
-- `frontend/js/directives/image-upload.js` - Image upload component
-- `frontend/views/` - 4 HTML templates
+- `backend/static/index.html` - Main HTML page
+- `backend/static/css/style.css` - Custom styles
+- `backend/static/js/app.js` - App configuration
+- `backend/static/js/controllers/` - 4 controllers
+- `backend/static/js/services/api-service.js` - HTTP service
+- `backend/static/js/directives/image-upload.js` - Image upload component
+- `backend/static/views/` - 4 HTML templates
 
 **Features:**
 - Single Page Application (SPA) with routing
@@ -203,8 +203,8 @@ Successfully created and tested:
 **Project Structure:**
 ```
 my_bar/
-├── backend/          (8 files)
-├── frontend/         (15 files)
+├── backend/          (8 files + static folder)
+│   └── static/       (15 frontend files)
 ├── Documentation     (3 files)
 └── Scripts          (2 files)
 ```
@@ -286,7 +286,7 @@ python3 app.py
 
 **Terminal 2 - Frontend:**
 ```bash
-cd frontend
+cd backend/static
 python3 -m http.server 8000
 ```
 

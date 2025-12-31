@@ -95,7 +95,7 @@ WSGI entry point for PythonAnywhere deployment.
 
 ### Frontend Configuration
 
-#### `frontend/js/config.js`
+#### `backend/static/js/config.js`
 Dynamic API URL configuration. Update this to point to your backend.
 
 **To configure:**
@@ -153,12 +153,11 @@ This hosts both frontend and backend on the same PythonAnywhere web app.
 
 4. **Add Frontend** (5 min)
    ```bash
-   # Copy frontend to backend
-   cd ~/my_bar/backend
-   cp -r ../frontend ./static
+   # Frontend files are already in backend/static
+   cd ~/my_bar/backend/static
    
    # Update config
-   nano static/js/config.js
+   nano js/config.js
    # Change apiUrl to: '/api'
    ```
    
@@ -186,7 +185,7 @@ Use PythonAnywhere for backend, separate service for frontend.
    ```
 
 4. **Deploy Frontend**
-   - Upload `frontend/` directory to GitHub Pages, Netlify, or Vercel
+   - Upload `backend/static/` directory to GitHub Pages, Netlify, or Vercel
    - Or upload to a second PythonAnywhere account (if available)
 
 ---
@@ -271,7 +270,7 @@ var APP_CONFIG = {
 - ✅ Better error messages
 - ✅ Optional frontend serving routes (commented)
 
-### Frontend (`frontend/js/app.js`)
+### Frontend (`backend/static/js/app.js`)
 - ✅ Uses dynamic API URL from `config.js`
 - ✅ Fallback to localhost for local development
 
@@ -303,7 +302,7 @@ python3 app.py
 # Backend runs on http://localhost:5000
 
 # In another terminal
-cd frontend
+cd backend/static
 python3 -m http.server 8000
 # Frontend runs on http://localhost:8000
 ```
@@ -382,14 +381,14 @@ Your deployment is successful when:
 - `backend/config.py` - Configuration management
 - `backend/wsgi.py` - WSGI entry point
 - `backend/deploy_pythonanywhere.sh` - Deployment helper
-- `frontend/js/config.js` - Dynamic API URL
+- `backend/static/js/config.js` - Dynamic API URL
 - `configure_frontend.sh` - Frontend configuration script
 
 **Modified:**
 - `backend/app.py` - Use Config class, better error handling
 - `backend/.env.example` - More configuration options
-- `frontend/js/app.js` - Dynamic API URL support
-- `frontend/index.html` - Load config.js
+- `backend/static/js/app.js` - Dynamic API URL support
+- `backend/static/index.html` - Load config.js
 - `README.md` - Added cloud deployment section
 
 ---

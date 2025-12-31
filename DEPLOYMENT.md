@@ -314,7 +314,7 @@ Replace `yourusername` with your PythonAnywhere username.
    mkdir /home/yourusername/my_bar_frontend
    ```
 
-3. Upload all files from the `frontend` directory to this location
+3. Upload all files from the `backend/static` directory to this location
 
 #### Step 3.3: Create Static Web App
 
@@ -339,7 +339,7 @@ In PythonAnywhere Bash console:
 
 ```bash
 cd ~/my_bar/backend
-cp -r ../frontend ./static
+# Frontend files are already in ./static directory
 ```
 
 #### Step 3.2: Update app.py to Serve Frontend
@@ -496,7 +496,7 @@ Your frontend should now be accessible at: `https://yourusername.pythonanywhere.
 ### Issue: Frontend can't connect to backend
 
 **Solution:**
-1. Verify `frontend/js/config.js` has the correct API URL
+1. Verify `backend/static/js/config.js` has the correct API URL
 2. Check browser console for exact error
 3. Test backend API directly in browser
 4. Ensure CORS is configured correctly

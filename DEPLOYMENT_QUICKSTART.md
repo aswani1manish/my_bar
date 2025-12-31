@@ -121,9 +121,8 @@ python3 load_sample_ingredients.py
 ### Option A: Serve from Backend (Easiest)
 
 ```bash
-# On PythonAnywhere
+# On PythonAnywhere - frontend files are already in backend/static
 cd ~/my_bar/backend
-cp -r ../frontend ./static
 ```
 
 Edit `app.py`, add before `if __name__ == '__main__':`:
@@ -156,7 +155,7 @@ Reload web app.
 ./configure_frontend.sh https://yourusername.pythonanywhere.com/api
 ```
 
-2. Upload `frontend/` directory to hosting service (GitHub Pages, Netlify, etc.)
+2. Upload `backend/static/` directory to hosting service (GitHub Pages, Netlify, etc.)
 
 ## 4. Test Deployment
 
