@@ -3,9 +3,82 @@
 Load cocktail recipes from bar-data-copy repository
 https://github.com/aswani1manish/bar-data-copy/tree/main/data/cocktails
 
+USAGE INSTRUCTIONS:
+===================
+
+This script loads cocktail recipes from the bar-data-copy repository into the
+MySQL database. It processes recipe data, creates missing ingredients automatically,
+and optionally copies recipe images.
+
+PREREQUISITES:
+--------------
+1. MySQL database must be running and accessible
+2. Database schema must be initialized (run init_db.py first)
+3. bar-data-copy repository must be cloned locally:
+   git clone https://github.com/aswani1manish/bar-data-copy.git
+
+BASIC USAGE:
+------------
+# Load recipes without images (faster, recommended for testing)
+python3 load_recipes.py --data-dir /path/to/bar-data-copy
+
+# Preview what will be loaded without making any changes (dry run)
+python3 load_recipes.py --data-dir /path/to/bar-data-copy --dry-run
+
+# Load recipes with images (takes longer, copies image files)
+python3 load_recipes.py --data-dir /path/to/bar-data-copy --copy-images
+
+EXAMPLES:
+---------
+# Example 1: Dry run to preview recipes
+python3 load_recipes.py --data-dir ../bar-data-copy --dry-run
+
+# Example 2: Load recipes without images
+python3 load_recipes.py --data-dir ../bar-data-copy
+
+# Example 3: Load recipes with images
+python3 load_recipes.py --data-dir ../bar-data-copy --copy-images
+
+# Example 4: Load from absolute path
+python3 load_recipes.py --data-dir /home/user/repositories/bar-data-copy
+
+COMMAND-LINE OPTIONS:
+---------------------
+--data-dir PATH      (Required) Path to the bar-data-copy repository directory
+--dry-run            Show what would be loaded without actually saving to database
+--copy-images        Copy recipe images to the uploads folder (may take longer)
+
+WHAT IT DOES:
+-------------
+- Scans the bar-data-copy repository for recipe folders
+- Each recipe folder contains a data.json file with recipe information
+- Automatically creates missing ingredients in the database
+- Links recipes to ingredients with amounts and units
+- Optionally copies recipe images to the uploads folder
+- Skips recipes that already exist in the database
+- Provides a summary of loaded and skipped recipes
+
+DATABASE CONFIGURATION:
+-----------------------
+The script uses MySQL connection settings from environment variables or .env file:
+- MYSQL_HOST (default: localhost)
+- MYSQL_PORT (default: 3306)
+- MYSQL_USER (default: root)
+- MYSQL_PASSWORD (default: empty)
+- MYSQL_DATABASE (default: neighborhood_sips)
+
+TROUBLESHOOTING:
+----------------
+- If connection fails, ensure MySQL is running and init_db.py has been executed
+- If recipes are skipped, they may already exist in the database
+- Use --dry-run to preview what will be loaded before committing changes
+- If images fail to copy, check folder permissions for the uploads directory
+
+DATA STRUCTURE:
+---------------
 Each folder represents a recipe with:
 - data.json: Recipe information including ingredients
-- Image files: Recipe images
+- Image files: Recipe images (JPG, PNG, GIF, WEBP)
 """
 
 import os
