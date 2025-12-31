@@ -284,6 +284,8 @@ The script will:
 - `PUT /api/collections/<id>` - Update collection
 - `DELETE /api/collections/<id>` - Delete collection
 
+📘 **[See Collections MySQL Examples](COLLECTIONS_MYSQL_EXAMPLES.md)** for sample data formats and query examples.
+
 ### Images
 - `GET /api/uploads/<filename>` - Retrieve uploaded image
 
