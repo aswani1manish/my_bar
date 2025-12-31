@@ -361,8 +361,8 @@ def get_recipes():
     for recipe in recipes:
         if recipe.get('tags'):
             recipe['tags'] = json.loads(recipe['tags']) if isinstance(recipe['tags'], str) else recipe['tags']
-    #    if recipe.get('images'):
-    #       recipe['images'] = json.loads(recipe['images']) if isinstance(recipe['images'], str) else recipe['images']
+       if recipe.get('images'):
+          recipe['images'] = json.loads(recipe['images']) if isinstance(recipe['images'], str) else recipe['images']
         if recipe.get('ingredients'):
             recipe['ingredients'] = json.loads(recipe['ingredients']) if isinstance(recipe['ingredients'], str) else recipe['ingredients']
 
@@ -386,8 +386,8 @@ def get_recipe(recipe_id):
         # Parse JSON fields
         if recipe.get('tags'):
             recipe['tags'] = json.loads(recipe['tags']) if isinstance(recipe['tags'], str) else recipe['tags']
-   #     if recipe.get('images'):
-   #         recipe['images'] = json.loads(recipe['images']) if isinstance(recipe['images'], str) else recipe['images']
+       if recipe.get('images'):
+           recipe['images'] = json.loads(recipe['images']) if isinstance(recipe['images'], str) else recipe['images']
         if recipe.get('ingredients'):
             recipe['ingredients'] = json.loads(recipe['ingredients']) if isinstance(recipe['ingredients'], str) else recipe['ingredients']
         return jsonify(serialize_doc(recipe))
