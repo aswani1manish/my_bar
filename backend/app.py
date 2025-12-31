@@ -68,6 +68,26 @@ def get_db_connection():
         raise Exception("Database connection pool is not initialized")
     return db_pool.get_connection()
 
+# Helper function to parse JSON field
+def parse_json_field(value):
+    """Parse JSON field from MySQL that could be str, bytes, bytearray, or already parsed"""
+    if value is None:
+        return None
+    # If already a list or dict, return as-is
+    if isinstance(value, (list, dict)):
+        return value
+    # If bytes or bytearray, decode to string first
+    if isinstance(value, (bytes, bytearray)):
+        value = value.decode('utf-8')
+    # If string, parse as JSON
+    if isinstance(value, str):
+        try:
+            return json.loads(value)
+        except (json.JSONDecodeError, ValueError):
+            return value
+    # For any other type, return as-is
+    return value
+
 # Helper function to serialize document
 def serialize_doc(doc):
     """Convert database row to dictionary with proper serialization"""
@@ -154,10 +174,8 @@ def get_ingredients():
 
     # Parse JSON fields
     for ing in ingredients:
-        if ing.get('tags'):
-            ing['tags'] = json.loads(ing['tags']) if isinstance(ing['tags'], str) else ing['tags']
-        if ing.get('images'):
-            ing['images'] = json.loads(ing['images']) if isinstance(ing['images'], str) else ing['images']
+        ing['tags'] = parse_json_field(ing.get('tags'))
+        ing['images'] = parse_json_field(ing.get('images'))
 
     cursor.close()
     conn.close()
@@ -177,10 +195,8 @@ def get_ingredient(ingredient_id):
 
     if ingredient:
         # Parse JSON fields
-        if ingredient.get('tags'):
-            ingredient['tags'] = json.loads(ingredient['tags']) if isinstance(ingredient['tags'], str) else ingredient['tags']
-        if ingredient.get('images'):
-            ingredient['images'] = json.loads(ingredient['images']) if isinstance(ingredient['images'], str) else ingredient['images']
+        ingredient['tags'] = parse_json_field(ingredient.get('tags'))
+        ingredient['images'] = parse_json_field(ingredient.get('images'))
         return jsonify(serialize_doc(ingredient))
     return jsonify({'error': 'Ingredient not found'}), 404
 
@@ -359,12 +375,9 @@ def get_recipes():
 
     # Parse JSON fields
     for recipe in recipes:
-        if recipe.get('tags'):
-            recipe['tags'] = json.loads(recipe['tags']) if isinstance(recipe['tags'], str) else recipe['tags']
-        if recipe.get('images'):
-            recipe['images'] = json.loads(recipe['images']) if isinstance(recipe['images'], str) else recipe['images']
-        if recipe.get('ingredients'):
-            recipe['ingredients'] = json.loads(recipe['ingredients']) if isinstance(recipe['ingredients'], str) else recipe['ingredients']
+        recipe['tags'] = parse_json_field(recipe.get('tags'))
+        recipe['images'] = parse_json_field(recipe.get('images'))
+        recipe['ingredients'] = parse_json_field(recipe.get('ingredients'))
 
     cursor.close()
     conn.close()
@@ -384,12 +397,9 @@ def get_recipe(recipe_id):
 
     if recipe:
         # Parse JSON fields
-        if recipe.get('tags'):
-            recipe['tags'] = json.loads(recipe['tags']) if isinstance(recipe['tags'], str) else recipe['tags']
-        if recipe.get('images'):
-            recipe['images'] = json.loads(recipe['images']) if isinstance(recipe['images'], str) else recipe['images']
-        if recipe.get('ingredients'):
-            recipe['ingredients'] = json.loads(recipe['ingredients']) if isinstance(recipe['ingredients'], str) else recipe['ingredients']
+        recipe['tags'] = parse_json_field(recipe.get('tags'))
+        recipe['images'] = parse_json_field(recipe.get('images'))
+        recipe['ingredients'] = parse_json_field(recipe.get('ingredients'))
         return jsonify(serialize_doc(recipe))
     return jsonify({'error': 'Recipe not found'}), 404
 
@@ -573,12 +583,9 @@ def get_collections():
 
     # Parse JSON fields
     for coll in collections:
-        if coll.get('tags'):
-            coll['tags'] = json.loads(coll['tags']) if isinstance(coll['tags'], str) else coll['tags']
-        if coll.get('images'):
-            coll['images'] = json.loads(coll['images']) if isinstance(coll['images'], str) else coll['images']
-        if coll.get('recipe_ids'):
-            coll['recipe_ids'] = json.loads(coll['recipe_ids']) if isinstance(coll['recipe_ids'], str) else coll['recipe_ids']
+        coll['tags'] = parse_json_field(coll.get('tags'))
+        coll['images'] = parse_json_field(coll.get('images'))
+        coll['recipe_ids'] = parse_json_field(coll.get('recipe_ids'))
 
     cursor.close()
     conn.close()
@@ -598,12 +605,9 @@ def get_collection(collection_id):
 
     if collection:
         # Parse JSON fields
-        if collection.get('tags'):
-            collection['tags'] = json.loads(collection['tags']) if isinstance(collection['tags'], str) else collection['tags']
-        if collection.get('images'):
-            collection['images'] = json.loads(collection['images']) if isinstance(collection['images'], str) else collection['images']
-        if collection.get('recipe_ids'):
-            collection['recipe_ids'] = json.loads(collection['recipe_ids']) if isinstance(collection['recipe_ids'], str) else collection['recipe_ids']
+        collection['tags'] = parse_json_field(collection.get('tags'))
+        collection['images'] = parse_json_field(collection.get('images'))
+        collection['recipe_ids'] = parse_json_field(collection.get('recipe_ids'))
         return jsonify(serialize_doc(collection))
     return jsonify({'error': 'Collection not found'}), 404
 
