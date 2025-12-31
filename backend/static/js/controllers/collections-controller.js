@@ -118,7 +118,7 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
         if (!recipeIds || recipeIds.length === 0) return 'No recipes';
         
         console.log('all recipes' + $scope.recipes.length);
-        console.log('collection recipe ids' + recipeIds.length);
+
         var names = recipeIds.map(function(id) {
             var recipe = $scope.recipes.find(function(r) { return r._id === id; });
             console.log(id + ' ' + recipe);
@@ -148,6 +148,6 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
 
     // Initialize
     // $scope.resetForm();
-    $scope.loadCollections();
     $scope.loadRecipes();
+    $scope.loadCollections();
 }]);
