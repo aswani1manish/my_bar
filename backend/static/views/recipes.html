@@ -46,6 +46,7 @@
                     <div class="card-body">
                         <!-- Recipe Images -->
                         <div class="item-image-gallery mb-2" ng-if="recipe.images && recipe.images.length > 0">
+                            <span class="badge bg-info me-1" ng-repeat="img in recipe.images track by $index">{{getImageUrl(img)}}</span>
                             <img ng-repeat="img in recipe.images track by $index" ng-src="{{getImageUrl(img)}}" alt="{{recipe.name}}" style="width: 80px; height: 80px;">
                         </div>
                         
