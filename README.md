@@ -224,6 +224,43 @@ python3 load_ingredients.py
 
 Note: This requires internet access and may take a few minutes.
 
+### Load Cocktail Recipes
+
+To load cocktail recipes from the bar-data-copy repository:
+
+1. First, clone the bar-data-copy repository:
+   ```bash
+   git clone https://github.com/aswani1manish/bar-data-copy.git
+   ```
+
+2. Load the recipes into your database:
+   ```bash
+   cd backend
+   python3 load_recipes.py --data-dir /path/to/bar-data-copy
+   ```
+
+Options:
+- `--dry-run`: Preview what will be loaded without making changes
+- `--copy-images`: Copy recipe images to the uploads folder (may take longer)
+
+Example:
+```bash
+# Preview recipes without loading
+python3 load_recipes.py --data-dir ../bar-data-copy --dry-run
+
+# Load recipes without images (faster)
+python3 load_recipes.py --data-dir ../bar-data-copy
+
+# Load recipes with images
+python3 load_recipes.py --data-dir ../bar-data-copy --copy-images
+```
+
+The script will:
+- Load all recipes from the bar-data-copy repository
+- Automatically create any missing ingredients
+- Link recipes to existing ingredients in the database
+- Optionally copy recipe images to the uploads folder
+
 ## API Endpoints
 
 ### Ingredients
