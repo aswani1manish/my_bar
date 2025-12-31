@@ -11,10 +11,8 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
 
     // Load all collections
     $scope.loadCollections = function() {
-        console.log('loading collections...');
         ApiService.getCollections($scope.searchQuery, $scope.tagSearch).then(function(response) {
             $scope.collections = response.data;
-            console.log("loaded collections " + $scope.collections.length);
         }, function(error) {
             console.error('Error loading collections:', error);
             alert('Error loading collections. Make sure the backend is running.');
@@ -23,10 +21,8 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
 
     // Load all recipes for selection
     $scope.loadRecipes = function() {
-        console.log('loading recipes...');
         ApiService.getRecipes('', '').then(function(response) {
             $scope.recipes = response.data;
-            console.log('loaded recipes ' + $scope.recipes);
             $scope.loadCollections();
         }, function(error) {
             console.error('Error loading recipes:', error);
