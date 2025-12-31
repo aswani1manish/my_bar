@@ -400,7 +400,8 @@ def get_recipe(recipe_id):
         recipe['tags'] = parse_json_field(recipe.get('tags'))
         recipe['images'] = parse_json_field(recipe.get('images'))
         recipe['ingredients'] = parse_json_field(recipe.get('ingredients'))
-        return jsonify(serialize_doc(recipe))
+        return jsonify(recipe.get('images'))
+#        return jsonify(serialize_doc(recipe))
     return jsonify({'error': 'Recipe not found'}), 404
 
 # @app.route('/api/recipes', methods=['POST'])
