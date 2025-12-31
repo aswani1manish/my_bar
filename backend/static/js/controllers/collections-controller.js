@@ -118,6 +118,7 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
         
         var names = recipeIds.map(function(id) {
             var recipe = $scope.recipes.find(function(r) { return r._id === id; });
+            alert ('ID' + id + ' ' + recipe + ' name' + recipe.name);
             return recipe ? recipe.name : 'Unknown';
         });
         
