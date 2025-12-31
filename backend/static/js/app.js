@@ -18,6 +18,6 @@ app.config(['$routeProvider', function($routeProvider) {
             controller: 'RecipesController'
         })
         .otherwise({
-            redirectTo: '/recipes'
+            redirectTo: '/'
         });
 }]);
