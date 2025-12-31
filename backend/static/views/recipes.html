@@ -153,7 +153,7 @@
                         
                         <p class="card-text">{{ recipe.description || 'No description' }}</p>
                         
-                        <h6>Ingredients:</h6>
+                        <h6>Ingredients: {{ recipe.ingredients.length }}</h6> 
                         <ul class="small">
                             <li ng-repeat="ing in recipe.ingredients">
                                 {{ ing.id }} | {{ ing.name) }} | {{ ing.amount }} | {{ ing.units }}
