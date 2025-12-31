@@ -90,28 +90,27 @@ my_bar/
 │   ├── test_api.py                     # API structure tests
 │   ├── test_functional.py              # Functional tests
 │   ├── .env.example                    # Environment variables template
-│   └── uploads/                        # Image storage (auto-created)
-│
-├── frontend/
-│   ├── index.html                      # Main HTML page
-│   ├── css/
-│   │   └── style.css                   # Custom styles
-│   ├── js/
-│   │   ├── app.js                      # AngularJS app config
-│   │   ├── controllers/
-│   │   │   ├── main-controller.js
-│   │   │   ├── ingredients-controller.js
-│   │   │   ├── recipes-controller.js
-│   │   │   └── collections-controller.js
-│   │   ├── services/
-│   │   │   └── api-service.js          # HTTP service
-│   │   └── directives/
-│   │       └── image-upload.js         # Image upload component
-│   └── views/
-│       ├── home.html
-│       ├── ingredients.html
-│       ├── recipes.html
-│       └── collections.html
+│   ├── uploads/                        # Image storage (auto-created)
+│   └── static/                         # Frontend files
+│       ├── index.html                  # Main HTML page
+│       ├── css/
+│       │   └── style.css               # Custom styles
+│       ├── js/
+│       │   ├── app.js                  # AngularJS app config
+│       │   ├── controllers/
+│       │   │   ├── main-controller.js
+│       │   │   ├── ingredients-controller.js
+│       │   │   ├── recipes-controller.js
+│       │   │   └── collections-controller.js
+│       │   ├── services/
+│       │   │   └── api-service.js      # HTTP service
+│       │   └── directives/
+│       │       └── image-upload.js     # Image upload component
+│       └── views/
+│           ├── home.html
+│           ├── ingredients.html
+│           ├── recipes.html
+│           └── collections.html
 │
 ├── start_backend.sh                    # Backend startup script
 ├── start_frontend.sh                   # Frontend startup script
@@ -195,7 +194,7 @@ python3 app.py
 # Backend runs on http://localhost:5000
 
 # 5. Start frontend (Terminal 2)
-cd frontend
+cd backend/static
 python3 -m http.server 8000
 # Frontend available at http://localhost:8000
 ```

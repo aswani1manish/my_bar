@@ -134,7 +134,7 @@ The backend will run on `http://localhost:5000`
 ### 4. Setup Frontend
 
 ```bash
-cd frontend
+cd backend/static
 
 # Simply open index.html in a web browser or use a local server
 # Using Python's built-in server:
@@ -285,17 +285,17 @@ my_bar/
 ├── backend/
 │   ├── app.py              # Flask application with API endpoints
 │   ├── requirements.txt    # Python dependencies
-│   └── uploads/           # Image uploads (auto-created)
-├── frontend/
-│   ├── index.html         # Main HTML page
-│   ├── css/
-│   │   └── style.css      # Custom styles
-│   ├── js/
-│   │   ├── app.js         # AngularJS app configuration
-│   │   ├── controllers/   # AngularJS controllers
-│   │   ├── services/      # API service
-│   │   └── directives/    # Image upload directive
-│   └── views/             # HTML templates
+│   ├── uploads/           # Image uploads (auto-created)
+│   └── static/            # Frontend files
+│       ├── index.html     # Main HTML page
+│       ├── css/
+│       │   └── style.css  # Custom styles
+│       ├── js/
+│       │   ├── app.js         # AngularJS app configuration
+│       │   ├── controllers/   # AngularJS controllers
+│       │   ├── services/      # API service
+│       │   └── directives/    # Image upload directive
+│       └── views/             # HTML templates
 ├── .gitignore
 └── README.md
 ```

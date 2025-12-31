@@ -22,9 +22,9 @@ fi
 
 API_URL="$1"
 
-# Navigate to frontend directory
+# Navigate to backend/static directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$SCRIPT_DIR/frontend"
+cd "$SCRIPT_DIR/backend/static"
 
 # Create config.js with the provided API URL
 cat > js/config.js << EOF
@@ -42,10 +42,10 @@ echo "✓ Configuration updated successfully!"
 echo ""
 echo "API URL set to: $API_URL"
 echo ""
-echo "Configuration file: frontend/js/config.js"
+echo "Configuration file: backend/static/js/config.js"
 echo ""
 echo "To deploy to PythonAnywhere:"
-echo "  1. Upload the entire 'frontend' directory to PythonAnywhere"
-echo "  2. Set up a web app pointing to the 'frontend' directory"
+echo "  1. Upload the entire 'backend/static' directory to PythonAnywhere"
+echo "  2. Set up a web app pointing to the 'backend/static' directory"
 echo "  3. The application will connect to: $API_URL"
 echo ""

@@ -6,7 +6,7 @@ echo "Neighborhood Sips - Frontend Server"
 echo "============================================================"
 echo ""
 
-cd "$(dirname "$0")/frontend"
+cd "$(dirname "$0")/backend/static"
 
 echo "Starting frontend server on http://localhost:8000"
 echo ""
