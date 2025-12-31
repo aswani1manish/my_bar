@@ -156,7 +156,7 @@
                         <h6>Ingredients:</h6>
                         <ul class="small">
                             <li ng-repeat="ing in recipe.ingredients">
-                                {{ recipe.name }} | Ingredient: {{ ing.ingredient_id }} | {{ getIngredientName(ing.ingredient_id) }} | {{ ing.quantity }} | {{ ing.unit }}
+                                {{ recipe.name }} | Ingredient: {{ recipe.ingredients }} | {{ ing.ingredient_id }} | {{ getIngredientName(ing.ingredient_id) }} | {{ ing.quantity }} | {{ ing.unit }}
                             </li>
                         </ul>
                         
