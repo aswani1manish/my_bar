@@ -185,12 +185,77 @@
                         </button>
                     </div> -->
                     <div class="card-footer">
-                        <span class="text-muted">Read-only</span>
+                        <button class="btn btn-sm btn-primary" ng-click="showRecipeDetails(recipe)">
+                            <i class="fas fa-eye"></i> See recipe details
+                        </button>
                     </div>
                 </div>
             </div>
             <div class="col-12" ng-if="recipes.length === 0">
                 <div class="alert alert-info">No recipes found. Create one to get started!</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recipe Details Modal -->
+<div class="modal fade" id="recipeDetailsModal" tabindex="-1" aria-labelledby="recipeDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="recipeDetailsModalLabel">{{ selectedRecipe.name }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Recipe Images -->
+                <div class="mb-3" ng-if="selectedRecipe.images && selectedRecipe.images.length > 0">
+                    <h6><i class="fas fa-images"></i> Images</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        <img ng-repeat="img in selectedRecipe.images" 
+                             ng-src="{{getImageUrl(img)}}" 
+                             alt="{{selectedRecipe.name}}" 
+                             class="img-thumbnail"
+                             style="width: 150px; height: 150px; object-fit: cover;">
+                    </div>
+                </div>
+
+                <!-- Recipe Description -->
+                <div class="mb-3" ng-if="selectedRecipe.description">
+                    <h6><i class="fas fa-info-circle"></i> Description</h6>
+                    <p>{{ selectedRecipe.description }}</p>
+                </div>
+
+                <!-- Recipe Ingredients -->
+                <div class="mb-3" ng-if="selectedRecipe.ingredients && selectedRecipe.ingredients.length > 0">
+                    <h6><i class="fas fa-list"></i> Ingredients ({{ selectedRecipe.ingredients.length }})</h6>
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="ingr in selectedRecipe.ingredients track by $index">
+                            <strong>{{ ingr.name }}</strong>
+                            <span ng-if="ingr.amount && ingr.units">: {{ ingr.amount }} {{ ingr.units }}</span>
+                            <span ng-if="ingr.amount && !ingr.units">: {{ ingr.amount }}</span>
+                            <span ng-if="!ingr.amount && ingr.units">: {{ ingr.units }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Recipe Instructions -->
+                <div class="mb-3" ng-if="selectedRecipe.instructions">
+                    <h6><i class="fas fa-tasks"></i> Instructions</h6>
+                    <p style="white-space: pre-wrap;">{{ selectedRecipe.instructions }}</p>
+                </div>
+
+                <!-- Recipe Tags -->
+                <div class="mb-3" ng-if="selectedRecipe.tags && selectedRecipe.tags.length > 0">
+                    <h6><i class="fas fa-tags"></i> Tags</h6>
+                    <div>
+                        <span class="badge bg-info me-1 mb-1" ng-repeat="tag in selectedRecipe.tags track by $index">{{ tag }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Close
+                </button>
             </div>
         </div>
     </div>

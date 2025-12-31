@@ -11,6 +11,8 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     $scope.newTag = '';
     $scope.newIngredient = {};
     $scope.apiUrl = API_URL;
+    $scope.selectedRecipe = {};
+    $scope.recipeModal = null;
 
     // Load all recipes
     $scope.loadRecipes = function() {
@@ -176,6 +178,18 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     // Get image URL
     $scope.getImageUrl = function(filename) {
         return API_URL + '/uploads/' + filename;
+    };
+
+    // Show recipe details in modal
+    $scope.showRecipeDetails = function(recipe) {
+        $scope.selectedRecipe = recipe;
+        var modalElement = document.getElementById('recipeDetailsModal');
+        if (modalElement) {
+            if (!$scope.recipeModal) {
+                $scope.recipeModal = new bootstrap.Modal(modalElement);
+            }
+            $scope.recipeModal.show();
+        }
     };
 
     // // Reset form
