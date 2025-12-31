@@ -156,7 +156,7 @@
                         <h6>Ingredients: {{ recipe.ingredients.length }} </h6> 
                         <ul class="small">
                             <li ng-repeat="ingr in recipe.ingredients track by $index">
-                               Ingredient: {{ ingr.name) }} 
+                               {{ ingr.name }}: {{ ingr.amount }} {{ ingr.units }}
                             </li>
                         </ul>
                         
