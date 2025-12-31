@@ -121,9 +121,10 @@
                         <p class="card-text">{{ collection.description || 'No description' }}</p>
                         
                         <h6>Recipes ({{ collection.recipe_ids.length }}):</h6>
-                        <p class="small">
+                        
+                        <p class="small"> {{getRecipeNames(collection.recipe_ids)}}
                             <li ng-repeat="recipeId in collection.recipe_ids track by $index">
-                               {{recipeId }}: {{ $scope.recipes.find(recipe => recipe.id === recipeId)}} 
+                               {{recipeId }}: {{ getRecipeName(recipeId) }} 
                             </li></p>
                         
                         <div ng-if="collection.tags && collection.tags.length > 0">
