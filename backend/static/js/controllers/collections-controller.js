@@ -120,13 +120,24 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
         console.log('all recipes' + $scope.recipes.length);
 
         var names = recipeIds.map(function(id) {
-            var recipe = $scope.recipes.find(function(r) { return r._id === id; });
+            var recipe = $scope.recipes.find(function(r) { return r.id === id; });
             console.log(id + ' ' + recipe);
             return recipe ? recipe.name : 'Unknown';
         });
         
         return names.join(', ');
     };
+
+    // Get recipe name based on ID
+    $scope.getRecipeName = function(recipeId) {
+        
+        console.log('all recipes' + $scope.recipes.length);
+        var recipe = $scope.recipes.find(function(r) { return r.id === recipeId; });
+        console.log(id + ' ' + recipe);
+        return recipe ? recipe.name : 'Unknown';
+    };
+        
+
 
     // Get image URL
     $scope.getImageUrl = function(filename) {
