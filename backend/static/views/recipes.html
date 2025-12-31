@@ -45,7 +45,7 @@
                     </div>
                     <div class="card-body">
                         <!-- Recipe Images -->
-                        <p class="card-text"><b>Images ({{ recipe.images.length }}): </b></p>
+                        <p class="card-text"><b>Images ({{ recipe.images.length }}): {{ recipe.images }}</b></p>
                         <span class="badge bg-info me-1" ng-repeat="img in recipe.images track by $index">{{getImageUrl(img)}}</span>
                         <div class="item-image-gallery mb-2" ng-if="recipe.images && recipe.images.length > 0">
                             <img ng-repeat="img in recipe.images track by $index" ng-src="{{getImageUrl(img)}}" alt="{{recipe.name}}" style="width: 80px; height: 80px;">
