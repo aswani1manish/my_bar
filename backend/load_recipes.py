@@ -107,10 +107,10 @@ def copy_recipe_images(recipe_folder, upload_folder):
         # Check if it's an image file
         if os.path.isfile(file_path) and filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp')):
             try:
-                # Generate a unique filename using timestamp and UUID
+                # Generate a unique filename using timestamp and UUID (16 chars for better uniqueness)
                 ext = os.path.splitext(filename)[1]
                 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-                unique_id = str(uuid.uuid4())[:8]
+                unique_id = uuid.uuid4().hex[:16]
                 unique_filename = f"recipe_{timestamp}_{unique_id}{ext}"
                 dest_path = os.path.join(upload_folder, unique_filename)
                 
@@ -200,13 +200,10 @@ def load_recipes_to_db(data_dir, dry_run=False, copy_images=False):
     
     if dry_run:
         print("\n=== DRY RUN MODE - No data will be saved ===\n")
-        config = None
-        conn = None
-        cursor = None
-        upload_folder = None
     else:
         # Connect to MySQL
         config = Config()
+        database_name = config.MYSQL_DATABASE  # Store this before connection attempt
         print(f"\nConnecting to MySQL at {config.MYSQL_HOST}:{config.MYSQL_PORT}")
         try:
             conn = mysql.connector.connect(
@@ -310,8 +307,8 @@ def load_recipes_to_db(data_dir, dry_run=False, copy_images=False):
     print(f"  - Loaded: {loaded_count}")
     print(f"  - Skipped: {skipped_count}")
     
-    if not dry_run and config:
-        print(f"\n✓ Recipes loaded into '{config.MYSQL_DATABASE}' database")
+    if not dry_run:
+        print(f"\n✓ Recipes loaded into '{database_name}' database")
     
     return loaded_count
 
