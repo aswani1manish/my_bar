@@ -167,7 +167,7 @@ def get_ingredients():
             params.append(json.dumps(tag))
         query += f" AND ({' OR '.join(tag_conditions)})"
 
-    query += " ORDER BY created_at DESC"
+    query += " ORDER BY name ASC"
 
     cursor.execute(query, params)
     ingredients = cursor.fetchall()
@@ -368,7 +368,7 @@ def get_recipes():
             params.append(json.dumps(tag))
         query += f" AND ({' OR '.join(tag_conditions)})"
 
-    query += " ORDER BY created_at DESC"
+    query += " ORDER BY name ASC"
 
     cursor.execute(query, params)
     recipes = cursor.fetchall()
@@ -573,7 +573,7 @@ def get_collections():
             params.append(json.dumps(tag))
         query += f" AND ({' OR '.join(tag_conditions)})"
 
-    query += " ORDER BY created_at DESC"
+    query += " ORDER BY name ASC"
 
     cursor.execute(query, params)
     collections = cursor.fetchall()
