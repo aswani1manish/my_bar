@@ -77,12 +77,12 @@
                                         </select>
                                     </div>
                                     <div class="col-md-3">
-                                        <input type="text" class="form-control" ng-model="ingredient.quantity" 
-                                               placeholder="Quantity" required>
+                                        <input type="text" class="form-control" ng-model="ingredient.amount" 
+                                               placeholder="Quantity" required value="{{ing.amount}}">
                                     </div>
                                     <div class="col-md-3">
-                                        <input type="text" class="form-control" ng-model="ingredient.unit" 
-                                               placeholder="Unit (oz, ml, dash)" required>
+                                        <input type="text" class="form-control" ng-model="ingredient.units" 
+                                               placeholder="Unit (oz, ml, dash)" required value="{{ing.units}}">
                                     </div>
                                     <div class="col-md-1">
                                         <button type="button" class="btn btn-danger btn-sm" ng-click="removeIngredient($index)">
