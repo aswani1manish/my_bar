@@ -183,7 +183,6 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
 
     // Get image URL
     $scope.getImageUrl = function(filename) {
-        console.log(API_URL + '/uploads/' + filename);
         return API_URL + '/uploads/' + filename;
     };
 
