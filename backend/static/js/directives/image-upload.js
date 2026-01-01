@@ -34,6 +34,9 @@ app.directive('imageUpload', function() {
             scope.displayImages = [];
             scope.newImages = [];
             
+            // Get file input reference once
+            var fileInput = element.find('input[type="file"]');
+            
             // Initialize with existing images
             scope.$watch('images', function(newVal) {
                 if (newVal && Array.isArray(newVal)) {
@@ -48,14 +51,12 @@ app.directive('imageUpload', function() {
             }, true);
             
             scope.triggerFileInput = function() {
-                var fileInput = element.find('input[type="file"]')[0];
-                if (fileInput) {
-                    fileInput.click();
+                if (fileInput && fileInput[0]) {
+                    fileInput[0].click();
                 }
             };
             
             // Bind the change event to the file input
-            var fileInput = element.find('input[type="file"]');
             fileInput.on('change', function(event) {
                 scope.handleFileSelect(event);
             });
