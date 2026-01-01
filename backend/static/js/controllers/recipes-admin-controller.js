@@ -126,8 +126,8 @@ app.controller('RecipesAdminController', ['$scope', 'ApiService', 'API_URL', fun
     $scope.addIngredient = function() {
         $scope.selectedIngredients.push({
             name: '',
-            quantity: '',
-            unit: ''
+            amount: '',
+            units: ''
         });
     };
 
