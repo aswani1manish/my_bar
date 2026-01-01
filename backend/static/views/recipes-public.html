@@ -42,25 +42,25 @@
                 <div class="card h-100">
                     <div class="card-header bg-success text-white">
                         <h5 class="mb-0">{{ recipe.name }}</h5>
+                        <button class="btn btn-sm btn-primary" ng-click="showRecipeDetails(recipe)">
+                            <i class="fas fa-eye"></i> See recipe details
+                        </button>                        
                     </div>
                     <div class="card-body">
                         <!-- Recipe Images -->
                         <div class="item-image-gallery mb-2" ng-if="recipe.images && recipe.images.length > 0">
-                            <span style="text-align: center;"><img ng-repeat="img in recipe.images track by $index" ng-src="{{getImageUrl(img)}}" alt="{{recipe.name}}" style="border:0; width: 240px; height: 240px; object-fit: contain;"></span>span>
+                            <span style="text-align: center;"><img ng-repeat="img in recipe.images track by $index" ng-src="{{getImageUrl(img)}}" alt="{{recipe.name}}" style="border: 0; width: 240px; height: 240px; object-fit: contain;"></span>span>
                         </div>
                         
                         <p class="card-text">{{ recipe.description || 'No description' }}</p>
                         
                         <p class="card-text"><b>Ingredients ({{ recipe.ingredients.length }}): {{ getIngredientNamesForRecipe(recipe)}}</b></p>
                         
+                    </div>
+                    <div class="card-footer">
                         <div ng-if="recipe.tags && recipe.tags.length > 0">
                             <span class="badge bg-info me-1" ng-repeat="tag in recipe.tags track by $index">{{ tag }}</span>
                         </div>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn btn-sm btn-primary" ng-click="showRecipeDetails(recipe)">
-                            <i class="fas fa-eye"></i> See recipe details
-                        </button>
                     </div>
                 </div>
             </div>
@@ -84,11 +84,13 @@
                 <div class="mb-3" ng-if="selectedRecipe.images && selectedRecipe.images.length > 0">
                     <h6><i class="fas fa-images"></i> Images</h6>
                     <div class="d-flex flex-wrap gap-2">
+                        <span style="text-align: center;">
                         <img ng-repeat="img in selectedRecipe.images" 
                              ng-src="{{getImageUrl(img)}}" 
                              alt="{{selectedRecipe.name}}" 
                              class="img-thumbnail"
-                             style="width: 150px; height: 150px; object-fit: cover;">
+                             style="border: 0; width: 150px; height: 150px; object-fit: cover;">
+                        </span>
                     </div>
                 </div>
 
