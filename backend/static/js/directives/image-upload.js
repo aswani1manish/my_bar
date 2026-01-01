@@ -13,7 +13,7 @@ app.directive('imageUpload', function() {
                 <!-- Upload Area -->
                 <div class="image-upload-container" ng-click="triggerFileInput()">
                     <input type="file" id="file-input-{{$id}}" multiple accept="image/*" 
-                           style="display: none;" onchange="angular.element(this).scope().handleFileSelect(event)">
+                           style="display: none;">
                     <i class="fas fa-cloud-upload-alt fa-3x mb-2"></i>
                     <p class="mb-0">Click to upload images</p>
                     <small class="text-muted">PNG, JPG, GIF up to 16MB</small>
@@ -34,6 +34,9 @@ app.directive('imageUpload', function() {
             scope.displayImages = [];
             scope.newImages = [];
             
+            // Get file input reference once
+            var fileInput = element.find('input[type="file"]');
+            
             // Initialize with existing images
             scope.$watch('images', function(newVal) {
                 if (newVal && Array.isArray(newVal)) {
@@ -48,8 +51,15 @@ app.directive('imageUpload', function() {
             }, true);
             
             scope.triggerFileInput = function() {
-                element.find('input[type="file"]')[0].click();
+                if (fileInput && fileInput[0]) {
+                    fileInput[0].click();
+                }
             };
+            
+            // Bind the change event to the file input
+            fileInput.on('change', function(event) {
+                scope.handleFileSelect(event);
+            });
             
             scope.handleFileSelect = function(event) {
                 var files = event.target.files;
