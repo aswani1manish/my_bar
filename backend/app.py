@@ -364,9 +364,9 @@ def get_recipes():
         tag_list = [t.strip() for t in tags.split(',')]
         tag_conditions = []
         for tag in tag_list:
-            tag_conditions.append("JSON_CONTAINS(tags, %s)")
+            tag_conditions.append("JSON_CONTAINS(LOWER(tags), LOWER(%s))")
             params.append(json.dumps(tag))
-        query += f" AND ({' OR '.join(tag_conditions)})"
+        query += f" AND ({' AND '.join(tag_conditions)})"
 
     query += " ORDER BY name ASC"
 
