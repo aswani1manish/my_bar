@@ -1,5 +1,7 @@
 app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'API_URL', function($scope, $timeout, ApiService, API_URL) {
-    // Debug flag - set to true to enable console logging for search functionality
+    // Debug flag - Controls console logging for search functionality
+    // Set to true to enable debug logs (useful for troubleshooting search issues)
+    // Set to false in production to prevent console spam
     var DEBUG_SEARCH = true;
     
     $scope.collections = [];
