@@ -200,147 +200,148 @@ def get_ingredient(ingredient_id):
         return jsonify(serialize_doc(ingredient))
     return jsonify({'error': 'Ingredient not found'}), 404
 
-# @app.route('/api/ingredients', methods=['POST'])
-# def create_ingredient():
-#     data = request.json
+@app.route('/api/ingredients', methods=['POST'])
+def create_ingredient():
+    data = request.json
 
-#     # Handle image uploads
-#     images = []
-#     if 'images' in data and data['images']:
-#         for img_data in data['images']:
-#             if img_data:
-#                 filename = save_base64_image(img_data, 'ingredient')
-#                 if filename:
-#                     images.append(filename)
+    # Handle image uploads
+    images = []
+    if 'images' in data and data['images']:
+        for img_data in data['images']:
+            if img_data:
+                filename = save_base64_image(img_data, 'ingredient')
+                if filename:
+                    images.append(filename)
 
-#     conn = get_db_connection()
-#     cursor = conn.cursor()
+    conn = get_db_connection()
+    cursor = conn.cursor()
 
-#     query = """
-#         INSERT INTO ingredients (name, description, category, tags, images, created_at, updated_at)
-#         VALUES (%s, %s, %s, %s, %s, %s, %s)
-#     """
-#     now = datetime.utcnow()
-#     params = (
-#         data.get('name'),
-#         data.get('description', ''),
-#         data.get('category', ''),
-#         json.dumps(data.get('tags', [])),
-#         json.dumps(images),
-#         now,
-#         now
-#     )
+    query = """
+        INSERT INTO ingredients (name, description, category, tags, images, bar_shelf_availability, created_at, updated_at)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+    """
+    now = datetime.utcnow()
+    params = (
+        data.get('name'),
+        data.get('description', ''),
+        data.get('category', ''),
+        json.dumps(data.get('tags', [])),
+        json.dumps(images),
+        data.get('bar_shelf_availability', 'Y'),
+        now,
+        now
+    )
 
-#     cursor.execute(query, params)
-#     conn.commit()
-#     ingredient_id = cursor.lastrowid
+    cursor.execute(query, params)
+    conn.commit()
+    ingredient_id = cursor.lastrowid
 
-#     cursor.close()
-#     conn.close()
+    cursor.close()
+    conn.close()
 
-#     ingredient = {
-#         'id': ingredient_id,
-#         'name': data.get('name'),
-#         'description': data.get('description', ''),
-#         'category': data.get('category', ''),
-#         'tags': data.get('tags', []),
-#         'images': images,
-#         'created_at': now.isoformat(),
-#         'updated_at': now.isoformat()
-#     }
+    ingredient = {
+        'id': ingredient_id,
+        'name': data.get('name'),
+        'description': data.get('description', ''),
+        'category': data.get('category', ''),
+        'tags': data.get('tags', []),
+        'images': images,
+        'bar_shelf_availability': data.get('bar_shelf_availability', 'Y'),
+        'created_at': now.isoformat(),
+        'updated_at': now.isoformat()
+    }
 
-#     return jsonify(ingredient), 201
+    return jsonify(ingredient), 201
 
-# @app.route('/api/ingredients/<int:ingredient_id>', methods=['PUT'])
-# def update_ingredient(ingredient_id):
-#     data = request.json
+@app.route('/api/ingredients/<int:ingredient_id>', methods=['PUT'])
+def update_ingredient(ingredient_id):
+    data = request.json
 
-#     conn = get_db_connection()
-#     cursor = conn.cursor(dictionary=True)
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
 
-#     # Get existing ingredient to preserve old images
-#     cursor.execute("SELECT images FROM ingredients WHERE id = %s", (ingredient_id,))
-#     existing = cursor.fetchone()
+    # Get existing ingredient to preserve old images
+    cursor.execute("SELECT images FROM ingredients WHERE id = %s", (ingredient_id,))
+    existing = cursor.fetchone()
 
-#     if not existing:
-#         cursor.close()
-#         conn.close()
-#         return jsonify({'error': 'Ingredient not found'}), 404
+    if not existing:
+        cursor.close()
+        conn.close()
+        return jsonify({'error': 'Ingredient not found'}), 404
 
-#     images = json.loads(existing['images']) if isinstance(existing['images'], str) else (existing['images'] or [])
+    images = parse_json_field(existing['images']) or []
 
-#     # Handle new image uploads
-#     if 'images' in data and data['images']:
-#         for img_data in data['images']:
-#             if img_data and img_data.startswith('data:'):
-#                 filename = save_base64_image(img_data, 'ingredient')
-#                 if filename:
-#                     images.append(filename)
-#             elif img_data:  # Existing image filename
-#                 if img_data not in images:
-#                     images.append(img_data)
+    # Handle new image uploads
+    if 'images' in data and data['images']:
+        for img_data in data['images']:
+            if img_data and img_data.startswith('data:'):
+                filename = save_base64_image(img_data, 'ingredient')
+                if filename:
+                    images.append(filename)
+            elif img_data:  # Existing image filename
+                if img_data not in images:
+                    images.append(img_data)
 
-#     # Handle image removals
-#     if 'removed_images' in data and data['removed_images']:
-#         for img in data['removed_images']:
-#             if img in images:
-#                 images.remove(img)
-#                 # Delete file from disk
-#                 try:
-#                     os.remove(os.path.join(app.config['UPLOAD_FOLDER'], img))
-#                 except:
-#                     pass
+    # Handle image removals
+    if 'removed_images' in data and data['removed_images']:
+        for img in data['removed_images']:
+            if img in images:
+                images.remove(img)
+                # Delete file from disk
+                try:
+                    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], img))
+                except:
+                    pass
 
-#     query = """
-#         UPDATE ingredients
-#         SET name = %s, description = %s, category = %s, tags = %s, images = %s, updated_at = %s
-#         WHERE id = %s
-#     """
-#     now = datetime.utcnow()
-#     params = (
-#         data.get('name'),
-#         data.get('description', ''),
-#         data.get('category', ''),
-#         json.dumps(data.get('tags', [])),
-#         json.dumps(images),
-#         now,
-#         ingredient_id
-#     )
+    query = """
+        UPDATE ingredients
+        SET name = %s, description = %s, category = %s, tags = %s, images = %s, bar_shelf_availability = %s, updated_at = %s
+        WHERE id = %s
+    """
+    now = datetime.utcnow()
+    params = (
+        data.get('name'),
+        data.get('description', ''),
+        data.get('category', ''),
+        json.dumps(data.get('tags', [])),
+        json.dumps(images),
+        data.get('bar_shelf_availability', 'Y'),
+        now,
+        ingredient_id
+    )
 
-#     cursor.execute(query, params)
-#     conn.commit()
+    cursor.execute(query, params)
+    conn.commit()
 
-#     # Fetch updated ingredient
-#     cursor.execute("SELECT * FROM ingredients WHERE id = %s", (ingredient_id,))
-#     ingredient = cursor.fetchone()
+    # Fetch updated ingredient
+    cursor.execute("SELECT * FROM ingredients WHERE id = %s", (ingredient_id,))
+    ingredient = cursor.fetchone()
 
-#     cursor.close()
-#     conn.close()
+    cursor.close()
+    conn.close()
 
-#     if ingredient:
-#         # Parse JSON fields
-#         if ingredient.get('tags'):
-#             ingredient['tags'] = json.loads(ingredient['tags']) if isinstance(ingredient['tags'], str) else ingredient['tags']
-#         if ingredient.get('images'):
-#             ingredient['images'] = json.loads(ingredient['images']) if isinstance(ingredient['images'], str) else ingredient['images']
-#         return jsonify(serialize_doc(ingredient))
-#     return jsonify({'error': 'Ingredient not found'}), 404
+    if ingredient:
+        # Parse JSON fields
+        ingredient['tags'] = parse_json_field(ingredient.get('tags'))
+        ingredient['images'] = parse_json_field(ingredient.get('images'))
+        return jsonify(serialize_doc(ingredient))
+    return jsonify({'error': 'Ingredient not found'}), 404
 
-# @app.route('/api/ingredients/<int:ingredient_id>', methods=['DELETE'])
-# def delete_ingredient(ingredient_id):
-#     conn = get_db_connection()
-#     cursor = conn.cursor()
+@app.route('/api/ingredients/<int:ingredient_id>', methods=['DELETE'])
+def delete_ingredient(ingredient_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
 
-#     cursor.execute("DELETE FROM ingredients WHERE id = %s", (ingredient_id,))
-#     deleted_count = cursor.rowcount
-#     conn.commit()
+    cursor.execute("DELETE FROM ingredients WHERE id = %s", (ingredient_id,))
+    deleted_count = cursor.rowcount
+    conn.commit()
 
-#     cursor.close()
-#     conn.close()
+    cursor.close()
+    conn.close()
 
-#     if deleted_count:
-#         return jsonify({'message': 'Ingredient deleted successfully'})
-#     return jsonify({'error': 'Ingredient not found'}), 404
+    if deleted_count:
+        return jsonify({'message': 'Ingredient deleted successfully'})
+    return jsonify({'error': 'Ingredient not found'}), 404
 
 @app.route('/api/ingredients/<int:ingredient_id>/bar-shelf', methods=['PATCH'])
 def update_ingredient_bar_shelf(ingredient_id):

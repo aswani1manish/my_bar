@@ -27,8 +27,8 @@
     </div>
 </div>
 
-<!-- Add/Edit Form - COMMENTED OUT -->
-<!-- <div class="row mb-4">
+<!-- Add/Edit Form -->
+<div class="row mb-4">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
@@ -51,6 +51,14 @@
                     <div class="mb-3">
                         <label class="form-label">Description</label>
                         <textarea class="form-control" ng-model="currentIngredient.description" rows="2"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Bar Shelf Availability</label>
+                        <select class="form-select" ng-model="currentIngredient.bar_shelf_availability">
+                            <option value="Y">Yes</option>
+                            <option value="N">No</option>
+                        </select>
                     </div>
                     
                     <image-upload images="currentIngredient.images" 
@@ -86,7 +94,7 @@
             </div>
         </div>
     </div>
-</div> -->
+</div>
 
 <!-- Ingredients List -->
 <div class="row">
@@ -128,17 +136,13 @@
                                    class="form-check-input"
                                    style="cursor: pointer;">
                         </td>
-                        <!-- Edit/Delete Actions - COMMENTED OUT -->
-                        <!-- <td>
+                        <td>
                             <button class="btn btn-sm btn-warning me-1" ng-click="editIngredient(ingredient)">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn btn-sm btn-danger" ng-click="deleteIngredient(ingredient._id)">
+                            <button class="btn btn-sm btn-danger" ng-click="deleteIngredient(ingredient.id)">
                                 <i class="fas fa-trash"></i>
                             </button>
-                        </td> -->
-                        <td>
-                            <span class="text-muted">Read-only</span>
                         </td>
                     </tr>
                     <tr ng-if="ingredients.length === 0">
