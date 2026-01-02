@@ -42,3 +42,5 @@ Thumbs.db
 
 # Environment variables
 .env
+backend/.env
+backend/test_ingredients_crud.py
