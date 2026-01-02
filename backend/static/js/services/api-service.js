@@ -15,15 +15,15 @@ app.factory('ApiService', ['$http', 'API_URL', function($http, API_URL) {
                 bar_shelf_availability: barShelfAvailability
             });
         },
-        // createIngredient: function(ingredient) {
-        //     return $http.post(API_URL + '/ingredients', ingredient);
-        // },
-        // updateIngredient: function(id, ingredient) {
-        //     return $http.put(API_URL + '/ingredients/' + id, ingredient);
-        // },
-        // deleteIngredient: function(id) {
-        //     return $http.delete(API_URL + '/ingredients/' + id);
-        // },
+        createIngredient: function(ingredient) {
+            return $http.post(API_URL + '/ingredients', ingredient);
+        },
+        updateIngredient: function(id, ingredient) {
+            return $http.put(API_URL + '/ingredients/' + id, ingredient);
+        },
+        deleteIngredient: function(id) {
+            return $http.delete(API_URL + '/ingredients/' + id);
+        },
         
         // Recipes
         getRecipes: function(search, tags, barShelfMode) {
