@@ -12,7 +12,7 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     // Recipe management variables
     $scope.selectedCollectionId = '';
     $scope.recipeCollectionSearchQuery = '';
-    $scope.filteredRecipes = [];
+    $scope.filteredRecipesInCollection = [];
     $scope.recipeSelection = {};
     $scope.selectAll = false;
     $scope.savingCollection = false;
@@ -52,7 +52,7 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
         $scope.selectAll = false;
         
         if (!$scope.selectedCollectionId) {
-            $scope.filteredRecipes = [];
+            $scope.filteredRecipesInCollection = [];
             $scope.recipeSelection = {};
             return;
         }
@@ -130,7 +130,7 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     
     // Toggle all recipes selection
     $scope.toggleAllRecipes = function() {
-        $scope.filteredRecipes.forEach(function(recipe) {
+        $scope.filteredRecipesInCollection.forEach(function(recipe) {
             $scope.recipeSelection[recipe.id] = $scope.selectAll;
         });
     };
