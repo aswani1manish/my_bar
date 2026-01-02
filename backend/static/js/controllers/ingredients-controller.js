@@ -95,13 +95,20 @@ app.controller('IngredientsController', ['$scope', 'ApiService', 'API_URL', func
 
     // Toggle bar shelf availability
     $scope.toggleBarShelf = function(ingredient) {
-        var newValue = ingredient.bar_shelf_availability === 'Y' ? 'N' : 'Y';
+        // ng-model already updated the value, so use the current value
+        var newValue = ingredient.bar_shelf_availability;
+        // Store old value to revert on error
+        var oldValue = newValue === 'Y' ? 'N' : 'Y';
+        
         ApiService.updateIngredientBarShelf(ingredient.id, newValue).then(function(response) {
-            ingredient.bar_shelf_availability = newValue;
+            // Update from server response to ensure consistency
+            ingredient.bar_shelf_availability = response.data.bar_shelf_availability;
             console.log('Bar shelf availability updated for ' + ingredient.name + ': ' + newValue);
         }, function(error) {
-            console.error('Error updating bar shelf availability:', error);
-            alert('Error updating bar shelf availability');
+            // Revert to old value on error
+            ingredient.bar_shelf_availability = oldValue;
+            console.error('Error updating bar shelf availability for ' + ingredient.name + ':', error);
+            alert('Error updating bar shelf availability for ' + ingredient.name + '. Please try again.');
         });
     };
 
