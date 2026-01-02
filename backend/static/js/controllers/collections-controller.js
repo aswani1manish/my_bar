@@ -81,7 +81,7 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     // Filter recipes based on search query
     $scope.filterRecipes = function() {
         var query = ($scope.recipeSearchQuery || '').toLowerCase();
-        
+        console.log($scope.recipeSearchQuery);
         if (!query) {
             $scope.filteredRecipes = angular.copy($scope.recipes);
         } else {
