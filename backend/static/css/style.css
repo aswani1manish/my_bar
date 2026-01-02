@@ -151,3 +151,13 @@ body {
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
+
+/* Bar shelf mode switch */
+.bar-shelf-switch {
+    height: 38px;
+}
+
+.bar-shelf-switch input,
+.bar-shelf-switch label {
+    cursor: pointer;
+}
