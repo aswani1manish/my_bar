@@ -48,7 +48,7 @@
     <div class="col-12">
         <h4>All Recipes ({{ recipes.length }})</h4>
         <div class="row">
-            <div class="col-md-6 col-lg-3 mb-3" ng-repeat="recipe in recipes track by $index">
+            <div class="col-md-6 col-5-per-row mb-3 recipe-card-compact" ng-repeat="recipe in recipes track by $index">
                 <div class="card h-100">
                     <div class="card-header bg-success text-white">
                         <h5 class="mb-0">{{ recipe.name }}</h5>

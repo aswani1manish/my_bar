@@ -234,3 +234,40 @@ h6 {
 .equal-height-row > [class*='col-'] > .card {
     flex: 1;
 }
+
+/* 5-column layout for recipes-public view */
+@media (min-width: 992px) {
+    .col-5-per-row {
+        flex: 0 0 20%;
+        max-width: 20%;
+    }
+}
+
+/* Medium to large screens: 4 columns as fallback before 5-column kicks in */
+@media (min-width: 768px) and (max-width: 991px) {
+    .col-5-per-row {
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+}
+
+/* Compact card styling for recipes-public */
+.recipe-card-compact .card-header {
+    padding: 0.5rem 0.75rem;
+}
+
+.recipe-card-compact .card-body {
+    padding: 0.5rem;
+}
+
+.recipe-card-compact .card-footer {
+    padding: 0.4rem 0.5rem;
+}
+
+.recipe-card-compact .card-text {
+    margin-bottom: 0.4rem;
+}
+
+.recipe-card-compact .item-image-gallery {
+    margin-bottom: 0.4rem;
+}
