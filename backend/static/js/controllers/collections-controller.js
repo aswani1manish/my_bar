@@ -2,6 +2,7 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     // Debug flag - Controls console logging for search functionality
     // Set to true to enable debug logs (useful for troubleshooting search issues)
     // Set to false in production to prevent console spam
+    // NOTE: Currently set to true as requested in issue to help debug search input boxes
     var DEBUG_SEARCH = true;
     
     $scope.collections = [];
@@ -191,6 +192,8 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     // Handle checkbox change - auto-save with debounce
     $scope.onRecipeCheckboxChange = function(recipeId) {
         // Refresh the filtered lists immediately for responsive UI
+        // Note: Called without parameters to use current scope search values
+        // This maintains any active search filter while updating recipe membership
         $scope.filterRecipesInCollection();
         $scope.filterRecipesNotInCollection();
         
