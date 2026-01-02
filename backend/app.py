@@ -659,82 +659,79 @@ def get_collection(collection_id):
 
 #     return jsonify(collection), 201
 
-# @app.route('/api/collections/<int:collection_id>', methods=['PUT'])
-# def update_collection(collection_id):
-#     data = request.json
+@app.route('/api/collections/<int:collection_id>', methods=['PUT'])
+def update_collection(collection_id):
+    data = request.json
 
-#     conn = get_db_connection()
-#     cursor = conn.cursor(dictionary=True)
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
 
-#     # Get existing collection to preserve old images
-#     cursor.execute("SELECT images FROM collections WHERE id = %s", (collection_id,))
-#     existing = cursor.fetchone()
+    # Get existing collection to preserve old images
+    cursor.execute("SELECT images FROM collections WHERE id = %s", (collection_id,))
+    existing = cursor.fetchone()
 
-#     if not existing:
-#         cursor.close()
-#         conn.close()
-#         return jsonify({'error': 'Collection not found'}), 404
+    if not existing:
+        cursor.close()
+        conn.close()
+        return jsonify({'error': 'Collection not found'}), 404
 
-#     images = json.loads(existing['images']) if isinstance(existing['images'], str) else (existing['images'] or [])
+    images = parse_json_field(existing['images']) or []
 
-#     # Handle new image uploads
-#     if 'images' in data and data['images']:
-#         for img_data in data['images']:
-#             if img_data and img_data.startswith('data:'):
-#                 filename = save_base64_image(img_data, 'collection')
-#                 if filename:
-#                     images.append(filename)
-#             elif img_data:  # Existing image filename
-#                 if img_data not in images:
-#                     images.append(img_data)
+    # Handle new image uploads
+    if 'images' in data and data['images']:
+        for img_data in data['images']:
+            if img_data and img_data.startswith('data:'):
+                filename = save_base64_image(img_data, 'collection')
+                if filename:
+                    images.append(filename)
+            elif img_data:  # Existing image filename
+                if img_data not in images:
+                    images.append(img_data)
 
-#     # Handle image removals
-#     if 'removed_images' in data and data['removed_images']:
-#         for img in data['removed_images']:
-#             if img in images:
-#                 images.remove(img)
-#                 # Delete file from disk
-#                 try:
-#                     os.remove(os.path.join(app.config['UPLOAD_FOLDER'], img))
-#                 except:
-#                     pass
+    # Handle image removals
+    if 'removed_images' in data and data['removed_images']:
+        for img in data['removed_images']:
+            if img in images:
+                images.remove(img)
+                # Delete file from disk
+                try:
+                    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], img))
+                except:
+                    pass
 
-#     query = """
-#         UPDATE collections
-#         SET name = %s, description = %s, recipe_ids = %s, tags = %s, images = %s, updated_at = %s
-#         WHERE id = %s
-#     """
-#     now = datetime.utcnow()
-#     params = (
-#         data.get('name'),
-#         data.get('description', ''),
-#         json.dumps(data.get('recipe_ids', [])),
-#         json.dumps(data.get('tags', [])),
-#         json.dumps(images),
-#         now,
-#         collection_id
-#     )
+    query = """
+        UPDATE collections
+        SET name = %s, description = %s, recipe_ids = %s, tags = %s, images = %s, updated_at = %s
+        WHERE id = %s
+    """
+    now = datetime.utcnow()
+    params = (
+        data.get('name'),
+        data.get('description', ''),
+        json.dumps(data.get('recipe_ids', [])),
+        json.dumps(data.get('tags', [])),
+        json.dumps(images),
+        now,
+        collection_id
+    )
 
-#     cursor.execute(query, params)
-#     conn.commit()
+    cursor.execute(query, params)
+    conn.commit()
 
-#     # Fetch updated collection
-#     cursor.execute("SELECT * FROM collections WHERE id = %s", (collection_id,))
-#     collection = cursor.fetchone()
+    # Fetch updated collection
+    cursor.execute("SELECT * FROM collections WHERE id = %s", (collection_id,))
+    collection = cursor.fetchone()
 
-#     cursor.close()
-#     conn.close()
+    cursor.close()
+    conn.close()
 
-#     if collection:
-#         # Parse JSON fields
-#         if collection.get('tags'):
-#             collection['tags'] = json.loads(collection['tags']) if isinstance(collection['tags'], str) else collection['tags']
-#         if collection.get('images'):
-#             collection['images'] = json.loads(collection['images']) if isinstance(collection['images'], str) else collection['images']
-#         if collection.get('recipe_ids'):
-#             collection['recipe_ids'] = json.loads(collection['recipe_ids']) if isinstance(collection['recipe_ids'], str) else collection['recipe_ids']
-#         return jsonify(serialize_doc(collection))
-#     return jsonify({'error': 'Collection not found'}), 404
+    if collection:
+        # Parse JSON fields
+        collection['tags'] = parse_json_field(collection.get('tags'))
+        collection['images'] = parse_json_field(collection.get('images'))
+        collection['recipe_ids'] = parse_json_field(collection.get('recipe_ids'))
+        return jsonify(serialize_doc(collection))
+    return jsonify({'error': 'Collection not found'}), 404
 
 # @app.route('/api/collections/<int:collection_id>', methods=['DELETE'])
 # def delete_collection(collection_id):

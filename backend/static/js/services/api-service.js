@@ -49,13 +49,13 @@ app.factory('ApiService', ['$http', 'API_URL', function($http, API_URL) {
         },
         getCollection: function(id) {
             return $http.get(API_URL + '/collections/' + id);
-        }
+        },
         // createCollection: function(collection) {
         //     return $http.post(API_URL + '/collections', collection);
         // },
-        // updateCollection: function(id, collection) {
-        //     return $http.put(API_URL + '/collections/' + id, collection);
-        // },
+        updateCollection: function(id, collection) {
+            return $http.put(API_URL + '/collections/' + id, collection);
+        }
         // deleteCollection: function(id) {
         //     return $http.delete(API_URL + '/collections/' + id);
         // }
