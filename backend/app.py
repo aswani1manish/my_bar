@@ -14,6 +14,9 @@ import json
 import re
 from config import Config
 
+# Supported image formats for saving
+SUPPORTED_IMAGE_FORMATS = ['JPEG', 'PNG', 'GIF']
+
 app = Flask(__name__)
 
 # Load configuration from environment variables
@@ -125,7 +128,8 @@ def sanitize_filename(filename):
     filename = filename.replace('/', '_').replace('\\', '_')
     
     # Replace any potentially problematic characters but keep alphanumeric, dots, dashes, underscores
-    filename = re.sub(r'[^\w\s\-\.]', '_', filename)
+    # Note: spaces are preserved, dot and hyphen don't need escaping at the end of character class
+    filename = re.sub(r'[^\w\s.-]', '_', filename)
     
     # Remove any leading/trailing whitespace or dots
     filename = filename.strip().strip('.')
@@ -195,7 +199,7 @@ def save_base64_image(base64_string, prefix='img', original_filename=None):
         image.thumbnail(max_size, Image.Resampling.LANCZOS)
 
         # Determine format for saving - preserve original format when possible
-        save_format = image.format if image.format in ['JPEG', 'PNG', 'GIF'] else 'PNG'
+        save_format = image.format if image.format in SUPPORTED_IMAGE_FORMATS else 'PNG'
         
         # Save image with appropriate options
         if save_format == 'JPEG':

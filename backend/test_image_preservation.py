@@ -39,10 +39,10 @@ def test_sanitize_filename():
     
     test_cases = [
         ("my_image.jpg", "my_image.jpg"),
-        ("../../../etc/passwd", "passwd"),  # os.path.basename removes the path
-        ("test image with spaces.png", "test image with spaces.png"),  # spaces are preserved
+        ("../../../etc/passwd", "passwd"),  # os.path.basename removes directory path, only 'passwd' remains
+        ("test image with spaces.png", "test image with spaces.png"),  # spaces are preserved by sanitize_filename
         ("image@#$%.jpg", "image____.jpg"),
-        ("../image.jpg", "image.jpg"),  # os.path.basename removes the path
+        ("../image.jpg", "image.jpg"),  # os.path.basename removes directory path, only 'image.jpg' remains
         ("normal-image_123.png", "normal-image_123.png"),
         ("", None),
         ("   ...   ", None),
