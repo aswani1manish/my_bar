@@ -400,4 +400,19 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     $scope.loadRecipes();
     //Need to call this inside load recipes to ensure that recipes are loaded first, before collections. Hence commented out.
     //$scope.loadCollections(); 
+    
+    // Watch for changes in search queries
+    $scope.$watch('searchInCollection', function(newVal, oldVal) {
+        if (newVal !== oldVal && $scope.selectedCollectionId) {
+            console.log('[Watch] searchInCollection changed from', oldVal, 'to', newVal);
+            $scope.filterRecipesInCollection();
+        }
+    });
+    
+    $scope.$watch('searchNotInCollection', function(newVal, oldVal) {
+        if (newVal !== oldVal && $scope.selectedCollectionId) {
+            console.log('[Watch] searchNotInCollection changed from', oldVal, 'to', newVal);
+            $scope.filterRecipesNotInCollection();
+        }
+    });
 }]);
