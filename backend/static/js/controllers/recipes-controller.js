@@ -8,6 +8,7 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     $scope.searchQuery = '';
     $scope.tagSearch = '';
     $scope.selectedCollection = '';
+    $scope.barShelfMode = false;
     $scope.newTag = '';
     $scope.newIngredient = {};
     $scope.apiUrl = API_URL;
@@ -19,7 +20,8 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         
         // Load collections first, then recipes.
         $scope.loadCollections();
-        ApiService.getRecipes($scope.searchQuery, $scope.tagSearch).then(function(response) {
+        var barShelfModeParam = $scope.barShelfMode ? 'Y' : '';
+        ApiService.getRecipes($scope.searchQuery, $scope.tagSearch, barShelfModeParam).then(function(response) {
             $scope.allRecipes = response.data;
             $scope.filterRecipesByCollection();
         }, function(error) {
@@ -70,6 +72,11 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
 
     // Search recipes
     $scope.search = function() {
+        $scope.loadRecipes();
+    };
+
+    // Toggle bar shelf mode
+    $scope.toggleBarShelfMode = function() {
         $scope.loadRecipes();
     };
 

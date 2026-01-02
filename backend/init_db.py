@@ -33,6 +33,7 @@ def init_database():
             category VARCHAR(100),
             tags JSON,
             images JSON,
+            bar_shelf_availability CHAR(1) DEFAULT 'N',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             INDEX idx_name (name),

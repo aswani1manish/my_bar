@@ -21,10 +21,11 @@ app.factory('ApiService', ['$http', 'API_URL', function($http, API_URL) {
         // },
         
         // Recipes
-        getRecipes: function(search, tags) {
+        getRecipes: function(search, tags, barShelfMode) {
             var params = {};
             if (search) params.search = search;
             if (tags) params.tags = tags;
+            if (barShelfMode) params.bar_shelf_mode = barShelfMode;
             return $http.get(API_URL + '/recipes', { params: params });
         },
         getRecipe: function(id) {

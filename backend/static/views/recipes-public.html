@@ -7,7 +7,7 @@
 
 <!-- Search and Filter -->
 <div class="row mb-4">
-    <div class="col-md-4 mb-2">
+    <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Search recipes..." 
                    ng-model="searchQuery" ng-change="search()">
@@ -16,7 +16,7 @@
             </button>
         </div>
     </div>
-    <div class="col-md-4 mb-2">
+    <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Filter by tags (comma-separated)..." 
                    ng-model="tagSearch" ng-change="search()">
@@ -25,11 +25,20 @@
         </button-->
         </div>
     </div>
-    <div class="col-md-4 mb-2">
+    <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
         <select class="form-select" ng-model="selectedCollection" ng-change="filterRecipesByCollection()">
             <option value="">Show all</option>
             <option ng-repeat="collection in collections" value="{{ collection.id }}">{{ collection.name }}</option>
         </select>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
+        <div class="form-check form-switch d-flex align-items-center bar-shelf-switch">
+            <input class="form-check-input" type="checkbox" id="barShelfModeSwitch" 
+                   ng-model="barShelfMode" ng-change="toggleBarShelfMode()">
+            <label class="form-check-label ms-2" for="barShelfModeSwitch">
+                <i class="fas fa-wine-bottle"></i> Bar Shelf Mode
+            </label>
+        </div>
     </div>
 </div>
 

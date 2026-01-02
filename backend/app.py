@@ -348,6 +348,7 @@ def get_ingredient(ingredient_id):
 def get_recipes():
     search = request.args.get('search', '')
     tags = request.args.get('tags', '')
+    bar_shelf_mode = request.args.get('bar_shelf_mode', '').upper()
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -378,6 +379,54 @@ def get_recipes():
         recipe['tags'] = parse_json_field(recipe.get('tags'))
         recipe['images'] = parse_json_field(recipe.get('images'))
         recipe['ingredients'] = parse_json_field(recipe.get('ingredients'))
+
+    # Filter recipes based on bar shelf availability if bar_shelf_mode is 'Y'
+    if bar_shelf_mode == 'Y':
+        # Optimize by fetching all ingredient availabilities in one query
+        # First, collect all unique ingredient names from all recipes
+        all_ingredient_names = set()
+        for recipe in recipes:
+            ingredients = recipe.get('ingredients')
+            if ingredients:
+                for ingredient in ingredients:
+                    ingredient_name = ingredient.get('name', '')
+                    if ingredient_name:
+                        all_ingredient_names.add(ingredient_name)
+        
+        # Fetch all ingredient availabilities in a single query
+        ingredient_availability = {}
+        if all_ingredient_names:
+            # Create placeholders for IN clause
+            placeholders = ', '.join(['%s'] * len(all_ingredient_names))
+            query = f"SELECT name, bar_shelf_availability FROM ingredients WHERE name IN ({placeholders})"
+            cursor.execute(query, tuple(all_ingredient_names))
+            results = cursor.fetchall()
+            for result in results:
+                ingredient_availability[result['name']] = result.get('bar_shelf_availability', 'N')
+        
+        # Now filter recipes based on the fetched availability data
+        filtered_recipes = []
+        for recipe in recipes:
+            ingredients = recipe.get('ingredients')
+            # Only include recipes that have ingredients
+            if ingredients:
+                # Check if all ingredients are available on bar shelf
+                all_available = True
+                for ingredient in ingredients:
+                    ingredient_name = ingredient.get('name', '')
+                    if not ingredient_name:
+                        # Exclude recipe if ingredient has no name (data integrity issue)
+                        all_available = False
+                        break
+                    # Check availability from our pre-fetched data
+                    if ingredient_availability.get(ingredient_name) != 'Y':
+                        # Exclude recipe if ingredient not found or not available
+                        all_available = False
+                        break
+                
+                if all_available:
+                    filtered_recipes.append(recipe)
+        recipes = filtered_recipes
 
     cursor.close()
     conn.close()
