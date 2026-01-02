@@ -75,7 +75,7 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
         });
         
         // Initialize filtered recipes
-        $scope.filterRecipes();
+        $scope.filterRecipesInCollection();
     };
     
     // Filter recipes based on search query
