@@ -1,4 +1,4 @@
-app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', function($scope, ApiService, API_URL) {
+app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'API_URL', function($scope, $timeout, ApiService, API_URL) {
     $scope.collections = [];
     $scope.recipes = [];
     $scope.currentCollection = {};
@@ -8,6 +8,16 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
     $scope.newTag = '';
     $scope.selectedRecipes = {};
     $scope.apiUrl = API_URL;
+    
+    // Recipe management variables
+    $scope.selectedCollectionId = '';
+    $scope.recipeSearchQuery = '';
+    $scope.filteredRecipes = [];
+    $scope.recipeSelection = {};
+    $scope.selectAll = false;
+    $scope.savingCollection = false;
+    $scope.saveMessage = '';
+    $scope.saveError = '';
 
     // Load all collections
     $scope.loadCollections = function() {
@@ -32,6 +42,144 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
     // Search collections
     $scope.search = function() {
         $scope.loadCollections();
+    };
+    
+    // Handle collection selection
+    $scope.onCollectionSelect = function() {
+        $scope.saveMessage = '';
+        $scope.saveError = '';
+        $scope.recipeSearchQuery = '';
+        $scope.selectAll = false;
+        
+        if (!$scope.selectedCollectionId) {
+            $scope.filteredRecipes = [];
+            $scope.recipeSelection = {};
+            return;
+        }
+        
+        // Find selected collection
+        var collection = $scope.collections.find(function(c) {
+            return c.id === $scope.selectedCollectionId;
+        });
+        
+        if (!collection) {
+            return;
+        }
+        
+        // Initialize recipe selection based on collection's recipe_ids
+        $scope.recipeSelection = {};
+        var recipeIds = collection.recipe_ids || [];
+        
+        $scope.recipes.forEach(function(recipe) {
+            $scope.recipeSelection[recipe.id] = recipeIds.indexOf(recipe.id) !== -1;
+        });
+        
+        // Initialize filtered recipes
+        $scope.filterRecipes();
+    };
+    
+    // Filter recipes based on search query
+    $scope.filterRecipes = function() {
+        var query = ($scope.recipeSearchQuery || '').toLowerCase();
+        
+        if (!query) {
+            $scope.filteredRecipes = angular.copy($scope.recipes);
+        } else {
+            $scope.filteredRecipes = $scope.recipes.filter(function(recipe) {
+                // Search by ID
+                if (recipe.id.toString().indexOf(query) !== -1) {
+                    return true;
+                }
+                
+                // Search by name
+                if (recipe.name && recipe.name.toLowerCase().indexOf(query) !== -1) {
+                    return true;
+                }
+                
+                // Search by ingredients
+                var ingredientsList = $scope.getIngredientsList(recipe).toLowerCase();
+                if (ingredientsList.indexOf(query) !== -1) {
+                    return true;
+                }
+                
+                return false;
+            });
+        }
+    };
+    
+    // Get ingredients list as comma-separated string
+    $scope.getIngredientsList = function(recipe) {
+        if (!recipe || !recipe.ingredients || recipe.ingredients.length === 0) {
+            return 'No ingredients';
+        }
+        
+        return recipe.ingredients.map(function(ing) {
+            return ing.name;
+        }).join(', ');
+    };
+    
+    // Toggle all recipes selection
+    $scope.toggleAllRecipes = function() {
+        $scope.filteredRecipes.forEach(function(recipe) {
+            $scope.recipeSelection[recipe.id] = $scope.selectAll;
+        });
+    };
+    
+    // Save collection recipes
+    $scope.saveCollectionRecipes = function() {
+        if (!$scope.selectedCollectionId) {
+            return;
+        }
+        
+        $scope.savingCollection = true;
+        $scope.saveMessage = '';
+        $scope.saveError = '';
+        
+        // Get selected recipe IDs
+        var selectedRecipeIds = [];
+        Object.keys($scope.recipeSelection).forEach(function(recipeId) {
+            if ($scope.recipeSelection[recipeId]) {
+                selectedRecipeIds.push(parseInt(recipeId));
+            }
+        });
+        
+        // Find the collection
+        var collection = $scope.collections.find(function(c) {
+            return c.id === $scope.selectedCollectionId;
+        });
+        
+        if (!collection) {
+            $scope.saveError = 'Collection not found';
+            $scope.savingCollection = false;
+            return;
+        }
+        
+        // Prepare update data
+        var updateData = {
+            name: collection.name,
+            description: collection.description,
+            recipe_ids: selectedRecipeIds,
+            tags: collection.tags || [],
+            images: collection.images || []
+        };
+        
+        // Update collection
+        ApiService.updateCollection($scope.selectedCollectionId, updateData).then(function(response) {
+            $scope.savingCollection = false;
+            $scope.saveMessage = 'Collection updated successfully!';
+            
+            // Reload collections to reflect changes
+            $scope.loadCollections();
+            
+            // Clear message after 3 seconds
+            $timeout(function() {
+                $scope.saveMessage = '';
+            }, 3000);
+        }, function(error) {
+            $scope.savingCollection = false;
+            $scope.saveError = 'Error updating collection: ' + (error.data?.error || 'Unknown error');
+            console.error('Error updating collection:', error);
+        });
     };
 
     // // Create or update collection
