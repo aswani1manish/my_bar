@@ -14,8 +14,8 @@ app.directive('imageUpload', function() {
                 <div class="image-upload-container" ng-click="triggerFileInput()">
                     <input type="file" id="file-input-{{$id}}" multiple accept="image/*" 
                            style="display: none;">
-                    <i class="fas fa-cloud-upload-alt fa-3x mb-2"></i>
-                    <p class="mb-0">Click to upload images</p>
+                    <i class="fas fa-camera fa-3x mb-2"></i>
+                    <p class="mb-0">Click to add images</p>
                     <small class="text-muted">PNG, JPG, GIF up to 16MB</small>
                 </div>
                 
