@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html ng-app="testApp">
+<head>
+    <title>Search Logic Test</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        input { padding: 5px; margin: 10px 0; width: 300px; }
+        .result { margin: 10px 0; padding: 10px; background: #f0f0f0; }
+        .console-output { background: #000; color: #0f0; padding: 10px; font-family: monospace; max-height: 300px; overflow-y: auto; }
+    </style>
+</head>
+<body ng-controller="TestController">
+    <h1>Search Input Box Logic Test</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: searchInCollection</h2>
+        <p>Type in the search box and watch the console output below:</p>
+        <input type="text" ng-model="searchInCollection" placeholder="Search recipes in collection...">
+        <div class="result">
+            <strong>Current value:</strong> {{ searchInCollection || '(empty)' }}
+        </div>
+        <div class="result">
+            <strong>Filtered count:</strong> {{ filteredInCount }}
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 2: searchNotInCollection</h2>
+        <p>Type in the search box and watch the console output below:</p>
+        <input type="text" ng-model="searchNotInCollection" placeholder="Search available recipes...">
+        <div class="result">
+            <strong>Current value:</strong> {{ searchNotInCollection || '(empty)' }}
+        </div>
+        <div class="result">
+            <strong>Filtered count:</strong> {{ filteredNotInCount }}
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Console Output</h2>
+        <div class="console-output">
+            <div ng-repeat="log in consoleLogs track by $index">{{ log }}</div>
+        </div>
+    </div>
+    
+    <script>
+        var app = angular.module('testApp', []);
+        
+        app.controller('TestController', ['$scope', function($scope) {
+            var DEBUG_SEARCH = true;
+            
+            // Initialize
+            $scope.searchInCollection = '';
+            $scope.searchNotInCollection = '';
+            $scope.filteredInCount = 0;
+            $scope.filteredNotInCount = 0;
+            $scope.consoleLogs = [];
+            
+            // Mock data
+            var mockRecipes = [
+                { id: 1, name: 'Margarita', ingredients: [{name: 'Tequila'}, {name: 'Lime'}] },
+                { id: 2, name: 'Mojito', ingredients: [{name: 'Rum'}, {name: 'Mint'}] },
+                { id: 3, name: 'Old Fashioned', ingredients: [{name: 'Bourbon'}, {name: 'Bitters'}] }
+            ];
+            
+            function addLog(message) {
+                $scope.consoleLogs.push(new Date().toLocaleTimeString() + ' - ' + message);
+                if ($scope.consoleLogs.length > 50) {
+                    $scope.consoleLogs.shift();
+                }
+            }
+            
+            // Filter function (simplified version)
+            $scope.filterRecipesInCollection = function(searchQuery) {
+                var query = (searchQuery !== undefined ? searchQuery : $scope.searchInCollection || '').toLowerCase();
+                if (DEBUG_SEARCH) {
+                    addLog('[filterRecipesInCollection] Called with parameter: ' + searchQuery);
+                    addLog('[filterRecipesInCollection] Using search query: ' + query);
+                    addLog('[filterRecipesInCollection] $scope.searchInCollection value: ' + $scope.searchInCollection);
+                }
+                
+                // Simulate filtering
+                if (!query) {
+                    $scope.filteredInCount = mockRecipes.length;
+                } else {
+                    $scope.filteredInCount = mockRecipes.filter(function(recipe) {
+                        return recipe.name.toLowerCase().indexOf(query) !== -1;
+                    }).length;
+                }
+                addLog('[filterRecipesInCollection] Filtered count: ' + $scope.filteredInCount);
+            };
+            
+            $scope.filterRecipesNotInCollection = function(searchQuery) {
+                var query = (searchQuery !== undefined ? searchQuery : $scope.searchNotInCollection || '').toLowerCase();
+                if (DEBUG_SEARCH) {
+                    addLog('[filterRecipesNotInCollection] Called with parameter: ' + searchQuery);
+                    addLog('[filterRecipesNotInCollection] Using search query: ' + query);
+                    addLog('[filterRecipesNotInCollection] $scope.searchNotInCollection value: ' + $scope.searchNotInCollection);
+                }
+                
+                // Simulate filtering
+                if (!query) {
+                    $scope.filteredNotInCount = mockRecipes.length;
+                } else {
+                    $scope.filteredNotInCount = mockRecipes.filter(function(recipe) {
+                        return recipe.name.toLowerCase().indexOf(query) !== -1;
+                    }).length;
+                }
+                addLog('[filterRecipesNotInCollection] Filtered count: ' + $scope.filteredNotInCount);
+            };
+            
+            // Watch for changes - this is the fix!
+            $scope.$watch('searchInCollection', function(newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    if (DEBUG_SEARCH) {
+                        addLog('=== [Watch] searchInCollection changed ===');
+                        addLog('[Watch] Old value: ' + oldVal);
+                        addLog('[Watch] New value: ' + newVal);
+                        addLog('[Watch] Calling filterRecipesInCollection with newVal');
+                    }
+                    $scope.filterRecipesInCollection(newVal);
+                }
+            });
+            
+            $scope.$watch('searchNotInCollection', function(newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    if (DEBUG_SEARCH) {
+                        addLog('=== [Watch] searchNotInCollection changed ===');
+                        addLog('[Watch] Old value: ' + oldVal);
+                        addLog('[Watch] New value: ' + newVal);
+                        addLog('[Watch] Calling filterRecipesNotInCollection with newVal');
+                    }
+                    $scope.filterRecipesNotInCollection(newVal);
+                }
+            });
+            
+            // Initial filter
+            $scope.filterRecipesInCollection();
+            $scope.filterRecipesNotInCollection();
+        }]);
+    </script>
+</body>
+</html>
