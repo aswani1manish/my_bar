@@ -8,9 +8,14 @@ import base64
 from datetime import datetime
 import uuid
 from PIL import Image, UnidentifiedImageError
+from PIL.ImageOps import exif_transpose
 import io
 import json
+import re
 from config import Config
+
+# Supported image formats for saving
+SUPPORTED_IMAGE_FORMATS = ['JPEG', 'PNG', 'GIF']
 
 app = Flask(__name__)
 
@@ -107,8 +112,48 @@ def serialize_doc(doc):
             result[key] = value
     return result
 
+# Helper function to sanitize filename
+def sanitize_filename(filename):
+    """
+    Sanitize filename to prevent directory traversal and other security issues.
+    Preserves original filename while ensuring safety.
+    """
+    if not filename:
+        return None
+    
+    # Get the basename to prevent directory traversal
+    filename = os.path.basename(filename)
+    
+    # Remove any remaining path separators
+    filename = filename.replace('/', '_').replace('\\', '_')
+    
+    # Replace any potentially problematic characters but keep alphanumeric, dots, dashes, underscores
+    # Note: spaces are preserved, dot and hyphen don't need escaping at the end of character class
+    filename = re.sub(r'[^\w\s.-]', '_', filename)
+    
+    # Remove any leading/trailing whitespace or dots
+    filename = filename.strip().strip('.')
+    
+    # If filename is empty after sanitization, return None
+    if not filename:
+        return None
+    
+    return filename
+
 # Helper function to save base64 image
-def save_base64_image(base64_string, prefix='img'):
+def save_base64_image(base64_string, prefix='img', original_filename=None):
+    """
+    Save base64 image to disk, preserving original filename if provided.
+    Also preserves EXIF orientation metadata.
+    
+    Args:
+        base64_string: Base64 encoded image data
+        prefix: Prefix to use if no original filename (default: 'img')
+        original_filename: Original filename to preserve (optional)
+    
+    Returns:
+        Saved filename or None on error
+    """
     try:
         # Remove data URL prefix if present
         if ',' in base64_string:
@@ -118,17 +163,49 @@ def save_base64_image(base64_string, prefix='img'):
         image_data = base64.b64decode(base64_string)
         image = Image.open(io.BytesIO(image_data))
 
-        # Generate unique filename with UUID for security
-        unique_id = uuid.uuid4().hex[:12]
-        filename = f"{prefix}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{unique_id}.png"
+        # Preserve EXIF orientation by automatically rotating the image
+        # This ensures images display with correct orientation
+        image = exif_transpose(image)
+
+        # Determine filename
+        if original_filename:
+            # Sanitize the original filename
+            safe_filename = sanitize_filename(original_filename)
+            if safe_filename:
+                # Keep the original extension if present, otherwise use the image format
+                name_part, ext_part = os.path.splitext(safe_filename)
+                if not ext_part:
+                    # No extension, add one based on image format
+                    ext_part = f".{image.format.lower()}" if image.format else ".png"
+                filename = f"{name_part}{ext_part}"
+            else:
+                # Fallback if sanitization fails
+                filename = f"{prefix}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.png"
+        else:
+            # No original filename provided, use prefix with timestamp
+            filename = f"{prefix}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.png"
+
+        # Handle filename collisions by adding a counter
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        counter = 1
+        name_part, ext_part = os.path.splitext(filename)
+        while os.path.exists(filepath):
+            filename = f"{name_part}_{counter}{ext_part}"
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            counter += 1
 
         # Resize if too large (max 1024x1024)
         max_size = (1024, 1024)
         image.thumbnail(max_size, Image.Resampling.LANCZOS)
 
-        # Save image
-        image.save(filepath, 'PNG', optimize=True)
+        # Determine format for saving - preserve original format when possible
+        save_format = image.format if image.format in SUPPORTED_IMAGE_FORMATS else 'PNG'
+        
+        # Save image with appropriate options
+        if save_format == 'JPEG':
+            image.save(filepath, save_format, optimize=True, quality=85)
+        else:
+            image.save(filepath, save_format, optimize=True)
 
         return filename
     except (IOError, ValueError, UnidentifiedImageError) as e:
@@ -500,7 +577,17 @@ def create_recipe():
     if 'images' in data and data['images']:
         for img_data in data['images']:
             if img_data:
-                filename = save_base64_image(img_data, 'recipe')
+                # Check if image data includes filename (new format: {"data": "...", "filename": "..."})
+                if isinstance(img_data, dict) and 'data' in img_data:
+                    filename = save_base64_image(
+                        img_data['data'], 
+                        'recipe', 
+                        img_data.get('filename')
+                    )
+                else:
+                    # Legacy format: just base64 string
+                    filename = save_base64_image(img_data, 'recipe')
+                
                 if filename:
                     images.append(filename)
 
@@ -565,7 +652,18 @@ def update_recipe(recipe_id):
     # Handle new image uploads
     if 'images' in data and data['images']:
         for img_data in data['images']:
-            if img_data and img_data.startswith('data:'):
+            # Check if it's a new image (starts with 'data:' or is dict with data field)
+            if isinstance(img_data, dict) and 'data' in img_data:
+                # New format with filename
+                filename = save_base64_image(
+                    img_data['data'], 
+                    'recipe', 
+                    img_data.get('filename')
+                )
+                if filename:
+                    images.append(filename)
+            elif isinstance(img_data, str) and img_data.startswith('data:'):
+                # Legacy format: just base64 string
                 filename = save_base64_image(img_data, 'recipe')
                 if filename:
                     images.append(filename)
@@ -768,7 +866,18 @@ def update_collection(collection_id):
     # Handle new image uploads
     if 'images' in data and data['images']:
         for img_data in data['images']:
-            if img_data and img_data.startswith('data:'):
+            # Check if it's a new image (starts with 'data:' or is dict with data field)
+            if isinstance(img_data, dict) and 'data' in img_data:
+                # New format with filename
+                filename = save_base64_image(
+                    img_data['data'], 
+                    'collection', 
+                    img_data.get('filename')
+                )
+                if filename:
+                    images.append(filename)
+            elif isinstance(img_data, str) and img_data.startswith('data:'):
+                # Legacy format: just base64 string
                 filename = save_base64_image(img_data, 'collection')
                 if filename:
                     images.append(filename)

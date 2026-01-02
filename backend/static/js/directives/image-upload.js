@@ -60,12 +60,24 @@ app.directive('imageUpload', function() {
                 if (newVal && Array.isArray(newVal)) {
                     console.log('[ImageUpload] Initializing with existing images:', newVal);
                     scope.displayImages = newVal.map(function(img) {
-                        return {
-                            url: scope.apiUrl + '/uploads/' + img,
-                            filename: img,
-                            isExisting: true
-                        };
-                    });
+                        // Handle both string filenames and objects with data/filename
+                        if (typeof img === 'string') {
+                            return {
+                                url: scope.apiUrl + '/uploads/' + img,
+                                filename: img,
+                                isExisting: true
+                            };
+                        } else if (img && img.filename) {
+                            // Already in the new format
+                            return {
+                                url: img.data || (scope.apiUrl + '/uploads/' + img.filename),
+                                filename: img.filename,
+                                data: img.data,
+                                isExisting: !img.data
+                            };
+                        }
+                        return null;
+                    }).filter(function(img) { return img !== null; });
                 }
             }, true);
             
@@ -92,12 +104,14 @@ app.directive('imageUpload', function() {
                             console.log('[ImageUpload] File read complete for:', file.name);
                             scope.$apply(function() {
                                 var imageData = e.target.result;
-                                scope.displayImages.push({
+                                var imageObj = {
                                     url: imageData,
                                     data: imageData,
+                                    filename: file.name,
                                     isExisting: false
-                                });
-                                scope.newImages.push(imageData);
+                                };
+                                scope.displayImages.push(imageObj);
+                                scope.newImages.push(imageObj);
                                 scope.updateImagesModel();
                                 console.log('[ImageUpload] Image added to displayImages, total count:', scope.displayImages.length);
                             });
@@ -132,9 +146,18 @@ app.directive('imageUpload', function() {
             };
             
             scope.updateImagesModel = function() {
-                // Update the images model with all images (existing filenames + new base64)
+                // Update the images model with all images
+                // For existing images: just the filename string
+                // For new images: object with data and filename
                 scope.images = scope.displayImages.map(function(img) {
-                    return img.isExisting ? img.filename : img.data;
+                    if (img.isExisting) {
+                        return img.filename;
+                    } else {
+                        return {
+                            data: img.data,
+                            filename: img.filename
+                        };
+                    }
                 });
                 console.log('[ImageUpload] Images model updated, count:', scope.images.length);
             };
