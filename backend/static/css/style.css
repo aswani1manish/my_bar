@@ -193,6 +193,14 @@ h6 {
         padding: 0.25rem 0.4rem;
         font-size: 0.8rem;
     }
+    
+    /* Allow navbar brand text to wrap on mobile */
+    .navbar-brand {
+        white-space: normal !important;
+        line-height: 1.2;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
 }
 
 /* Loading spinner */
