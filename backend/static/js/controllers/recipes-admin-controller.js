@@ -156,14 +156,21 @@ app.controller('RecipesAdminController', ['$scope', '$q', 'ApiService', 'API_URL
                     updatedRecipeIds.splice(recipeIndex, 1);
                 }
 
-                // Update the collection
+                // Update the collection with error handling
                 var updatedCollection = angular.copy(collection);
                 updatedCollection.recipe_ids = updatedRecipeIds;
-                updatePromises.push(ApiService.updateCollection(collection.id, updatedCollection));
+                var updatePromise = ApiService.updateCollection(collection.id, updatedCollection)
+                    .catch(function(error) {
+                        console.error('Error updating collection ' + collection.name + ':', error);
+                        // Return null to indicate failure but allow other updates to continue
+                        return null;
+                    });
+                updatePromises.push(updatePromise);
             }
         });
 
         // Return a promise that resolves when all updates complete
+        // Even if some fail, the promise will resolve (failed updates return null)
         return $q.all(updatePromises);
     };
 
