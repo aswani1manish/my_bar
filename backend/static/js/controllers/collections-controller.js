@@ -243,7 +243,7 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
             }, 2000);
         }, function(error) {
             $scope.savingCollection = false;
-            $scope.saveError = 'Error saving: ' + (error.data?.error || 'Unknown error');
+            $scope.saveError = 'Error saving: ' + (error.data && error.data.error || 'Unknown error');
             console.error('Error updating collection:', error);
             
             // Clear error after 3 seconds
