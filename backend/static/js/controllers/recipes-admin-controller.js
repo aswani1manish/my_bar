@@ -1,4 +1,4 @@
-app.controller('RecipesAdminController', ['$scope', 'ApiService', 'API_URL', function($scope, ApiService, API_URL) {
+app.controller('RecipesAdminController', ['$scope', '$q', 'ApiService', 'API_URL', function($scope, $q, ApiService, API_URL) {
     $scope.currentRecipe = {};
     $scope.isEditing = false;
     $scope.lookupId = '';
@@ -164,7 +164,7 @@ app.controller('RecipesAdminController', ['$scope', 'ApiService', 'API_URL', fun
         });
 
         // Return a promise that resolves when all updates complete
-        return Promise.all(updatePromises);
+        return $q.all(updatePromises);
     };
 
     // Delete recipe
