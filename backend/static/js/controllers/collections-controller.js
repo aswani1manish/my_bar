@@ -11,10 +11,11 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     
     // Recipe management variables
     $scope.selectedCollectionId = '';
-    $scope.recipeCollectionSearchQuery = '';
+    $scope.searchInCollection = '';
+    $scope.searchNotInCollection = '';
     $scope.filteredRecipesInCollection = [];
+    $scope.filteredRecipesNotInCollection = [];
     $scope.recipeSelection = {};
-    $scope.selectAll = false;
     $scope.savingCollection = false;
     $scope.saveMessage = '';
     $scope.saveError = '';
@@ -48,11 +49,12 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     $scope.onCollectionSelect = function() {
         $scope.saveMessage = '';
         $scope.saveError = '';
-        $scope.recipeCollectionSearchQuery = '';
-        $scope.selectAll = false;
+        $scope.searchInCollection = '';
+        $scope.searchNotInCollection = '';
         
         if (!$scope.selectedCollectionId) {
             $scope.filteredRecipesInCollection = [];
+            $scope.filteredRecipesNotInCollection = [];
             $scope.recipeSelection = {};
             return;
         }
@@ -76,16 +78,22 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
         
         // Initialize filtered recipes
         $scope.filterRecipesInCollection();
+        $scope.filterRecipesNotInCollection();
     };
     
-    // Filter recipes based on search query
+    // Filter recipes IN the collection based on search query
     $scope.filterRecipesInCollection = function() {
-        var query = ($scope.recipeCollectionSearchQuery || '').toLowerCase();
-        console.log('parameter is:' + query);
+        var query = ($scope.searchInCollection || '').toLowerCase();
+        
+        // Get all recipes that are in the collection
+        var recipesInCollection = $scope.recipes.filter(function(recipe) {
+            return $scope.recipeSelection[recipe.id] === true;
+        });
+        
         if (!query) {
-            $scope.filteredRecipesInCollection = angular.copy($scope.recipes);
+            $scope.filteredRecipesInCollection = recipesInCollection;
         } else {
-            $scope.filteredRecipesInCollection = $scope.recipes.filter(function(recipe) {
+            $scope.filteredRecipesInCollection = recipesInCollection.filter(function(recipe) {
                 // Search by ID
                 if (recipe.id.toString().indexOf(query) !== -1) {
                     return true;
@@ -105,16 +113,40 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
                 return false;
             });
         }
+    };
+    
+    // Filter recipes NOT in the collection based on search query
+    $scope.filterRecipesNotInCollection = function() {
+        var query = ($scope.searchNotInCollection || '').toLowerCase();
         
-        // Sort filtered recipes: recipes in collection first, then others
-        $scope.filteredRecipesInCollection.sort(function(a, b) {
-            var aInCollection = ($scope.recipeSelection && $scope.recipeSelection[a.id]) ? 1 : 0;
-            var bInCollection = ($scope.recipeSelection && $scope.recipeSelection[b.id]) ? 1 : 0;
-            
-            // Sort descending by collection membership (in collection = 1, not in = 0)
-            // This puts recipes with 1 (in collection) before those with 0 (not in)
-            return bInCollection - aInCollection;
+        // Get all recipes that are NOT in the collection
+        var recipesNotInCollection = $scope.recipes.filter(function(recipe) {
+            return !$scope.recipeSelection[recipe.id];
         });
+        
+        if (!query) {
+            $scope.filteredRecipesNotInCollection = recipesNotInCollection;
+        } else {
+            $scope.filteredRecipesNotInCollection = recipesNotInCollection.filter(function(recipe) {
+                // Search by ID
+                if (recipe.id.toString().indexOf(query) !== -1) {
+                    return true;
+                }
+                
+                // Search by name
+                if (recipe.name && recipe.name.toLowerCase().indexOf(query) !== -1) {
+                    return true;
+                }
+                
+                // Search by ingredients
+                var ingredientsList = $scope.getIngredientsList(recipe).toLowerCase();
+                if (ingredientsList.indexOf(query) !== -1) {
+                    return true;
+                }
+                
+                return false;
+            });
+        }
     };
     
     // Get ingredients list as comma-separated string
@@ -128,16 +160,19 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
         }).join(', ');
     };
     
-    // Toggle all recipes selection
-    $scope.toggleAllRecipes = function() {
-        $scope.filteredRecipesInCollection.forEach(function(recipe) {
-            $scope.recipeSelection[recipe.id] = $scope.selectAll;
-        });
+    // Handle checkbox change - auto-save
+    $scope.onRecipeCheckboxChange = function(recipeId) {
+        // Refresh the filtered lists
+        $scope.filterRecipesInCollection();
+        $scope.filterRecipesNotInCollection();
+        
+        // Auto-save the changes
+        $scope.autoSaveCollectionRecipes();
     };
     
-    // Save collection recipes
-    $scope.saveCollectionRecipes = function() {
-        if (!$scope.selectedCollectionId) {
+    // Auto-save collection recipes
+    $scope.autoSaveCollectionRecipes = function() {
+        if (!$scope.selectedCollectionId || $scope.savingCollection) {
             return;
         }
         
@@ -176,19 +211,24 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
         // Update collection
         ApiService.updateCollection($scope.selectedCollectionId, updateData).then(function(response) {
             $scope.savingCollection = false;
-            $scope.saveMessage = 'Collection updated successfully!';
+            $scope.saveMessage = 'Changes saved automatically';
             
             // Reload collections to reflect changes
             $scope.loadCollections();
             
-            // Clear message after 3 seconds
+            // Clear message after 2 seconds
             $timeout(function() {
                 $scope.saveMessage = '';
-            }, 3000);
+            }, 2000);
         }, function(error) {
             $scope.savingCollection = false;
-            $scope.saveError = 'Error updating collection: ' + (error.data?.error || 'Unknown error');
+            $scope.saveError = 'Error saving: ' + (error.data?.error || 'Unknown error');
             console.error('Error updating collection:', error);
+            
+            // Clear error after 3 seconds
+            $timeout(function() {
+                $scope.saveError = '';
+            }, 3000);
         });
     };
 
