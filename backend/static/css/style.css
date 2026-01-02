@@ -162,17 +162,17 @@ body {
     cursor: pointer;
 }
 
-/* Equal height cards for About page */
-.row {
+/* Equal height cards - use this class for rows that need equal height children */
+.equal-height-row {
     display: flex;
     flex-wrap: wrap;
 }
 
-.row > [class*='col-'] {
+.equal-height-row > [class*='col-'] {
     display: flex;
     flex-direction: column;
 }
 
-.row > [class*='col-'] > .card {
+.equal-height-row > [class*='col-'] > .card {
     flex: 1;
 }
