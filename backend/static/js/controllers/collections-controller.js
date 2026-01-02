@@ -11,7 +11,7 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     
     // Recipe management variables
     $scope.selectedCollectionId = '';
-    $scope.recipeSearchQuery = '';
+    $scope.recipeCollectionSearchQuery = '';
     $scope.filteredRecipes = [];
     $scope.recipeSelection = {};
     $scope.selectAll = false;
@@ -48,7 +48,7 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     $scope.onCollectionSelect = function() {
         $scope.saveMessage = '';
         $scope.saveError = '';
-        $scope.recipeSearchQuery = '';
+        $scope.recipeCollectionSearchQuery = '';
         $scope.selectAll = false;
         
         if (!$scope.selectedCollectionId) {
