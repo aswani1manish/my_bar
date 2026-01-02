@@ -10,7 +10,7 @@ app.directive('imageUpload', function() {
             <div class="mb-3">
                 <label class="form-label">Images</label>
                 
-                <!-- Upload Area -->
+                <!-- Image Selection Area -->
                 <div class="image-upload-container" ng-click="triggerFileInput()">
                     <input type="file" id="file-input-{{$id}}" multiple accept="image/*" 
                            style="display: none;">
