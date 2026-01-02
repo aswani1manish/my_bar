@@ -19,6 +19,8 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     $scope.savingCollection = false;
     $scope.saveMessage = '';
     $scope.saveError = '';
+    $scope.saveTimeout = null; // For debouncing auto-save
+    $scope.pendingSave = false; // Flag to track if save is needed after current save completes
 
     // Load all collections
     $scope.loadCollections = function() {
@@ -160,23 +162,42 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
         }).join(', ');
     };
     
-    // Handle checkbox change - auto-save
+    // Handle checkbox change - auto-save with debounce
     $scope.onRecipeCheckboxChange = function(recipeId) {
-        // Refresh the filtered lists
+        // Refresh the filtered lists immediately for responsive UI
         $scope.filterRecipesInCollection();
         $scope.filterRecipesNotInCollection();
         
-        // Auto-save the changes
-        $scope.autoSaveCollectionRecipes();
+        // Debounce auto-save to handle rapid changes
+        // This ensures we wait until user stops clicking before saving
+        if ($scope.saveTimeout) {
+            $timeout.cancel($scope.saveTimeout);
+        }
+        
+        $scope.saveTimeout = $timeout(function() {
+            // If a save is in progress, schedule another save after it completes
+            if ($scope.savingCollection) {
+                $scope.pendingSave = true;
+            } else {
+                $scope.autoSaveCollectionRecipes();
+            }
+        }, 500); // Wait 500ms after last change before saving
     };
     
     // Auto-save collection recipes
     $scope.autoSaveCollectionRecipes = function() {
-        if (!$scope.selectedCollectionId || $scope.savingCollection) {
+        if (!$scope.selectedCollectionId) {
+            return;
+        }
+        
+        // If already saving, mark that we need another save
+        if ($scope.savingCollection) {
+            $scope.pendingSave = true;
             return;
         }
         
         $scope.savingCollection = true;
+        $scope.pendingSave = false;
         $scope.saveMessage = '';
         $scope.saveError = '';
         
@@ -213,8 +234,16 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
             $scope.savingCollection = false;
             $scope.saveMessage = 'Changes saved automatically';
             
-            // Reload collections to reflect changes
-            $scope.loadCollections();
+            // Update the local collection data instead of reloading all collections
+            collection.recipe_ids = selectedRecipeIds;
+            
+            // If there's a pending save, trigger it
+            if ($scope.pendingSave) {
+                $scope.pendingSave = false;
+                $timeout(function() {
+                    $scope.autoSaveCollectionRecipes();
+                }, 100);
+            }
             
             // Clear message after 2 seconds
             $timeout(function() {

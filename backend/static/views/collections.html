@@ -58,7 +58,7 @@
                                 <tr ng-repeat="recipe in filteredRecipesInCollection" class="table-light">
                                     <td>
                                         <input type="checkbox" ng-model="recipeSelection[recipe.id]" 
-                                               ng-change="onRecipeCheckboxChange(recipe.id)" checked>
+                                               ng-change="onRecipeCheckboxChange(recipe.id)">
                                     </td>
                                     <td>{{recipe.id}}</td>
                                     <td>{{recipe.name}}</td>
