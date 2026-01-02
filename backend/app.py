@@ -342,6 +342,47 @@ def get_ingredient(ingredient_id):
 #         return jsonify({'message': 'Ingredient deleted successfully'})
 #     return jsonify({'error': 'Ingredient not found'}), 404
 
+@app.route('/api/ingredients/<int:ingredient_id>/bar-shelf', methods=['PATCH'])
+def update_ingredient_bar_shelf(ingredient_id):
+    """Update only the bar_shelf_availability field for an ingredient"""
+    data = request.json
+    bar_shelf_availability = data.get('bar_shelf_availability')
+    
+    # Validate input
+    if bar_shelf_availability not in ['Y', 'N']:
+        return jsonify({'error': 'bar_shelf_availability must be either "Y" or "N"'}), 400
+    
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    # Check if ingredient exists
+    cursor.execute("SELECT id FROM ingredients WHERE id = %s", (ingredient_id,))
+    if not cursor.fetchone():
+        cursor.close()
+        conn.close()
+        return jsonify({'error': 'Ingredient not found'}), 404
+    
+    # Update bar_shelf_availability
+    cursor.execute(
+        "UPDATE ingredients SET bar_shelf_availability = %s WHERE id = %s",
+        (bar_shelf_availability, ingredient_id)
+    )
+    conn.commit()
+    
+    # Fetch updated ingredient
+    cursor.execute("SELECT * FROM ingredients WHERE id = %s", (ingredient_id,))
+    ingredient = cursor.fetchone()
+    
+    cursor.close()
+    conn.close()
+    
+    if ingredient:
+        # Parse JSON fields
+        ingredient['tags'] = parse_json_field(ingredient.get('tags'))
+        ingredient['images'] = parse_json_field(ingredient.get('images'))
+        return jsonify(serialize_doc(ingredient))
+    return jsonify({'error': 'Ingredient not found'}), 404
+
 # ============= RECIPES ENDPOINTS =============
 
 @app.route('/api/recipes', methods=['GET'])

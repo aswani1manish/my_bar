@@ -93,6 +93,18 @@ app.controller('IngredientsController', ['$scope', 'ApiService', 'API_URL', func
         return API_URL + '/uploads/' + filename;
     };
 
+    // Toggle bar shelf availability
+    $scope.toggleBarShelf = function(ingredient) {
+        var newValue = ingredient.bar_shelf_availability === 'Y' ? 'N' : 'Y';
+        ApiService.updateIngredientBarShelf(ingredient.id, newValue).then(function(response) {
+            ingredient.bar_shelf_availability = newValue;
+            console.log('Bar shelf availability updated for ' + ingredient.name + ': ' + newValue);
+        }, function(error) {
+            console.error('Error updating bar shelf availability:', error);
+            alert('Error updating bar shelf availability');
+        });
+    };
+
     // // Reset form
     // $scope.resetForm = function() {
     //     $scope.currentIngredient = {
