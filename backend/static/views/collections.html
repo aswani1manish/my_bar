@@ -18,7 +18,7 @@
                     <label class="form-label"><strong>Select Collection:</strong></label>
                     <select class="form-select" ng-model="selectedCollectionId" ng-change="onCollectionSelect()">
                         <option value="">-- Select a Collection --</option>
-                        <option ng-repeat="collection in collections" value="{{collection.id}}">
+                        <option ng-repeat="collection in collections" ng-value="collection.id">
                             {{collection.name}}
                         </option>
                     </select>

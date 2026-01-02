@@ -1,4 +1,4 @@
-app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', function($scope, ApiService, API_URL) {
+app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'API_URL', function($scope, $timeout, ApiService, API_URL) {
     $scope.collections = [];
     $scope.recipes = [];
     $scope.currentCollection = {};
@@ -59,7 +59,7 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
         
         // Find selected collection
         var collection = $scope.collections.find(function(c) {
-            return c.id == $scope.selectedCollectionId;
+            return c.id === $scope.selectedCollectionId;
         });
         
         if (!collection) {
@@ -145,7 +145,7 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
         
         // Find the collection
         var collection = $scope.collections.find(function(c) {
-            return c.id == $scope.selectedCollectionId;
+            return c.id === $scope.selectedCollectionId;
         });
         
         if (!collection) {
@@ -172,10 +172,8 @@ app.controller('CollectionsController', ['$scope', 'ApiService', 'API_URL', func
             $scope.loadCollections();
             
             // Clear message after 3 seconds
-            setTimeout(function() {
-                $scope.$apply(function() {
-                    $scope.saveMessage = '';
-                });
+            $timeout(function() {
+                $scope.saveMessage = '';
             }, 3000);
         }, function(error) {
             $scope.savingCollection = false;
