@@ -161,3 +161,18 @@ body {
 .bar-shelf-switch label {
     cursor: pointer;
 }
+
+/* Equal height cards for About page */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.row > [class*='col-'] {
+    display: flex;
+    flex-direction: column;
+}
+
+.row > [class*='col-'] > .card {
+    flex: 1;
+}
