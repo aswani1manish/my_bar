@@ -79,13 +79,13 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     };
     
     // Filter recipes based on search query
-    $scope.filterRecipes = function() {
-        var query = ($scope.recipeSearchQuery || '').toLowerCase();
-        console.log($scope.recipeSearchQuery);
+    $scope.filterRecipesInCollection = function() {
+        var query = ($scope.recipeCollectionSearchQuery || '').toLowerCase();
+        console.log($scope.recipeCollectionSearchQuery);
         if (!query) {
-            $scope.filteredRecipes = angular.copy($scope.recipes);
+            $scope.filteredRecipesInCollection = angular.copy($scope.recipes);
         } else {
-            $scope.filteredRecipes = $scope.recipes.filter(function(recipe) {
+            $scope.filteredRecipesInCollection = $scope.recipes.filter(function(recipe) {
                 // Search by ID
                 if (recipe.id.toString().indexOf(query) !== -1) {
                     return true;
@@ -107,7 +107,7 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
         }
         
         // Sort filtered recipes: recipes in collection first, then others
-        $scope.filteredRecipes.sort(function(a, b) {
+        $scope.filteredRecipesInCollection.sort(function(a, b) {
             var aInCollection = ($scope.recipeSelection && $scope.recipeSelection[a.id]) ? 1 : 0;
             var bInCollection = ($scope.recipeSelection && $scope.recipeSelection[b.id]) ? 1 : 0;
             
