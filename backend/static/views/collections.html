@@ -47,7 +47,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="recipe in filteredRecipes">
+                                <tr ng-repeat="recipe in filteredRecipes" ng-class="{'table-primary': recipeSelection[recipe.id]}">
                                     <td>
                                         <input type="checkbox" ng-model="recipeSelection[recipe.id]">
                                     </td>
