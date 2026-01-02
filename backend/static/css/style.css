@@ -161,3 +161,18 @@ body {
 .bar-shelf-switch label {
     cursor: pointer;
 }
+
+/* Equal height cards - use this class for rows that need equal height children */
+.equal-height-row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.equal-height-row > [class*='col-'] {
+    display: flex;
+    flex-direction: column;
+}
+
+.equal-height-row > [class*='col-'] > .card {
+    flex: 1;
+}
