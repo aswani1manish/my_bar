@@ -105,6 +105,16 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
                 return false;
             });
         }
+        
+        // Sort filtered recipes: recipes in collection first, then others
+        $scope.filteredRecipes.sort(function(a, b) {
+            var aInCollection = ($scope.recipeSelection && $scope.recipeSelection[a.id]) ? 1 : 0;
+            var bInCollection = ($scope.recipeSelection && $scope.recipeSelection[b.id]) ? 1 : 0;
+            
+            // Sort descending by collection membership (in collection = 1, not in = 0)
+            // This puts recipes with 1 (in collection) before those with 0 (not in)
+            return bInCollection - aInCollection;
+        });
     };
     
     // Get ingredients list as comma-separated string
