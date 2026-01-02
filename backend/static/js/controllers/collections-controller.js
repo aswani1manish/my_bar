@@ -11,13 +11,16 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     
     // Recipe management variables
     $scope.selectedCollectionId = '';
-    $scope.recipeCollectionSearchQuery = '';
+    $scope.searchInCollection = '';
+    $scope.searchNotInCollection = '';
     $scope.filteredRecipesInCollection = [];
+    $scope.filteredRecipesNotInCollection = [];
     $scope.recipeSelection = {};
-    $scope.selectAll = false;
     $scope.savingCollection = false;
     $scope.saveMessage = '';
     $scope.saveError = '';
+    $scope.saveTimeout = null; // For debouncing auto-save
+    $scope.pendingSave = false; // Flag to track if save is needed after current save completes
 
     // Load all collections
     $scope.loadCollections = function() {
@@ -48,11 +51,12 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     $scope.onCollectionSelect = function() {
         $scope.saveMessage = '';
         $scope.saveError = '';
-        $scope.recipeCollectionSearchQuery = '';
-        $scope.selectAll = false;
+        $scope.searchInCollection = '';
+        $scope.searchNotInCollection = '';
         
         if (!$scope.selectedCollectionId) {
             $scope.filteredRecipesInCollection = [];
+            $scope.filteredRecipesNotInCollection = [];
             $scope.recipeSelection = {};
             return;
         }
@@ -76,45 +80,66 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
         
         // Initialize filtered recipes
         $scope.filterRecipesInCollection();
+        $scope.filterRecipesNotInCollection();
     };
     
-    // Filter recipes based on search query
-    $scope.filterRecipesInCollection = function() {
-        var query = ($scope.recipeCollectionSearchQuery || '').toLowerCase();
-        console.log('parameter is:' + query);
-        if (!query) {
-            $scope.filteredRecipesInCollection = angular.copy($scope.recipes);
-        } else {
-            $scope.filteredRecipesInCollection = $scope.recipes.filter(function(recipe) {
-                // Search by ID
-                if (recipe.id.toString().indexOf(query) !== -1) {
-                    return true;
-                }
-                
-                // Search by name
-                if (recipe.name && recipe.name.toLowerCase().indexOf(query) !== -1) {
-                    return true;
-                }
-                
-                // Search by ingredients
-                var ingredientsList = $scope.getIngredientsList(recipe).toLowerCase();
-                if (ingredientsList.indexOf(query) !== -1) {
-                    return true;
-                }
-                
-                return false;
-            });
+    // Helper function to check if recipe matches search query
+    $scope.recipeMatchesQuery = function(recipe, query) {
+        if (!query) return true;
+        
+        // Search by ID
+        if (recipe.id.toString().indexOf(query) !== -1) {
+            return true;
         }
         
-        // Sort filtered recipes: recipes in collection first, then others
-        $scope.filteredRecipesInCollection.sort(function(a, b) {
-            var aInCollection = ($scope.recipeSelection && $scope.recipeSelection[a.id]) ? 1 : 0;
-            var bInCollection = ($scope.recipeSelection && $scope.recipeSelection[b.id]) ? 1 : 0;
-            
-            // Sort descending by collection membership (in collection = 1, not in = 0)
-            // This puts recipes with 1 (in collection) before those with 0 (not in)
-            return bInCollection - aInCollection;
+        // Search by name
+        if (recipe.name && recipe.name.toLowerCase().indexOf(query) !== -1) {
+            return true;
+        }
+        
+        // Search by ingredients
+        var ingredientsList = $scope.getIngredientsList(recipe).toLowerCase();
+        if (ingredientsList.indexOf(query) !== -1) {
+            return true;
+        }
+        
+        return false;
+    };
+    
+    // Filter recipes IN the collection based on search query
+    $scope.filterRecipesInCollection = function() {
+        var query = ($scope.searchInCollection || '').toLowerCase();
+        
+        // Get all recipes that are in the collection
+        var recipesInCollection = $scope.recipes.filter(function(recipe) {
+            return $scope.recipeSelection[recipe.id] === true;
         });
+        
+        if (!query) {
+            $scope.filteredRecipesInCollection = recipesInCollection;
+        } else {
+            $scope.filteredRecipesInCollection = recipesInCollection.filter(function(recipe) {
+                return $scope.recipeMatchesQuery(recipe, query);
+            });
+        }
+    };
+    
+    // Filter recipes NOT in the collection based on search query
+    $scope.filterRecipesNotInCollection = function() {
+        var query = ($scope.searchNotInCollection || '').toLowerCase();
+        
+        // Get all recipes that are NOT in the collection
+        var recipesNotInCollection = $scope.recipes.filter(function(recipe) {
+            return !$scope.recipeSelection[recipe.id];
+        });
+        
+        if (!query) {
+            $scope.filteredRecipesNotInCollection = recipesNotInCollection;
+        } else {
+            $scope.filteredRecipesNotInCollection = recipesNotInCollection.filter(function(recipe) {
+                return $scope.recipeMatchesQuery(recipe, query);
+            });
+        }
     };
     
     // Get ingredients list as comma-separated string
@@ -128,20 +153,42 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
         }).join(', ');
     };
     
-    // Toggle all recipes selection
-    $scope.toggleAllRecipes = function() {
-        $scope.filteredRecipesInCollection.forEach(function(recipe) {
-            $scope.recipeSelection[recipe.id] = $scope.selectAll;
-        });
+    // Handle checkbox change - auto-save with debounce
+    $scope.onRecipeCheckboxChange = function(recipeId) {
+        // Refresh the filtered lists immediately for responsive UI
+        $scope.filterRecipesInCollection();
+        $scope.filterRecipesNotInCollection();
+        
+        // Debounce auto-save to handle rapid changes
+        // This ensures we wait until user stops clicking before saving
+        if ($scope.saveTimeout) {
+            $timeout.cancel($scope.saveTimeout);
+        }
+        
+        $scope.saveTimeout = $timeout(function() {
+            // If a save is in progress, schedule another save after it completes
+            if ($scope.savingCollection) {
+                $scope.pendingSave = true;
+            } else {
+                $scope.autoSaveCollectionRecipes();
+            }
+        }, 500); // Wait 500ms after last change before saving
     };
     
-    // Save collection recipes
-    $scope.saveCollectionRecipes = function() {
+    // Auto-save collection recipes
+    $scope.autoSaveCollectionRecipes = function() {
         if (!$scope.selectedCollectionId) {
             return;
         }
         
+        // If already saving, mark that we need another save
+        if ($scope.savingCollection) {
+            $scope.pendingSave = true;
+            return;
+        }
+        
         $scope.savingCollection = true;
+        $scope.pendingSave = false;
         $scope.saveMessage = '';
         $scope.saveError = '';
         
@@ -176,19 +223,33 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
         // Update collection
         ApiService.updateCollection($scope.selectedCollectionId, updateData).then(function(response) {
             $scope.savingCollection = false;
-            $scope.saveMessage = 'Collection updated successfully!';
+            $scope.saveMessage = 'Changes saved automatically';
             
-            // Reload collections to reflect changes
-            $scope.loadCollections();
+            // Update the local collection data instead of reloading all collections
+            collection.recipe_ids = selectedRecipeIds;
             
-            // Clear message after 3 seconds
+            // If there's a pending save, trigger it after a short delay
+            // The delay allows the UI to update and prevents rapid consecutive API calls
+            if ($scope.pendingSave) {
+                $scope.pendingSave = false;
+                $timeout(function() {
+                    $scope.autoSaveCollectionRecipes();
+                }, 100); // 100ms delay to ensure UI stability
+            }
+            
+            // Clear message after 2 seconds
             $timeout(function() {
                 $scope.saveMessage = '';
-            }, 3000);
+            }, 2000);
         }, function(error) {
             $scope.savingCollection = false;
-            $scope.saveError = 'Error updating collection: ' + (error.data?.error || 'Unknown error');
+            $scope.saveError = 'Error saving: ' + (error.data && error.data.error || 'Unknown error');
             console.error('Error updating collection:', error);
+            
+            // Clear error after 3 seconds
+            $timeout(function() {
+                $scope.saveError = '';
+            }, 3000);
         });
     };
 
