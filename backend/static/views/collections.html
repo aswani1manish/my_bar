@@ -1,6 +1,12 @@
 <div class="row">
     <div class="col-12">
-        <h2><i class="fas fa-folder-open"></i> Collections Management</h2>
+        <h2 class="d-inline-block"><i class="fas fa-folder-open"></i> Collections Management</h2>
+        <span ng-if="saveMessage" class="text-success ms-3">
+            <i class="fas fa-check-circle"></i> {{ saveMessage }}
+        </span>
+        <span ng-if="saveError" class="text-danger ms-3">
+            <i class="fas fa-exclamation-circle"></i> {{ saveError }}
+        </span>
         <hr>
     </div>
 </div>
@@ -22,16 +28,6 @@
                             {{collection.name}}
                         </option>
                     </select>
-                </div>
-
-                <!-- Status Messages -->
-                <div ng-if="selectedCollectionId" class="mb-3">
-                    <span ng-if="saveMessage" class="text-success">
-                        <i class="fas fa-check-circle"></i> {{ saveMessage }}
-                    </span>
-                    <span ng-if="saveError" class="text-danger">
-                        <i class="fas fa-exclamation-circle"></i> {{ saveError }}
-                    </span>
                 </div>
 
                 <!-- Recipes IN Collection Table -->

@@ -49,6 +49,7 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     
     // Handle collection selection
     $scope.onCollectionSelect = function() {
+        console.log('[onCollectionSelect] Selected collection ID:', $scope.selectedCollectionId);
         $scope.saveMessage = '';
         $scope.saveError = '';
         $scope.searchInCollection = '';
@@ -67,8 +68,11 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
         });
         
         if (!collection) {
+            console.log('[onCollectionSelect] Collection not found');
             return;
         }
+        
+        console.log('[onCollectionSelect] Collection found:', collection.name, 'with', collection.recipe_ids.length, 'recipes');
         
         // Initialize recipe selection based on collection's recipe_ids
         $scope.recipeSelection = {};
@@ -77,6 +81,8 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
         $scope.recipes.forEach(function(recipe) {
             $scope.recipeSelection[recipe.id] = recipeIds.indexOf(recipe.id) !== -1;
         });
+        
+        console.log('[onCollectionSelect] Recipe selection initialized, total recipes:', $scope.recipes.length);
         
         // Initialize filtered recipes
         $scope.filterRecipesInCollection();
@@ -87,33 +93,41 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     $scope.recipeMatchesQuery = function(recipe, query) {
         if (!query) return true;
         
+        console.log('[recipeMatchesQuery] Checking recipe:', recipe.id, recipe.name, 'against query:', query);
+        
         // Search by ID
         if (recipe.id.toString().indexOf(query) !== -1) {
+            console.log('[recipeMatchesQuery] Matched by ID');
             return true;
         }
         
         // Search by name
         if (recipe.name && recipe.name.toLowerCase().indexOf(query) !== -1) {
+            console.log('[recipeMatchesQuery] Matched by name');
             return true;
         }
         
         // Search by ingredients
         var ingredientsList = $scope.getIngredientsList(recipe).toLowerCase();
         if (ingredientsList.indexOf(query) !== -1) {
+            console.log('[recipeMatchesQuery] Matched by ingredients');
             return true;
         }
         
+        console.log('[recipeMatchesQuery] No match found');
         return false;
     };
     
     // Filter recipes IN the collection based on search query
     $scope.filterRecipesInCollection = function() {
         var query = ($scope.searchInCollection || '').toLowerCase();
+        console.log('[filterRecipesInCollection] Search query:', query);
         
         // Get all recipes that are in the collection
         var recipesInCollection = $scope.recipes.filter(function(recipe) {
             return $scope.recipeSelection[recipe.id] === true;
         });
+        console.log('[filterRecipesInCollection] Recipes in collection (before filter):', recipesInCollection.length);
         
         if (!query) {
             $scope.filteredRecipesInCollection = recipesInCollection;
@@ -122,16 +136,19 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
                 return $scope.recipeMatchesQuery(recipe, query);
             });
         }
+        console.log('[filterRecipesInCollection] Filtered recipes count:', $scope.filteredRecipesInCollection.length);
     };
     
     // Filter recipes NOT in the collection based on search query
     $scope.filterRecipesNotInCollection = function() {
         var query = ($scope.searchNotInCollection || '').toLowerCase();
+        console.log('[filterRecipesNotInCollection] Search query:', query);
         
         // Get all recipes that are NOT in the collection
         var recipesNotInCollection = $scope.recipes.filter(function(recipe) {
             return !$scope.recipeSelection[recipe.id];
         });
+        console.log('[filterRecipesNotInCollection] Recipes not in collection (before filter):', recipesNotInCollection.length);
         
         if (!query) {
             $scope.filteredRecipesNotInCollection = recipesNotInCollection;
@@ -140,6 +157,7 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
                 return $scope.recipeMatchesQuery(recipe, query);
             });
         }
+        console.log('[filterRecipesNotInCollection] Filtered recipes count:', $scope.filteredRecipesNotInCollection.length);
     };
     
     // Get ingredients list as comma-separated string
