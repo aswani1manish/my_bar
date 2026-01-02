@@ -409,7 +409,7 @@ def get_recipes():
         for recipe in recipes:
             ingredients = recipe.get('ingredients')
             # Only include recipes that have ingredients
-            if ingredients and len(ingredients) > 0:
+            if ingredients:
                 # Check if all ingredients are available on bar shelf
                 all_available = True
                 for ingredient in ingredients:

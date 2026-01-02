@@ -29,9 +29,13 @@ def setup_test_data():
         cursor = conn.cursor()
         
         # Clean up any existing test data
-        cursor.execute("DELETE FROM recipes WHERE name LIKE 'Test Recipe%'")
-        cursor.execute("DELETE FROM ingredients WHERE name LIKE 'Test Ingredient%'")
-        conn.commit()
+        try:
+            cursor.execute("DELETE FROM recipes WHERE name LIKE 'Test Recipe%'")
+            cursor.execute("DELETE FROM ingredients WHERE name LIKE 'Test Ingredient%'")
+            conn.commit()
+        except mysql.connector.Error as e:
+            print(f"  Note: Error during initial cleanup (may be expected): {e}")
+            conn.rollback()
         
         # Insert test ingredients
         cursor.execute("""
@@ -89,9 +93,13 @@ def cleanup_test_data():
         )
         cursor = conn.cursor()
         
-        cursor.execute("DELETE FROM recipes WHERE name LIKE 'Test Recipe%'")
-        cursor.execute("DELETE FROM ingredients WHERE name LIKE 'Test Ingredient%'")
-        conn.commit()
+        try:
+            cursor.execute("DELETE FROM recipes WHERE name LIKE 'Test Recipe%'")
+            cursor.execute("DELETE FROM ingredients WHERE name LIKE 'Test Ingredient%'")
+            conn.commit()
+        except mysql.connector.Error as e:
+            print(f"  Note: Error during cleanup: {e}")
+            conn.rollback()
         
         cursor.close()
         conn.close()
