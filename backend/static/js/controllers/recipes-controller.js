@@ -205,6 +205,23 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         }
     };
 
+    // Truncate text to specified word limit
+    $scope.truncateText = function(text, wordLimit) {
+        if (!text) return '';
+        var words = text.split(' ');
+        if (words.length <= wordLimit) {
+            return text;
+        }
+        return words.slice(0, wordLimit).join(' ');
+    };
+
+    // Check if text needs truncation
+    $scope.needsTruncation = function(text, wordLimit) {
+        if (!text) return false;
+        var words = text.split(' ');
+        return words.length > wordLimit;
+    };
+
     // // Reset form
     // $scope.resetForm = function() {
     //     $scope.currentRecipe = {
