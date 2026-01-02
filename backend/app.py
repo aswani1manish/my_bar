@@ -348,6 +348,7 @@ def get_ingredient(ingredient_id):
 def get_recipes():
     search = request.args.get('search', '')
     tags = request.args.get('tags', '')
+    bar_shelf_mode = request.args.get('bar_shelf_mode', '').upper()
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -378,6 +379,30 @@ def get_recipes():
         recipe['tags'] = parse_json_field(recipe.get('tags'))
         recipe['images'] = parse_json_field(recipe.get('images'))
         recipe['ingredients'] = parse_json_field(recipe.get('ingredients'))
+
+    # Filter recipes based on bar shelf availability if bar_shelf_mode is 'Y'
+    if bar_shelf_mode == 'Y':
+        filtered_recipes = []
+        for recipe in recipes:
+            if recipe.get('ingredients'):
+                # Check if all ingredients are available on bar shelf
+                all_available = True
+                for ingredient in recipe['ingredients']:
+                    ingredient_name = ingredient.get('name', '')
+                    if ingredient_name:
+                        # Query the ingredients table for bar_shelf_availability
+                        cursor.execute(
+                            "SELECT bar_shelf_availability FROM ingredients WHERE name = %s",
+                            (ingredient_name,)
+                        )
+                        result = cursor.fetchone()
+                        if not result or result.get('bar_shelf_availability') != 'Y':
+                            all_available = False
+                            break
+                
+                if all_available:
+                    filtered_recipes.append(recipe)
+        recipes = filtered_recipes
 
     cursor.close()
     conn.close()
