@@ -48,7 +48,7 @@
     <div class="col-12">
         <h4>All Recipes ({{ recipes.length }})</h4>
         <div class="row">
-            <div class="col-md-6 col-lg-4 mb-3" ng-repeat="recipe in recipes track by $index">
+            <div class="col-md-6 col-lg-3 mb-3" ng-repeat="recipe in recipes track by $index">
                 <div class="card h-100">
                     <div class="card-header bg-success text-white">
                         <h5 class="mb-0">{{ recipe.name }}</h5>
@@ -56,10 +56,16 @@
                     <div class="card-body">
                         <!-- Recipe Images -->
                         <div class="item-image-gallery mb-2" ng-if="recipe.images && recipe.images.length > 0">
-                            <img ng-repeat="img in recipe.images track by $index" ng-src="{{getImageUrl(img)}}" alt="{{recipe.name}}" style="border: 0; width: 240px; height: 240px; object-fit: contain;">
+                            <img ng-repeat="img in recipe.images track by $index" ng-src="{{getImageUrl(img)}}" alt="{{recipe.name}}" style="border: 0; width: 160px; height: 160px; object-fit: contain;">
                         </div>
                         
-                        <p class="card-text">{{ recipe.description || 'No description' }}</p>
+                        <p class="card-text">
+                            <span ng-if="!needsTruncation(recipe.description, 25)">{{ recipe.description || 'No description' }}</span>
+                            <span ng-if="needsTruncation(recipe.description, 25)">
+                                {{ truncateText(recipe.description, 25) }}...
+                                <a href="#" class="text-more-link" ng-click="showRecipeDetails(recipe); $event.preventDefault()">more</a>
+                            </span>
+                        </p>
                         
                         <p class="card-text"><b>Ingredients ({{ recipe.ingredients.length }}): {{ getIngredientNamesForRecipe(recipe)}}</b></p>
                         <div ng-if="recipe.tags && recipe.tags.length > 0">

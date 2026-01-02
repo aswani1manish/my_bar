@@ -27,6 +27,8 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     $scope.saveError = '';
     $scope.saveTimeout = null; // For debouncing auto-save
     $scope.pendingSave = false; // Flag to track if save is needed after current save completes
+    $scope.selectedCollection = {};
+    $scope.collectionModal = null;
 
     // Load all collections
     $scope.loadCollections = function() {
@@ -400,6 +402,35 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     // Get image URL
     $scope.getImageUrl = function(filename) {
         return API_URL + '/uploads/' + filename;
+    };
+
+    // Truncate text to specified word limit
+    $scope.truncateText = function(text, wordLimit) {
+        if (!text) return '';
+        var words = text.split(' ');
+        if (words.length <= wordLimit) {
+            return text;
+        }
+        return words.slice(0, wordLimit).join(' ');
+    };
+
+    // Check if text needs truncation
+    $scope.needsTruncation = function(text, wordLimit) {
+        if (!text) return false;
+        var words = text.split(' ');
+        return words.length > wordLimit;
+    };
+
+    // Show collection details in modal
+    $scope.showCollectionDetails = function(collection) {
+        $scope.selectedCollection = collection;
+        var modalElement = document.getElementById('collectionDetailsModal');
+        if (modalElement) {
+            if (!$scope.collectionModal) {
+                $scope.collectionModal = new bootstrap.Modal(modalElement);
+            }
+            $scope.collectionModal.show();
+        }
     };
 
     // // Reset form

@@ -123,7 +123,13 @@
                         </td>
                         <td><strong>{{ ingredient.name }}</strong></td>
                         <td>{{ ingredient.category || '-' }}</td>
-                        <td>{{ ingredient.description || '-' }}</td>
+                        <td>
+                            <span ng-if="!needsTruncation(ingredient.description, 25)">{{ ingredient.description || '-' }}</span>
+                            <span ng-if="needsTruncation(ingredient.description, 25)">
+                                {{ truncateText(ingredient.description, 25) }}...
+                                <a href="#" class="text-more-link" ng-click="showIngredientDetails(ingredient); $event.preventDefault()">more</a>
+                            </span>
+                        </td>
                         <td>
                             <span class="badge bg-info me-1" ng-repeat="tag in ingredient.tags">{{ tag }}</span>
                         </td>
@@ -150,6 +156,61 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Ingredient Details Modal -->
+<div class="modal fade" id="ingredientDetailsModal" tabindex="-1" aria-labelledby="ingredientDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="ingredientDetailsModalLabel">{{ selectedIngredient.name }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Ingredient Images -->
+                <div class="mb-3" ng-if="selectedIngredient.images && selectedIngredient.images.length > 0">
+                    <div class="d-flex flex-wrap gap-2">
+                        <span style="text-align: center;">
+                        <img ng-repeat="img in selectedIngredient.images" 
+                             ng-src="{{getImageUrl(img)}}" 
+                             alt="{{selectedIngredient.name}}" 
+                             class="img-thumbnail"
+                             style="border: 0; width: 150px; height: 150px; object-fit: cover;">
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Ingredient Details -->
+                <div class="mb-3" ng-if="selectedIngredient.category">
+                    <h6><i class="fas fa-tag"></i> Category</h6>
+                    <p>{{ selectedIngredient.category }}</p>
+                </div>
+
+                <div class="mb-3" ng-if="selectedIngredient.description">
+                    <h6><i class="fas fa-info-circle"></i> Description</h6>
+                    <p>{{ selectedIngredient.description }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <h6><i class="fas fa-wine-bottle"></i> Bar Shelf Availability</h6>
+                    <p>{{ selectedIngredient.bar_shelf_availability === 'Y' ? 'Yes' : 'No' }}</p>
+                </div>
+
+                <!-- Ingredient Tags -->
+                <div class="mb-3" ng-if="selectedIngredient.tags && selectedIngredient.tags.length > 0">
+                    <h6><i class="fas fa-tags"></i> Tags</h6>
+                    <div>
+                        <span class="badge bg-info me-1 mb-1" ng-repeat="tag in selectedIngredient.tags track by $index">{{ tag }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
         </div>
     </div>
 </div>

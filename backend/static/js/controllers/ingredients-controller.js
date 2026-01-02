@@ -6,6 +6,8 @@ app.controller('IngredientsController', ['$scope', 'ApiService', 'API_URL', func
     $scope.tagSearch = '';
     $scope.newTag = '';
     $scope.apiUrl = API_URL;
+    $scope.selectedIngredient = {};
+    $scope.ingredientModal = null;
 
     // Load all ingredients
     $scope.loadIngredients = function() {
@@ -94,6 +96,35 @@ app.controller('IngredientsController', ['$scope', 'ApiService', 'API_URL', func
     // Get image URL
     $scope.getImageUrl = function(filename) {
         return API_URL + '/uploads/' + filename;
+    };
+
+    // Truncate text to specified word limit
+    $scope.truncateText = function(text, wordLimit) {
+        if (!text) return '';
+        var words = text.split(' ');
+        if (words.length <= wordLimit) {
+            return text;
+        }
+        return words.slice(0, wordLimit).join(' ');
+    };
+
+    // Check if text needs truncation
+    $scope.needsTruncation = function(text, wordLimit) {
+        if (!text) return false;
+        var words = text.split(' ');
+        return words.length > wordLimit;
+    };
+
+    // Show ingredient details in modal
+    $scope.showIngredientDetails = function(ingredient) {
+        $scope.selectedIngredient = ingredient;
+        var modalElement = document.getElementById('ingredientDetailsModal');
+        if (modalElement) {
+            if (!$scope.ingredientModal) {
+                $scope.ingredientModal = new bootstrap.Modal(modalElement);
+            }
+            $scope.ingredientModal.show();
+        }
     };
 
     // Toggle bar shelf availability

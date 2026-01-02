@@ -216,7 +216,7 @@
     <div class="col-12">
         <h4>All Collections ({{ collections.length }})</h4>
         <div class="row">
-            <div class="col-md-6 col-lg-4 mb-3" ng-repeat="collection in collections">
+            <div class="col-md-6 col-lg-3 mb-3" ng-repeat="collection in collections">
                 <div class="card h-100">
                     <div class="card-header bg-info text-white">
                         <h5 class="mb-0">{{ collection.name }}</h5>
@@ -227,7 +227,13 @@
                             <img ng-repeat="img in collection.images" ng-src="{{getImageUrl(img)}}" alt="{{collection.name}}" style="width: 80px; height: 80px;">
                         </div>
                         
-                        <p class="card-text">{{ collection.description || 'No description' }}</p>
+                        <p class="card-text">
+                            <span ng-if="!needsTruncation(collection.description, 25)">{{ collection.description || 'No description' }}</span>
+                            <span ng-if="needsTruncation(collection.description, 25)">
+                                {{ truncateText(collection.description, 25) }}...
+                                <a href="#" class="text-more-link" ng-click="showCollectionDetails(collection); $event.preventDefault()">more</a>
+                            </span>
+                        </p>
                         
                         <h6>Recipes ({{ collection.recipe_ids.length }}):</h6>
                         
@@ -255,6 +261,62 @@
             </div>
             <div class="col-12" ng-if="collections.length === 0">
                 <div class="alert alert-info">No collections found. Create one to get started!</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Collection Details Modal -->
+<div class="modal fade" id="collectionDetailsModal" tabindex="-1" aria-labelledby="collectionDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="collectionDetailsModalLabel">{{ selectedCollection.name }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Collection Images -->
+                <div class="mb-3" ng-if="selectedCollection.images && selectedCollection.images.length > 0">
+                    <div class="d-flex flex-wrap gap-2">
+                        <span style="text-align: center;">
+                        <img ng-repeat="img in selectedCollection.images" 
+                             ng-src="{{getImageUrl(img)}}" 
+                             alt="{{selectedCollection.name}}" 
+                             class="img-thumbnail"
+                             style="border: 0; width: 150px; height: 150px; object-fit: cover;">
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Collection Description -->
+                <div class="mb-3" ng-if="selectedCollection.description">
+                    <h6><i class="fas fa-info-circle"></i> Description</h6>
+                    <p>{{ selectedCollection.description }}</p>
+                </div>
+
+                <!-- Collection Recipes -->
+                <div class="mb-3" ng-if="selectedCollection.recipe_ids && selectedCollection.recipe_ids.length > 0">
+                    <h6><i class="fas fa-cocktail"></i> Recipes ({{ selectedCollection.recipe_ids.length }})</h6>
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="recipeId in selectedCollection.recipe_ids track by $index">
+                            <strong>{{ getRecipeName(recipeId) }}</strong>
+                            <span class="text-muted"> - {{ getIngredientNamesForRecipeId(recipeId) }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Collection Tags -->
+                <div class="mb-3" ng-if="selectedCollection.tags && selectedCollection.tags.length > 0">
+                    <h6><i class="fas fa-tags"></i> Tags</h6>
+                    <div>
+                        <span class="badge bg-info me-1 mb-1" ng-repeat="tag in selectedCollection.tags track by $index">{{ tag }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Close
+                </button>
             </div>
         </div>
     </div>
