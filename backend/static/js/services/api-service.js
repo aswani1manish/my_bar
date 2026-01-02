@@ -10,6 +10,11 @@ app.factory('ApiService', ['$http', 'API_URL', function($http, API_URL) {
         getIngredient: function(id) {
             return $http.get(API_URL + '/ingredients/' + id);
         },
+        updateIngredientBarShelf: function(id, barShelfAvailability) {
+            return $http.patch(API_URL + '/ingredients/' + id + '/bar-shelf', {
+                bar_shelf_availability: barShelfAvailability
+            });
+        },
         // createIngredient: function(ingredient) {
         //     return $http.post(API_URL + '/ingredients', ingredient);
         // },

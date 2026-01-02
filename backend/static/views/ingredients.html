@@ -101,6 +101,7 @@
                         <th>Category</th>
                         <th>Description</th>
                         <th>Tags</th>
+                        <th>Bar Shelf</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -118,6 +119,15 @@
                         <td>
                             <span class="badge bg-info me-1" ng-repeat="tag in ingredient.tags">{{ tag }}</span>
                         </td>
+                        <td class="text-center">
+                            <input type="checkbox" 
+                                   ng-model="ingredient.bar_shelf_availability" 
+                                   ng-true-value="'Y'" 
+                                   ng-false-value="'N'"
+                                   ng-change="toggleBarShelf(ingredient)"
+                                   class="form-check-input"
+                                   style="cursor: pointer;">
+                        </td>
                         <!-- Edit/Delete Actions - COMMENTED OUT -->
                         <!-- <td>
                             <button class="btn btn-sm btn-warning me-1" ng-click="editIngredient(ingredient)">
@@ -132,7 +142,7 @@
                         </td>
                     </tr>
                     <tr ng-if="ingredients.length === 0">
-                        <td colspan="6" class="text-center text-muted">No ingredients found. Add one to get started!</td>
+                        <td colspan="7" class="text-center text-muted">No ingredients found. Add one to get started!</td>
                     </tr>
                 </tbody>
             </table>
