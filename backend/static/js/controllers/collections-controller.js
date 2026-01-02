@@ -83,6 +83,29 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
         $scope.filterRecipesNotInCollection();
     };
     
+    // Helper function to check if recipe matches search query
+    $scope.recipeMatchesQuery = function(recipe, query) {
+        if (!query) return true;
+        
+        // Search by ID
+        if (recipe.id.toString().indexOf(query) !== -1) {
+            return true;
+        }
+        
+        // Search by name
+        if (recipe.name && recipe.name.toLowerCase().indexOf(query) !== -1) {
+            return true;
+        }
+        
+        // Search by ingredients
+        var ingredientsList = $scope.getIngredientsList(recipe).toLowerCase();
+        if (ingredientsList.indexOf(query) !== -1) {
+            return true;
+        }
+        
+        return false;
+    };
+    
     // Filter recipes IN the collection based on search query
     $scope.filterRecipesInCollection = function() {
         var query = ($scope.searchInCollection || '').toLowerCase();
@@ -96,23 +119,7 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
             $scope.filteredRecipesInCollection = recipesInCollection;
         } else {
             $scope.filteredRecipesInCollection = recipesInCollection.filter(function(recipe) {
-                // Search by ID
-                if (recipe.id.toString().indexOf(query) !== -1) {
-                    return true;
-                }
-                
-                // Search by name
-                if (recipe.name && recipe.name.toLowerCase().indexOf(query) !== -1) {
-                    return true;
-                }
-                
-                // Search by ingredients
-                var ingredientsList = $scope.getIngredientsList(recipe).toLowerCase();
-                if (ingredientsList.indexOf(query) !== -1) {
-                    return true;
-                }
-                
-                return false;
+                return $scope.recipeMatchesQuery(recipe, query);
             });
         }
     };
@@ -130,23 +137,7 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
             $scope.filteredRecipesNotInCollection = recipesNotInCollection;
         } else {
             $scope.filteredRecipesNotInCollection = recipesNotInCollection.filter(function(recipe) {
-                // Search by ID
-                if (recipe.id.toString().indexOf(query) !== -1) {
-                    return true;
-                }
-                
-                // Search by name
-                if (recipe.name && recipe.name.toLowerCase().indexOf(query) !== -1) {
-                    return true;
-                }
-                
-                // Search by ingredients
-                var ingredientsList = $scope.getIngredientsList(recipe).toLowerCase();
-                if (ingredientsList.indexOf(query) !== -1) {
-                    return true;
-                }
-                
-                return false;
+                return $scope.recipeMatchesQuery(recipe, query);
             });
         }
     };
@@ -237,12 +228,13 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
             // Update the local collection data instead of reloading all collections
             collection.recipe_ids = selectedRecipeIds;
             
-            // If there's a pending save, trigger it
+            // If there's a pending save, trigger it after a short delay
+            // The delay allows the UI to update and prevents rapid consecutive API calls
             if ($scope.pendingSave) {
                 $scope.pendingSave = false;
                 $timeout(function() {
                     $scope.autoSaveCollectionRecipes();
-                }, 100);
+                }, 100); // 100ms delay to ensure UI stability
             }
             
             // Clear message after 2 seconds
