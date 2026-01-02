@@ -38,7 +38,7 @@ app.directive('imageUpload', function() {
             // Get file input reference - use querySelector since jqLite doesn't support attribute selectors
             var fileInput = null;
             
-            // Use $timeout to ensure DOM is ready
+            // Use setTimeout to ensure DOM is ready before accessing elements
             setTimeout(function() {
                 var inputElement = element[0].querySelector('input[type="file"]');
                 if (inputElement) {
