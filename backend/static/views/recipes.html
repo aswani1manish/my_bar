@@ -123,23 +123,42 @@
                         </div>
                     </div>
 
-                    <!-- Collections Section (Display only) -->
-                    <div class="mb-3" ng-if="isEditing">
-                        <label class="form-label">Collections Containing This Recipe</label>
+                    <!-- Collections Section -->
+                    <div class="mb-3">
+                        <label class="form-label">Collections</label>
                         <div class="card">
                             <div class="card-body">
-                                <div ng-if="recipeCollections.length > 0">
-                                    <div class="mb-2" ng-repeat="collection in recipeCollections">
-                                        <span class="badge bg-info me-2">
-                                            <i class="fas fa-folder-open"></i> {{ collection.name }}
-                                        </span>
-                                    </div>
+                                <div ng-if="collections.length > 0">
+                                    <table class="table table-sm table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 50px;">
+                                                    <input type="checkbox" class="form-check-input" id="selectAll" 
+                                                           ng-model="selectAllCollections" 
+                                                           ng-change="toggleAllCollections()">
+                                                </th>
+                                                <th>Collection Name</th>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="collection in collections">
+                                                <td>
+                                                    <input type="checkbox" class="form-check-input" 
+                                                           ng-model="collection.selected" 
+                                                           ng-change="updateSelectAllState()">
+                                                </td>
+                                                <td><strong>{{ collection.name }}</strong></td>
+                                                <td class="text-muted">{{ collection.description || 'No description' }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div ng-if="recipeCollections.length === 0" class="text-muted">
-                                    This recipe is not part of any collection yet.
+                                <div ng-if="collections.length === 0" class="text-muted">
+                                    No collections available. Create collections from the Collections page first.
                                 </div>
                                 <small class="text-muted d-block mt-2">
-                                    <i class="fas fa-info-circle"></i> To add this recipe to a collection, go to the Collections page.
+                                    <i class="fas fa-info-circle"></i> Check the boxes to add this recipe to collections. Changes are saved when you click Create/Update.
                                 </small>
                             </div>
                         </div>
@@ -173,7 +192,7 @@
                 <li><strong>Edit a recipe:</strong> Enter the recipe ID in the lookup field and click "Lookup"</li>
                 <li><strong>Add ingredients:</strong> Click "Add Ingredient" and select from the dropdown</li>
                 <li><strong>Add images:</strong> Click the image area to select multiple images</li>
-                <li><strong>Link to collections:</strong> Go to the Collections page to add this recipe to a collection</li>
+                <li><strong>Manage collections:</strong> Check/uncheck boxes to add or remove this recipe from collections</li>
             </ul>
         </div>
     </div>

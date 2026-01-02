@@ -1,4 +1,4 @@
-app.controller('RecipesAdminController', ['$scope', 'ApiService', 'API_URL', function($scope, ApiService, API_URL) {
+app.controller('RecipesAdminController', ['$scope', '$q', 'ApiService', 'API_URL', function($scope, $q, ApiService, API_URL) {
     $scope.currentRecipe = {};
     $scope.isEditing = false;
     $scope.lookupId = '';
@@ -6,8 +6,8 @@ app.controller('RecipesAdminController', ['$scope', 'ApiService', 'API_URL', fun
     $scope.apiUrl = API_URL;
     $scope.ingredients = [];
     $scope.collections = [];
-    $scope.recipeCollections = [];
     $scope.selectedIngredients = [];
+    $scope.selectAllCollections = false;
 
     // Load all ingredients for selection
     $scope.loadIngredients = function() {
@@ -24,22 +24,47 @@ app.controller('RecipesAdminController', ['$scope', 'ApiService', 'API_URL', fun
         ApiService.getCollections('', '').then(function(response) {
             $scope.collections = response.data;
             if ($scope.currentRecipe.id) {
-                $scope.loadRecipeCollections();
+                $scope.updateCollectionSelections();
             }
         }, function(error) {
             console.error('Error loading collections:', error);
         });
     };
 
-    // Load collections that contain this recipe
-    $scope.loadRecipeCollections = function() {
+    // Update collection selections based on current recipe
+    $scope.updateCollectionSelections = function() {
         if (!$scope.currentRecipe.id) {
-            $scope.recipeCollections = [];
+            // Clear all selections for new recipe
+            $scope.collections.forEach(function(collection) {
+                collection.selected = false;
+            });
+            $scope.selectAllCollections = false;
             return;
         }
         
-        $scope.recipeCollections = $scope.collections.filter(function(collection) {
-            return collection.recipe_ids && collection.recipe_ids.indexOf($scope.currentRecipe.id) !== -1;
+        // Mark collections that contain this recipe as selected
+        $scope.collections.forEach(function(collection) {
+            collection.selected = collection.recipe_ids && 
+                                  collection.recipe_ids.indexOf($scope.currentRecipe.id) !== -1;
+        });
+        $scope.updateSelectAllState();
+    };
+
+    // Toggle all collections
+    $scope.toggleAllCollections = function() {
+        $scope.collections.forEach(function(collection) {
+            collection.selected = $scope.selectAllCollections;
+        });
+    };
+
+    // Update "select all" state based on individual selections
+    $scope.updateSelectAllState = function() {
+        if ($scope.collections.length === 0) {
+            $scope.selectAllCollections = false;
+            return;
+        }
+        $scope.selectAllCollections = $scope.collections.every(function(collection) {
+            return collection.selected;
         });
     };
 
@@ -63,7 +88,7 @@ app.controller('RecipesAdminController', ['$scope', 'ApiService', 'API_URL', fun
             // Convert ingredients to selected format
             $scope.selectedIngredients = angular.copy($scope.currentRecipe.ingredients);
             
-            $scope.loadRecipeCollections();
+            $scope.updateCollectionSelections();
         }, function(error) {
             console.error('Error fetching recipe:', error);
             alert('Recipe not found or error loading recipe');
@@ -80,28 +105,73 @@ app.controller('RecipesAdminController', ['$scope', 'ApiService', 'API_URL', fun
         // Update ingredients from selected
         $scope.currentRecipe.ingredients = angular.copy($scope.selectedIngredients);
 
+        // Save recipe first, then update collections
+        var savePromise;
         if ($scope.isEditing && $scope.currentRecipe.id) {
-            ApiService.updateRecipe($scope.currentRecipe.id, $scope.currentRecipe).then(function(response) {
-                alert('Recipe updated successfully!');
-                $scope.currentRecipe = response.data;
-                $scope.isEditing = true;
-                $scope.loadRecipeCollections();
-            }, function(error) {
-                console.error('Error updating recipe:', error);
-                alert('Error updating recipe');
-            });
+            savePromise = ApiService.updateRecipe($scope.currentRecipe.id, $scope.currentRecipe);
         } else {
-            ApiService.createRecipe($scope.currentRecipe).then(function(response) {
-                alert('Recipe created successfully with ID: ' + response.data.id);
-                $scope.currentRecipe = response.data;
-                $scope.isEditing = true;
-                $scope.lookupId = response.data.id;
-                $scope.loadRecipeCollections();
-            }, function(error) {
-                console.error('Error creating recipe:', error);
-                alert('Error creating recipe');
-            });
+            savePromise = ApiService.createRecipe($scope.currentRecipe);
         }
+
+        savePromise.then(function(response) {
+            $scope.currentRecipe = response.data;
+            $scope.isEditing = true;
+            $scope.lookupId = response.data.id;
+            
+            // Update collections based on selections
+            $scope.updateCollectionsForRecipe().then(function() {
+                alert('Recipe saved successfully!');
+                // Reload collections to get updated data
+                $scope.loadCollections();
+            }, function(error) {
+                console.error('Error updating collections:', error);
+                alert('Recipe saved but there was an error updating collections');
+            });
+        }, function(error) {
+            console.error('Error saving recipe:', error);
+            alert('Error saving recipe');
+        });
+    };
+
+    // Update collections based on checkbox selections
+    $scope.updateCollectionsForRecipe = function() {
+        var recipeId = $scope.currentRecipe.id;
+        var updatePromises = [];
+
+        $scope.collections.forEach(function(collection) {
+            var recipeIds = collection.recipe_ids || [];
+            var recipeIndex = recipeIds.indexOf(recipeId);
+            var isInCollection = recipeIndex !== -1;
+            var shouldBeInCollection = collection.selected;
+
+            // Only update if there's a change
+            if (isInCollection !== shouldBeInCollection) {
+                var updatedRecipeIds = angular.copy(recipeIds);
+                
+                if (shouldBeInCollection && !isInCollection) {
+                    // Add recipe to collection
+                    updatedRecipeIds.push(recipeId);
+                } else if (!shouldBeInCollection && isInCollection) {
+                    // Remove recipe from collection
+                    updatedRecipeIds.splice(recipeIndex, 1);
+                }
+
+                // Update the collection with error handling
+                var updatedCollection = angular.copy(collection);
+                updatedCollection.recipe_ids = updatedRecipeIds;
+                var updatePromise = ApiService.updateCollection(collection.id, updatedCollection)
+                    .catch(function(error) {
+                        console.error('Error updating collection ' + collection.name + ':', error);
+                        // Return null to indicate failure but allow other updates to continue
+                        return null;
+                    });
+                updatePromises.push(updatePromise);
+            }
+        });
+
+        // Return a promise that resolves when all updates complete
+        // Even if some fail, the promise will resolve (failed updates return null)
+        return $q.all(updatePromises);
     };
 
     // Delete recipe
@@ -179,7 +249,8 @@ app.controller('RecipesAdminController', ['$scope', 'ApiService', 'API_URL', fun
         $scope.lookupId = '';
         $scope.newTag = '';
         $scope.selectedIngredients = [];
-        $scope.recipeCollections = [];
+        $scope.selectAllCollections = false;
+        $scope.updateCollectionSelections();
     };
 
     // Initialize
