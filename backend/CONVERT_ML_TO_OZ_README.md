@@ -1,15 +1,22 @@
 # Convert ML to OZ Script
 
-This script converts recipe ingredient measurements from milliliters (ml) to fluid ounces (Oz) in the MySQL recipes table.
+This script converts recipe ingredient measurements from milliliters (ml) to fluid ounces (Oz) in the MySQL recipes table with special handling for standard cocktail measurements.
 
 ## What It Does
 
 1. **Creates a Backup**: Automatically creates a timestamped backup table (e.g., `recipes_backup_20260103_165600`) with all recipe data before making any changes
 2. **Processes All Recipes**: Reads all recipes from the database
-3. **Converts Units**: For each ingredient with unit 'ml', converts to 'Oz' by dividing the amount by 30
-   - Example: 30 ml → 1 Oz
-   - Example: 22.5 ml → 0.75 Oz
-   - Example: 60 ml → 2 Oz
+3. **Converts Units**: For each ingredient with unit 'ml', converts to 'Oz' with special conditions:
+   - **Special Cases**: 
+     - 10 ml → 0.25 Oz (¼ oz)
+     - 20 ml → 0.75 Oz (¾ oz)
+   - **Standard Conversion**: All other values are divided by 30 and rounded to the nearest 0.25 Oz increment
+   - Examples: 
+     - 15 ml → 0.5 Oz
+     - 30 ml → 1 Oz
+     - 40 ml → 1.25 Oz
+     - 50 ml → 1.75 Oz
+     - 60 ml → 2 Oz
 4. **Updates Database**: Saves the converted ingredients back to the recipes table
 5. **Provides Summary**: Shows detailed statistics about what was converted
 
@@ -102,6 +109,8 @@ Recipes with ml conversions:
 
 ### Robust Conversion Logic
 
+- **Special Cases**: Handles common cocktail measurements (10 ml → 0.25 Oz, 20 ml → 0.75 Oz)
+- **Standard Rounding**: Rounds all other values to nearest 0.25 Oz increment for consistent measurements
 - **Case-Insensitive**: Recognizes 'ml', 'ML', 'Ml', etc.
 - **String Amounts**: Handles amounts stored as strings (e.g., "30") or numbers
 - **Decimal Precision**: Correctly converts decimal amounts (e.g., 22.5 ml → 0.75 Oz)
@@ -143,7 +152,7 @@ A comprehensive test suite is included to verify the conversion logic:
 python3 test_convert_ml_to_oz.py
 ```
 
-This runs 9 tests covering:
+This runs 11 tests covering:
 - Basic ml to Oz conversions
 - Decimal values
 - String amounts
@@ -153,6 +162,8 @@ This runs 9 tests covering:
 - Error handling for invalid data
 - Empty ingredient lists
 - Field preservation
+- Special ML conversions (10ml, 20ml)
+- Rounding to nearest 0.25 Oz increment
 
 ## Command-Line Options
 
@@ -163,7 +174,9 @@ This runs 9 tests covering:
 
 ## Notes
 
-- The conversion ratio is 1 Oz = 30 ml (standard for cocktail recipes)
+- Special conversions for common measurements: 10 ml → 0.25 Oz, 20 ml → 0.75 Oz
+- Standard conversion ratio: 1 Oz = 30 ml, rounded to nearest 0.25 Oz increment
+- All values result in standard cocktail measurements (0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, etc.)
 - The script is idempotent - running it multiple times on already-converted data won't cause issues
 - Only ingredients with unit exactly matching 'ml' (case-insensitive) are converted
 - The backup table name includes a timestamp for easy identification
