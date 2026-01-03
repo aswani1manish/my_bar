@@ -80,8 +80,11 @@ html, body {
 
 .navbar {
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    background: linear-gradient(135deg, #2d2d2d 0%, #4a4a4a 50%, #6b6b6b 100%) !important;
-    padding: 1rem 0;
+    background-image: url('/images/navbar-1-1.jpg'), url('/images/navbar-1-2.jpg') !important;
+    background-position: left center, right center !important;
+    background-repeat: no-repeat, no-repeat !important;
+    background-size: 50% 100%, 50% 100% !important;
+    padding: 2rem 0;
     margin: 0;
 }
 
