@@ -116,13 +116,19 @@
             margin-bottom: 20px;
         }
         
-        .btn-enter-site:hover {
+        .btn-enter-site:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(126, 200, 204, 0.4);
         }
         
-        .btn-enter-site:active {
+        .btn-enter-site:active:not(:disabled) {
             transform: translateY(0);
+        }
+        
+        .btn-enter-site:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
         }
         
         .responsibility-message {
@@ -169,7 +175,7 @@
                 </div>
             </div>
             
-            <button type="submit" class="btn-enter-site">Enter your neighborhood</button>
+            <button type="submit" id="enterButton" class="btn-enter-site" disabled>Enter your neighborhood</button>
             <div id="errorMessage" class="error-message"></div>
         </form>
         
@@ -276,6 +282,72 @@
                 document.getElementById('year').focus();
             }
         });
+        
+        // Real-time validation to enable/disable button
+        function validateAge() {
+            const monthInput = document.getElementById('month');
+            const dayInput = document.getElementById('day');
+            const yearInput = document.getElementById('year');
+            const enterButton = document.getElementById('enterButton');
+            
+            const month = parseInt(monthInput.value);
+            const day = parseInt(dayInput.value);
+            const year = parseInt(yearInput.value);
+            
+            // Check if all fields have values
+            if (!monthInput.value || !dayInput.value || !yearInput.value) {
+                enterButton.disabled = true;
+                return;
+            }
+            
+            // Validate month range
+            if (month < 1 || month > 12) {
+                enterButton.disabled = true;
+                return;
+            }
+            
+            // Validate day range
+            if (day < 1 || day > 31) {
+                enterButton.disabled = true;
+                return;
+            }
+            
+            // Validate year range
+            const currentYear = new Date().getFullYear();
+            if (year < 1900 || year > currentYear) {
+                enterButton.disabled = true;
+                return;
+            }
+            
+            // Validate date exists
+            const birthDate = new Date(year, month - 1, day);
+            if (birthDate.getMonth() !== month - 1 || birthDate.getDate() !== day) {
+                enterButton.disabled = true;
+                return;
+            }
+            
+            // Calculate age
+            const today = new Date();
+            let age = today.getFullYear() - year;
+            const monthDiff = today.getMonth() - (month - 1);
+            const dayDiff = today.getDate() - day;
+            
+            if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+                age--;
+            }
+            
+            // Enable button only if age is 21 or older
+            if (age >= 21) {
+                enterButton.disabled = false;
+            } else {
+                enterButton.disabled = true;
+            }
+        }
+        
+        // Attach validation to input events
+        document.getElementById('month').addEventListener('input', validateAge);
+        document.getElementById('day').addEventListener('input', validateAge);
+        document.getElementById('year').addEventListener('input', validateAge);
     </script>
 </body>
 </html>
