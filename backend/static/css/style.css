@@ -291,7 +291,8 @@ h2.recipes-heading {
 }
 
 /* Reduced font size for form controls and selects in recipes-public view */
-.form-control, .form-select {
+.recipes-public-view .form-control,
+.recipes-public-view .form-select {
     font-size: 90%;
 }
 
