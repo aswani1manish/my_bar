@@ -292,20 +292,20 @@ h6 {
 }
 
 .badge-custom-orange {
-    background: var(--color-primary-blue) !important;
-    color: white !important;
+    background: #FFE5D9 !important;
+    color: #666666 !important;
     font-weight: 600;
 }
 
 .badge-custom-purple {
-    background: #A68FCC !important;
-    color: white !important;
+    background: #FFE5D9 !important;
+    color: #666666 !important;
     font-weight: 600;
 }
 
 .badge-custom-green {
-    background: #85C899 !important;
-    color: white !important;
+    background: #FFE5D9 !important;
+    color: #666666 !important;
     font-weight: 600;
 }
 
@@ -508,7 +508,7 @@ h6 {
 .recipe-name-below-image {
     padding: 1rem;
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 3.3rem;
     font-weight: 600;
     text-align: center;
     color: var(--color-text-primary);
