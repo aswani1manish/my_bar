@@ -147,6 +147,11 @@ h2 {
     margin-bottom: 0.75rem;
 }
 
+/* Recipes heading - reduced by 50% */
+h2.recipes-heading {
+    font-size: 1rem;
+}
+
 h4 {
     font-size: 1.15rem;
     margin-bottom: 0.75rem;
