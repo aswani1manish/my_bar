@@ -57,12 +57,6 @@ footer {
     font-family: 'Cormorant Garamond', serif;
 }
 
-/* Footer text and links use Cormorant Garamond */
-footer p,
-footer a {
-    font-family: 'Cormorant Garamond', serif;
-}
-
 /* Ensure body and html have no margins */
 html, body {
     margin: 0;
