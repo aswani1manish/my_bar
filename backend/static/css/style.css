@@ -102,7 +102,7 @@ html, body {
     background-position: left center, right center;
     background-repeat: no-repeat, no-repeat;
     background-size: 50% 100%, 50% 100%;
-    filter: blur(4px);
+    filter: blur(2px);
     z-index: -1;
 }
 
