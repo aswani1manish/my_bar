@@ -290,6 +290,11 @@ h2.recipes-heading {
     font-size: 0.8em;
 }
 
+/* Reduced font size for form controls and selects in recipes-public view */
+.form-control, .form-select {
+    font-size: 90%;
+}
+
 h4 {
     font-size: 1.15rem;
     margin-bottom: 0.75rem;
