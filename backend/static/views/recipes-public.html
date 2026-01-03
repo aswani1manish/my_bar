@@ -49,11 +49,15 @@
         <h4>All Recipes ({{ recipes.length }})</h4>
         <div class="row">
             <div class="col-md-6 col-5-per-row mb-3 recipe-card-compact" ng-repeat="recipe in recipes track by $index">
-                <div class="card h-100 recipe-card-hover" ng-click="showRecipeDetails(recipe)">
+                <div class="card h-100 recipe-card-hover" ng-click="showRecipeDetails(recipe)" tabindex="0" ng-keypress="$event.keyCode === 13 && showRecipeDetails(recipe)" role="button" aria-label="View details for {{recipe.name}}">
                     <div class="card-body recipe-card-body-image">
                         <!-- Recipe Image - Only first image -->
-                        <div class="recipe-image-container" ng-if="recipe.images && recipe.images.length > 0">
-                            <img ng-src="{{getImageUrl(recipe.images[0])}}" alt="{{recipe.name}}" class="recipe-main-image">
+                        <div class="recipe-image-container">
+                            <img ng-if="recipe.images && recipe.images.length > 0" ng-src="{{getImageUrl(recipe.images[0])}}" alt="{{recipe.name}}" class="recipe-main-image">
+                            <!-- Placeholder for recipes without images -->
+                            <div ng-if="!recipe.images || recipe.images.length === 0" class="recipe-image-placeholder">
+                                <i class="fas fa-cocktail fa-4x"></i>
+                            </div>
                         </div>
                         
                         <!-- Recipe Name below image -->
@@ -61,7 +65,7 @@
                         
                         <!-- Hover overlay with button -->
                         <div class="recipe-hover-overlay">
-                            <button class="btn btn-custom-vibrant btn-hover-overlay">
+                            <button class="btn btn-custom-vibrant btn-hover-overlay" tabindex="-1" aria-hidden="true">
                                 <i class="fas fa-eye"></i> See recipe details
                             </button>
                         </div>
