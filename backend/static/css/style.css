@@ -84,10 +84,10 @@ html, body {
 
 .navbar {
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    background-image: url('/images/navbar-1-1.jpg'), url('/images/navbar-1-2.jpg');
-    background-position: left center, right center;
-    background-repeat: no-repeat, no-repeat;
-    background-size: 50% 100%, 50% 100%;
+    background-image: url('/images/navbar-bg-2-1.jpg');
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
     padding: 2rem 0;
     margin: 0;
     font-family: 'Cormorant Garamond', serif;
