@@ -22,6 +22,11 @@ body {
     line-height: 1.6;
 }
 
+/* Main content background for recipes-public view */
+.recipes-public-bg {
+    background-color: #ddd5d5;
+}
+
 .hero-section {
     padding: 40px 20px;
     background: linear-gradient(135deg, #B695D8 0%, #C89DD6 100%);
