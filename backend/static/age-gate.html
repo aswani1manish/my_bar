@@ -15,7 +15,6 @@
             height: 100vh;
             margin: 0;
             background-image: url('/images/nbh_bar.jpg');
-            background: rgba(0, 0, 0, 0.5);
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -37,7 +36,7 @@
         }
         */
         .age-gate-container {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.1);
             padding: 40px;
             border-radius: 15px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
@@ -50,14 +49,14 @@
         
         .age-gate-logo {
             font-size: 2.5rem;
-            color: #7EC8CC;
+            color: white;
             margin-bottom: 20px;
             font-weight: 600;
         }
         
         .age-gate-message {
             font-size: 1.1rem;
-            color: #333;
+            color: white;
             margin-bottom: 30px;
             line-height: 1.6;
         }
@@ -128,7 +127,7 @@
         
         .responsibility-message {
             font-size: 0.95rem;
-            color: #666;
+            color: white;
             font-style: italic;
             margin-top: 20px;
         }
@@ -160,21 +159,17 @@
         <form id="ageGateForm">
             <div class="date-input-group">
                 <div class="date-input-field">
-                    <label for="month">MM</label>
                     <input type="number" id="month" name="month" min="1" max="12" placeholder="MM" required>
                 </div>
                 <div class="date-input-field">
-                    <label for="day">DD</label>
                     <input type="number" id="day" name="day" min="1" max="31" placeholder="DD" required>
                 </div>
                 <div class="date-input-field">
-                    <label for="year">YYYY</label>
                     <input type="number" id="year" name="year" min="1900" max="2099" placeholder="YYYY" required>
                 </div>
             </div>
             
-            <button type="submit" class="btn-enter-site">Enter Site</button>
-            <div><img src="/images/nbh_bar.jpg" style="width: 20%; height: 20%"></div>
+            <button type="submit" class="btn-enter-site">Enter your neighborhood</button>
             <div id="errorMessage" class="error-message"></div>
         </form>
         
