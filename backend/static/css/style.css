@@ -10,13 +10,13 @@
     --color-bg-white: #ffffff;
     --color-bg-footer: #f7fafc;
     --color-navbar-pastel: #FADADD;
-    --color-bg-pastel-pink: #FEFEFE;
     --color-bg-pastel-lavender: #E8DFF5;
+    --color-bg-cream: #faedcb;
 }
 
 body {
     font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-    background-color: #faedcb;
+    background-color: var(--color-bg-cream);
     font-size: 0.9rem;
     color: var(--color-text-primary);
     line-height: 1.6;
@@ -26,18 +26,18 @@ body {
 
 /* Main content background for all pages */
 .main-content-bg {
-    background-color: #faedcb;
+    background-color: var(--color-bg-cream);
     margin: 0 !important;
 }
 
 /* Keep recipes-public-bg for backwards compatibility */
 .recipes-public-bg {
-    background-color: #faedcb;
+    background-color: var(--color-bg-cream);
 }
 
 /* Footer background color */
 .footer-bg {
-    background-color: #faedcb !important;
+    background-color: var(--color-bg-cream) !important;
 }
 
 /* Remove gaps between navbar, main content, and footer */
