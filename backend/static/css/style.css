@@ -10,7 +10,7 @@
     --color-bg-white: #ffffff;
     --color-bg-footer: #f7fafc;
     --color-navbar-pastel: #FADADD;
-    --color-bg-pastel-pink: #FFF5F7;
+    --color-bg-pastel-pink: #FEFEFE;
     --color-bg-pastel-lavender: #E8DFF5;
 }
 
@@ -43,18 +43,18 @@ body {
 
 .navbar {
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    background: var(--color-navbar-pastel) !important;
+    background: linear-gradient(135deg, #2d2d2d 0%, #4a4a4a 50%, #6b6b6b 100%) !important;
     padding: 1rem 0;
 }
 
 .navbar-brand {
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--color-text-primary) !important;
+    color: #ffffff !important;
 }
 
 .navbar .nav-link {
-    color: var(--color-text-primary) !important;
+    color: #ffffff !important;
     transition: opacity 0.3s ease;
 }
 
