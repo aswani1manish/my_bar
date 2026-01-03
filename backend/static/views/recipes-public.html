@@ -49,34 +49,22 @@
         <h4>All Recipes ({{ recipes.length }})</h4>
         <div class="row">
             <div class="col-md-6 col-5-per-row mb-3 recipe-card-compact" ng-repeat="recipe in recipes track by $index">
-                <div class="card h-100">
-                    <div class="card-header bg-custom-purple">
-                        <h5 class="mb-0">{{ recipe.name }}</h5>
-                    </div>
-                    <div class="card-body">
-                        <!-- Recipe Images -->
-                        <div class="item-image-gallery mb-2" ng-if="recipe.images && recipe.images.length > 0">
-                            <img ng-repeat="img in recipe.images track by $index" ng-src="{{getImageUrl(img)}}" alt="{{recipe.name}}" style="border: 0; width: 160px; height: 160px; object-fit: contain;">
+                <div class="card h-100 recipe-card-hover" ng-click="showRecipeDetails(recipe)">
+                    <div class="card-body recipe-card-body-image">
+                        <!-- Recipe Image - Only first image -->
+                        <div class="recipe-image-container" ng-if="recipe.images && recipe.images.length > 0">
+                            <img ng-src="{{getImageUrl(recipe.images[0])}}" alt="{{recipe.name}}" class="recipe-main-image">
                         </div>
                         
-                        <p class="card-text">
-                            <span ng-if="!needsTruncation(recipe.description, 25)">{{ recipe.description || 'No description' }}</span>
-                            <span ng-if="needsTruncation(recipe.description, 25)">
-                                {{ truncateText(recipe.description, 25) }}...
-                                <a href="#" class="text-more-link" ng-click="showRecipeDetails(recipe); $event.preventDefault()">more</a>
-                            </span>
-                        </p>
+                        <!-- Recipe Name below image -->
+                        <h5 class="recipe-name-below-image">{{ recipe.name }}</h5>
                         
-                        <p class="card-text"><b>Ingredients ({{ recipe.ingredients.length }}): {{ getIngredientNamesForRecipe(recipe)}}</b></p>
-                        <div ng-if="recipe.tags && recipe.tags.length > 0">
-                            <span class="badge" ng-class="{'badge-custom-orange': $index % 3 === 0, 'badge-custom-purple': $index % 3 === 1, 'badge-custom-green': $index % 3 === 2}" ng-repeat="tag in recipe.tags track by $index">{{ tag }}</span>
-                        </div>                        
-                    </div>
-                    <div class="card-footer">
-
-                        <button class="btn btn-sm btn-custom-vibrant" ng-click="showRecipeDetails(recipe)">
-                            <i class="fas fa-eye"></i> See recipe details
-                        </button>                        
+                        <!-- Hover overlay with button -->
+                        <div class="recipe-hover-overlay">
+                            <button class="btn btn-custom-vibrant btn-hover-overlay">
+                                <i class="fas fa-eye"></i> See recipe details
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -449,3 +449,75 @@ h6 {
     padding: 0.4rem 0.75rem;
     font-size: 0.85rem;
 }
+
+/* Recipe card hover styles for recipes-public view */
+.recipe-card-hover {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.recipe-card-body-image {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.recipe-image-container {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+}
+
+.recipe-main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: filter 0.3s ease;
+}
+
+.recipe-name-below-image {
+    padding: 1rem;
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--color-text-primary);
+}
+
+.recipe-hover-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.btn-hover-overlay {
+    pointer-events: auto;
+    z-index: 10;
+}
+
+/* Hover effect - blur the card and show overlay */
+.recipe-card-hover:hover .recipe-main-image {
+    filter: blur(4px);
+}
+
+.recipe-card-hover:hover .recipe-name-below-image {
+    filter: blur(4px);
+}
+
+.recipe-card-hover:hover .recipe-hover-overlay {
+    opacity: 1;
+}
