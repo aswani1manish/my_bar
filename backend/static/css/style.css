@@ -1,8 +1,8 @@
 /* Custom Styles for Neighborhood Sips */
 
 :root {
-    --color-primary-blue: #3182ce;
-    --color-primary-blue-dark: #2c5aa0;
+    --color-primary-blue: #A8DADC;
+    --color-primary-blue-dark: #7EB3B5;
     --color-bg-light: #f0f4f8;
     --color-text-primary: #2d3748;
     --color-text-secondary: #718096;
@@ -21,7 +21,7 @@ body {
 
 .hero-section {
     padding: 40px 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #C9ADE6 0%, #D8B4E2 100%);
     color: white;
     border-radius: 10px;
     margin-bottom: 30px;
@@ -124,7 +124,7 @@ body {
 }
 
 .image-upload-container:hover {
-    border-color: #667eea;
+    border-color: #C9ADE6;
     background-color: #e9ecef;
 }
 
@@ -264,7 +264,7 @@ h6 {
     text-decoration: underline;
 }
 
-/* Custom color scheme - modern cool tones */
+/* Custom color scheme - pastel tones */
 .bg-custom-purple {
     background: var(--color-primary-blue) !important;
     color: white !important;
@@ -291,13 +291,13 @@ h6 {
 }
 
 .badge-custom-purple {
-    background: #5a67d8 !important;
+    background: #B8A4D8 !important;
     color: white !important;
     font-weight: 600;
 }
 
 .badge-custom-green {
-    background: #48bb78 !important;
+    background: #9FD5A8 !important;
     color: white !important;
     font-weight: 600;
 }
