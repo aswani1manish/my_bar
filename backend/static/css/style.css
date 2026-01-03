@@ -1,5 +1,8 @@
 /* Custom Styles for Neighborhood Sips */
 
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+
 :root {
     --color-primary-blue: #7EC8CC;
     --color-primary-blue-dark: #5FA5A8;
@@ -15,7 +18,7 @@
 }
 
 body {
-    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Libre Baskerville', serif;
     background-color: var(--color-bg-cream);
     font-size: 0.9rem;
     color: var(--color-text-primary);
@@ -51,6 +54,13 @@ footer {
     margin: 0 !important;
     padding-top: 1rem;
     padding-bottom: 1rem;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+/* Footer text and links use Cormorant Garamond */
+footer p,
+footer a {
+    font-family: 'Cormorant Garamond', serif;
 }
 
 /* Ensure body and html have no margins */
@@ -83,17 +93,20 @@ html, body {
     background: linear-gradient(135deg, #2d2d2d 0%, #4a4a4a 50%, #6b6b6b 100%) !important;
     padding: 1rem 0;
     margin: 0;
+    font-family: 'Great Vibes', cursive;
 }
 
 .navbar-brand {
     font-size: 1.5rem;
     font-weight: 600;
     color: #ffffff !important;
+    font-family: 'Great Vibes', cursive;
 }
 
 .navbar .nav-link {
     color: #ffffff !important;
     transition: opacity 0.3s ease;
+    font-family: 'Great Vibes', cursive;
 }
 
 .navbar .nav-link:hover {
