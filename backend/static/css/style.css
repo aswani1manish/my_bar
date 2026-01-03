@@ -98,7 +98,7 @@ html, body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('/images/navbar-1-1.jpg'),url('/images/navbar-1-2.jpg');
+    background-image: url('/images/navbar-bg-2-1.jpg'),url('/images/navbar-bg-2-2.jpg');
     background-position: left center, right center;
     background-repeat: no-repeat, no-repeat;
     background-size: 50% 100%, 50% 100%;
