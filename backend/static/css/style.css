@@ -286,19 +286,19 @@ h6 {
 
 .badge-custom-orange {
     background: var(--color-primary-blue) !important;
-    color: white !important;
+    color: #2d3748 !important;
     font-weight: 600;
 }
 
 .badge-custom-purple {
     background: #B8A4D8 !important;
-    color: white !important;
+    color: #2d3748 !important;
     font-weight: 600;
 }
 
 .badge-custom-green {
     background: #9FD5A8 !important;
-    color: white !important;
+    color: #2d3748 !important;
     font-weight: 600;
 }
 
