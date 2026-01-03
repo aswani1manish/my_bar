@@ -9,11 +9,14 @@
     --color-border-gray: #cbd5e0;
     --color-bg-white: #ffffff;
     --color-bg-footer: #f7fafc;
+    --color-navbar-pastel: #B8D4E8;
+    --color-bg-pastel-pink: #FFE5EC;
+    --color-bg-pastel-lavender: #E8DFF5;
 }
 
 body {
     font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-    background-color: var(--color-bg-light);
+    background-color: var(--color-bg-pastel-pink);
     font-size: 0.9rem;
     color: var(--color-text-primary);
     line-height: 1.6;
@@ -40,18 +43,18 @@ body {
 
 .navbar {
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    background: var(--color-text-primary) !important;
+    background: var(--color-navbar-pastel) !important;
     padding: 1rem 0;
 }
 
 .navbar-brand {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #ffffff !important;
+    color: var(--color-text-primary) !important;
 }
 
 .navbar .nav-link {
-    color: #ffffff !important;
+    color: var(--color-text-primary) !important;
     transition: opacity 0.3s ease;
 }
 
@@ -284,21 +287,25 @@ h6 {
     color: white !important;
 }
 
+.bg-custom-magenta h5 {
+    color: white !important;
+}
+
 .badge-custom-orange {
     background: var(--color-primary-blue) !important;
-    color: #2d3748 !important;
+    color: white !important;
     font-weight: 600;
 }
 
 .badge-custom-purple {
     background: #A68FCC !important;
-    color: #2d3748 !important;
+    color: white !important;
     font-weight: 600;
 }
 
 .badge-custom-green {
     background: #85C899 !important;
-    color: #2d3748 !important;
+    color: white !important;
     font-weight: 600;
 }
 
