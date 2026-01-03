@@ -239,11 +239,11 @@ def test_rounding_to_quarter_oz():
     print("\n=== Test 11: Rounding to nearest 0.25 Oz ===")
     
     ingredients = [
-        {'name': 'Test 1', 'amount': 11, 'units': 'ml'},  # 11/30 = 0.367 → should round to 0.25 or 0.5
-        {'name': 'Test 2', 'amount': 16, 'units': 'ml'},  # 16/30 = 0.533 → should round to 0.5
-        {'name': 'Test 3', 'amount': 25, 'units': 'ml'},  # 25/30 = 0.833 → should round to 0.75 or 1.0
-        {'name': 'Test 4', 'amount': 40, 'units': 'ml'},  # 40/30 = 1.333 → should round to 1.25
-        {'name': 'Test 5', 'amount': 50, 'units': 'ml'},  # 50/30 = 1.667 → should round to 1.75
+        {'name': 'Test 1', 'amount': 11, 'units': 'ml'},  # 11/30 = 0.367 → rounds to 0.25
+        {'name': 'Test 2', 'amount': 16, 'units': 'ml'},  # 16/30 = 0.533 → rounds to 0.5
+        {'name': 'Test 3', 'amount': 25, 'units': 'ml'},  # 25/30 = 0.833 → rounds to 0.75
+        {'name': 'Test 4', 'amount': 40, 'units': 'ml'},  # 40/30 = 1.333 → rounds to 1.25
+        {'name': 'Test 5', 'amount': 50, 'units': 'ml'},  # 50/30 = 1.667 → rounds to 1.75
     ]
     
     converted, count = convert_ingredient_units(ingredients)
