@@ -1,10 +1,21 @@
 /* Custom Styles for Neighborhood Sips */
 
+:root {
+    --color-primary-blue: #3182ce;
+    --color-primary-blue-dark: #2c5aa0;
+    --color-bg-light: #f0f4f8;
+    --color-text-primary: #2d3748;
+    --color-text-secondary: #718096;
+    --color-border-gray: #cbd5e0;
+    --color-bg-white: #ffffff;
+    --color-bg-footer: #f7fafc;
+}
+
 body {
     font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-    background-color: #f0f4f8;
+    background-color: var(--color-bg-light);
     font-size: 0.9rem;
-    color: #2d3748;
+    color: var(--color-text-primary);
     line-height: 1.6;
 }
 
@@ -29,7 +40,7 @@ body {
 
 .navbar {
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    background: #2d3748 !important;
+    background: var(--color-text-primary) !important;
     padding: 1rem 0;
 }
 
@@ -50,7 +61,7 @@ body {
 
 .card {
     border: none;
-    background-color: #ffffff;
+    background-color: var(--color-bg-white);
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     margin-bottom: 15px;
@@ -70,13 +81,13 @@ body {
 .card-body {
     padding: 0.75rem;
     font-size: 0.85rem;
-    color: #2d3748;
+    color: var(--color-text-primary);
 }
 
 .card-footer {
     padding: 0.5rem 0.75rem;
-    background-color: #f7fafc;
-    color: #718096;
+    background-color: var(--color-bg-footer);
+    color: var(--color-text-secondary);
     border-top: 1px solid #e2e8f0;
 }
 
@@ -184,26 +195,26 @@ h2 {
 /* Recipes heading - reduced by 50% */
 h2.recipes-heading {
     font-size: 1rem;
-    color: #2d3748;
+    color: var(--color-text-primary);
 }
 
 /* Form controls styling */
 .form-control, .form-select {
-    border: 1px solid #cbd5e0;
+    border: 1px solid var(--color-border-gray);
     border-radius: 8px;
     padding: 0.5rem 0.75rem;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-control:focus, .form-select:focus {
-    border-color: #3182ce;
-    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+    border-color: var(--color-primary-blue);
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.25);
     outline: none;
 }
 
 .input-group .btn {
     border-radius: 0 8px 8px 0;
-    border: 1px solid #cbd5e0;
+    border: 1px solid var(--color-border-gray);
     transition: all 0.3s ease;
 }
 
@@ -214,17 +225,17 @@ h2.recipes-heading {
 h4 {
     font-size: 1.15rem;
     margin-bottom: 0.75rem;
-    color: #2d3748;
+    color: var(--color-text-primary);
 }
 
 h5 {
     font-size: 1rem;
-    color: #2d3748;
+    color: var(--color-text-primary);
 }
 
 h6 {
     font-size: 0.9rem;
-    color: #2d3748;
+    color: var(--color-text-primary);
 }
 
 .mb-3 {
@@ -241,7 +252,7 @@ h6 {
 }
 
 .text-more-link {
-    color: #3182ce;
+    color: var(--color-primary-blue);
     cursor: pointer;
     text-decoration: none;
     margin-left: 0.25rem;
@@ -249,28 +260,28 @@ h6 {
 }
 
 .text-more-link:hover {
-    color: #2c5aa0;
+    color: var(--color-primary-blue-dark);
     text-decoration: underline;
 }
 
 /* Custom color scheme - modern cool tones */
 .bg-custom-purple {
-    background: #3182ce !important;
+    background: var(--color-primary-blue) !important;
     color: white !important;
 }
 
 .bg-custom-teal {
-    background: #3182ce !important;
+    background: var(--color-primary-blue) !important;
     color: white !important;
 }
 
 .bg-custom-magenta {
-    background: #3182ce !important;
+    background: var(--color-primary-blue) !important;
     color: white !important;
 }
 
 .badge-custom-orange {
-    background: #3182ce !important;
+    background: var(--color-primary-blue) !important;
     color: white !important;
     font-weight: 600;
 }
@@ -288,7 +299,7 @@ h6 {
 }
 
 .btn-custom-vibrant {
-    background: #3182ce !important;
+    background: var(--color-primary-blue) !important;
     color: white !important;
     border: none !important;
     border-radius: 8px;
@@ -297,7 +308,7 @@ h6 {
 }
 
 .btn-custom-vibrant:hover {
-    background: #2c5aa0 !important;
+    background: var(--color-primary-blue-dark) !important;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
 }
@@ -392,11 +403,11 @@ h6 {
 }
 
 .recipe-card-compact .card-body .card-text {
-    color: #718096;
+    color: var(--color-text-secondary);
 }
 
 .recipe-card-compact .card-body .card-text b {
-    color: #2d3748;
+    color: var(--color-text-primary);
 }
 
 .recipe-card-compact .card-footer {
