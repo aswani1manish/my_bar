@@ -98,7 +98,7 @@ body {
 .alert-info {
     background-color: #bee3f8;
     border-color: #90cdf4;
-    color: #2c5aa0;
+    color: var(--color-primary-blue-dark);
     border-radius: 8px;
 }
 
