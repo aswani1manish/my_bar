@@ -209,6 +209,62 @@ def test_additional_ingredient_fields():
     return True
 
 
+def test_special_ml_conversions():
+    """Test special conversions for 10ml and 20ml"""
+    print("\n=== Test 10: Special ML conversions (10ml, 20ml) ===")
+    
+    ingredients = [
+        {'name': 'Ingredient A', 'amount': 10, 'units': 'ml'},
+        {'name': 'Ingredient B', 'amount': 20, 'units': 'ml'},
+        {'name': 'Ingredient C', 'amount': 10.0, 'units': 'ml'},
+        {'name': 'Ingredient D', 'amount': '20', 'units': 'ml'}
+    ]
+    
+    converted, count = convert_ingredient_units(ingredients)
+    
+    assert count == 4, f"Expected 4 conversions, got {count}"
+    assert converted[0]['amount'] == 0.25, f"Expected 0.25 Oz for 10ml, got {converted[0]['amount']}"
+    assert converted[1]['amount'] == 0.75, f"Expected 0.75 Oz for 20ml, got {converted[1]['amount']}"
+    assert converted[2]['amount'] == 0.25, f"Expected 0.25 Oz for 10.0ml, got {converted[2]['amount']}"
+    assert converted[3]['amount'] == 0.75, f"Expected 0.75 Oz for '20'ml, got {converted[3]['amount']}"
+    
+    print("✓ PASS: Special ML conversions work correctly")
+    print(f"  - 10 ml → {converted[0]['amount']} Oz")
+    print(f"  - 20 ml → {converted[1]['amount']} Oz")
+    return True
+
+
+def test_rounding_to_quarter_oz():
+    """Test that other values round to nearest 0.25 Oz"""
+    print("\n=== Test 11: Rounding to nearest 0.25 Oz ===")
+    
+    ingredients = [
+        {'name': 'Test 1', 'amount': 11, 'units': 'ml'},  # 11/30 = 0.367 → rounds to 0.25
+        {'name': 'Test 2', 'amount': 16, 'units': 'ml'},  # 16/30 = 0.533 → rounds to 0.5
+        {'name': 'Test 3', 'amount': 25, 'units': 'ml'},  # 25/30 = 0.833 → rounds to 0.75
+        {'name': 'Test 4', 'amount': 40, 'units': 'ml'},  # 40/30 = 1.333 → rounds to 1.25
+        {'name': 'Test 5', 'amount': 50, 'units': 'ml'},  # 50/30 = 1.667 → rounds to 1.75
+    ]
+    
+    converted, count = convert_ingredient_units(ingredients)
+    
+    assert count == 5, f"Expected 5 conversions, got {count}"
+    
+    # Verify all amounts are in 0.25 increments
+    for idx, ing in enumerate(converted):
+        amount = ing['amount']
+        # Check if amount is a multiple of 0.25
+        assert (amount * 4) % 1 == 0, f"Amount {amount} is not in 0.25 increments"
+    
+    print("✓ PASS: Values round to nearest 0.25 Oz")
+    print(f"  - 11 ml → {converted[0]['amount']} Oz")
+    print(f"  - 16 ml → {converted[1]['amount']} Oz")
+    print(f"  - 25 ml → {converted[2]['amount']} Oz")
+    print(f"  - 40 ml → {converted[3]['amount']} Oz")
+    print(f"  - 50 ml → {converted[4]['amount']} Oz")
+    return True
+
+
 def main():
     """Run all tests"""
     print("=" * 80)
@@ -224,7 +280,9 @@ def main():
         test_mixed_units,
         test_empty_or_missing_amount,
         test_empty_ingredients_list,
-        test_additional_ingredient_fields
+        test_additional_ingredient_fields,
+        test_special_ml_conversions,
+        test_rounding_to_quarter_oz
     ]
     
     passed = 0

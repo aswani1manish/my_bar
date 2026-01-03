@@ -6,8 +6,10 @@ This script:
 1. Creates a backup of the recipes table (structure and data)
 2. Goes through each recipe record
 3. For each recipe, processes the ingredients JSON
-4. If an ingredient unit is 'ml', converts it to 'Oz' and divides amount by 30
-   Example: 30 ml becomes 1 Oz, 22.5 ml becomes 0.75 Oz
+4. If an ingredient unit is 'ml', converts it to 'Oz' with special handling:
+   - Special cases: 10 ml → 0.25 Oz, 20 ml → 0.75 Oz
+   - Other values: Divided by 30 and rounded to nearest 0.25 Oz increment
+   Example: 30 ml → 1 Oz, 15 ml → 0.5 Oz, 40 ml → 1.25 Oz
 
 USAGE:
 ------
@@ -65,12 +67,23 @@ def convert_ingredient_units(ingredients):
     """
     Convert ingredients from ml to Oz
     
+    Special conditions for common ML values to standard Oz increments:
+    - 10 ml → 0.25 Oz
+    - 20 ml → 0.75 Oz
+    - Other values are rounded to nearest 0.25 Oz increment
+    
     Args:
         ingredients: List of ingredient dictionaries with 'units' and 'amount' fields
         
     Returns:
         Tuple of (converted_ingredients, conversion_count)
     """
+    # Special mapping for common ML values to standard Oz increments
+    SPECIAL_ML_TO_OZ = {
+        10: 0.25,
+        20: 0.75,
+    }
+    
     if not isinstance(ingredients, list):
         return ingredients, 0
     
@@ -89,7 +102,7 @@ def convert_ingredient_units(ingredients):
         unit = ingredient.get('units', '').strip()
         
         if unit.lower() == 'ml':
-            # Convert ml to Oz by dividing by 30
+            # Convert ml to Oz
             amount = ingredient.get('amount')
             
             if amount is not None:
@@ -100,8 +113,14 @@ def convert_ingredient_units(ingredients):
                     else:
                         amount_float = float(amount)
                     
-                    # Convert to Oz (divide by 30)
-                    oz_amount = amount_float / 30.0
+                    # Check for special case mappings first
+                    if amount_float in SPECIAL_ML_TO_OZ:
+                        oz_amount = SPECIAL_ML_TO_OZ[amount_float]
+                    else:
+                        # Convert to Oz (divide by 30) and round to nearest 0.25
+                        oz_amount = amount_float / 30.0
+                        # Round to nearest 0.25 increment
+                        oz_amount = round(oz_amount * 4) / 4
                     
                     # Update the ingredient
                     converted_ingredient['amount'] = oz_amount
