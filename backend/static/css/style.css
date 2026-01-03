@@ -27,7 +27,7 @@ body {
 
 .navbar {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
 }
 
 .navbar-brand {
@@ -187,8 +187,8 @@ h6 {
 
 /* Custom color scheme - vibrant saturated colors */
 .bg-custom-purple {
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
-    color: white !important;
+    background: linear-gradient(135deg, #a8a8a8 0%, #c0c0c0 100%) !important;
+    color: #333 !important;
 }
 
 .bg-custom-teal {
@@ -197,8 +197,8 @@ h6 {
 }
 
 .bg-custom-magenta {
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
-    color: white !important;
+    background: linear-gradient(135deg, #a8a8a8 0%, #c0c0c0 100%) !important;
+    color: #333 !important;
 }
 
 .badge-custom-orange {
