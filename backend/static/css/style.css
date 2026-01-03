@@ -270,6 +270,10 @@ h6 {
     color: white !important;
 }
 
+.bg-custom-purple h5 {
+    color: white !important;
+}
+
 .bg-custom-teal {
     background: var(--color-primary-blue) !important;
     color: white !important;
