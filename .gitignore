@@ -44,3 +44,4 @@ Thumbs.db
 .env
 backend/.env
 backend/test_ingredients_crud.py
+test_recipes_public.html
