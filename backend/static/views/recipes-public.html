@@ -25,9 +25,9 @@
         </div>
     </div>
     <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
-        <select class="form-select form-select-small-text" ng-model="selectedCollection" ng-change="filterRecipesByCollection()">
+        <select class="form-select" ng-model="selectedCollection" ng-change="filterRecipesByCollection()">
             <option value="">Show all collections</option>
-            <option ng-repeat="collection in collections" value="{{ collection.id }}">Collection: {{ collection.name }}</option>
+            <option ng-repeat="collection in collections" value="{{ collection.id }}">{{ collection.name }}</option>
         </select>
     </div>
     <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
