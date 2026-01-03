@@ -16,7 +16,7 @@
 
 body {
     font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-    background-color: var(--color-bg-pastel-pink);
+    background-color: #faedcb;
     font-size: 0.9rem;
     color: var(--color-text-primary);
     line-height: 1.6;
@@ -24,9 +24,21 @@ body {
     padding: 0;
 }
 
-/* Main content background for recipes-public view */
+/* Main content background for all pages */
+.main-content-bg {
+    background-color: #faedcb;
+    margin: 0 !important;
+    padding-top: 0;
+}
+
+/* Keep recipes-public-bg for backwards compatibility */
 .recipes-public-bg {
     background-color: #faedcb;
+}
+
+/* Footer background color */
+.footer-bg {
+    background-color: #faedcb !important;
 }
 
 /* Remove gaps between navbar, main content, and footer */
@@ -38,6 +50,14 @@ body {
 
 footer {
     margin: 0 !important;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+/* Ensure body and html have no margins */
+html, body {
+    margin: 0;
+    padding: 0;
 }
 
 .hero-section {
