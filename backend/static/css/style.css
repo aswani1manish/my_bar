@@ -1,7 +1,7 @@
 /* Custom Styles for Neighborhood Sips */
 
 /* Google Fonts Import */
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=BioRhyme:wght@200;300;400;700;800&display=swap');
 
 :root {
     --color-primary-blue: #7EC8CC;
@@ -90,7 +90,7 @@ html, body {
     background-size: 50% 100%, 50% 100%;
     padding: 2rem 0;
     margin: 0;
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'BioRhyme', serif;
 }
 
 .navbar-brand {
