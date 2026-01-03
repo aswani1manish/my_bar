@@ -184,6 +184,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
+        // Age verification using sessionStorage
+        // Note: This is a client-side verification for legal compliance purposes (requiring users to confirm age).
+        // It's not intended as a security measure since sessionStorage can be manipulated.
+        // This approach is standard for informational cocktail recipe websites.
+        // For e-commerce or age-restricted sales, server-side verification would be required.
+        
         // Check if user has already verified age
         if (sessionStorage.getItem('ageVerified') === 'true') {
             window.location.href = 'index.html';
