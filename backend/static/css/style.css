@@ -505,7 +505,6 @@ h6 {
     font-weight: 600;
     text-align: center;
     color: var(--color-text-primary);
-    transition: filter 0.3s ease;
 }
 
 .recipe-hover-overlay {
@@ -528,17 +527,44 @@ h6 {
     z-index: 10;
 }
 
-/* Hover effect - blur the card and show overlay */
+/* Hover effect - blur only the image, not the name */
 .recipe-card-hover:hover .recipe-main-image,
 .recipe-card-hover:focus .recipe-main-image,
 .recipe-card-hover:hover .recipe-image-placeholder,
-.recipe-card-hover:focus .recipe-image-placeholder,
-.recipe-card-hover:hover .recipe-name-below-image,
-.recipe-card-hover:focus .recipe-name-below-image {
+.recipe-card-hover:focus .recipe-image-placeholder {
     filter: blur(4px);
 }
 
 .recipe-card-hover:hover .recipe-hover-overlay,
 .recipe-card-hover:focus .recipe-hover-overlay {
     opacity: 1;
+}
+
+/* Tags display on recipe card */
+.recipe-tags-display {
+    padding: 0 1rem 0.75rem 1rem;
+    text-align: center;
+}
+
+/* Hover overlay content container */
+.hover-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+/* Ingredients list in hover overlay */
+.recipe-ingredients-hover {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--color-text-primary);
+    max-width: 90%;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    line-height: 1.4;
 }
