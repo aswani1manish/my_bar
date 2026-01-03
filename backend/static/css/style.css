@@ -28,7 +28,6 @@ body {
 .main-content-bg {
     background-color: #faedcb;
     margin: 0 !important;
-    padding-top: 0;
 }
 
 /* Keep recipes-public-bg for backwards compatibility */
