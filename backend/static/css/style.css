@@ -413,6 +413,15 @@ h6 {
     }
 }
 
+/* Mobile portrait mode - single navbar background image */
+@media (max-width: 768px) and (orientation: portrait) {
+    .navbar::before {
+        background-image: url('/images/navbar-bg-2-1.jpg');
+        background-position: center center;
+        background-size: cover;
+    }
+}
+
 /* Medium screens - slightly smaller than desktop */
 @media (min-width: 769px) and (max-width: 991px) {
     .recipe-name-below-image {
