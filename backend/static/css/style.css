@@ -192,8 +192,8 @@ h6 {
 
 /* Custom color scheme - cooler tones with gradients */
 .bg-custom-purple {
-    background: linear-gradient(135deg, #a8a8a8 0%, #c0c0c0 100%) !important;
-    color: #333 !important;
+    background: linear-gradient(135deg, #5f9ea0 0%, #4682b4 100%) !important;
+    color: white !important;
 }
 
 .bg-custom-teal {
@@ -225,14 +225,14 @@ h6 {
 }
 
 .btn-custom-vibrant {
-    background: linear-gradient(135deg, #5f9ea0 0%, #4682b4 100%) !important;
+    background: linear-gradient(135deg, #a8a8a8 0%, #c0c0c0 100%) !important;
     color: white !important;
     border: none !important;
     font-weight: 600;
 }
 
 .btn-custom-vibrant:hover {
-    background: linear-gradient(135deg, #4682b4 0%, #5f9ea0 100%) !important;
+    background: linear-gradient(135deg, #c0c0c0 0%, #a8a8a8 100%) !important;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
