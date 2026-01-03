@@ -20,11 +20,24 @@ body {
     font-size: 0.9rem;
     color: var(--color-text-primary);
     line-height: 1.6;
+    margin: 0;
+    padding: 0;
 }
 
 /* Main content background for recipes-public view */
 .recipes-public-bg {
     background-color: #ddd5d5;
+}
+
+/* Remove gaps between navbar, main content, and footer */
+.container-fluid {
+    margin: 0 !important;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+footer {
+    margin: 0 !important;
 }
 
 .hero-section {
@@ -50,6 +63,7 @@ body {
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     background: linear-gradient(135deg, #2d2d2d 0%, #4a4a4a 50%, #6b6b6b 100%) !important;
     padding: 1rem 0;
+    margin: 0;
 }
 
 .navbar-brand {
