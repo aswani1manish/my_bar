@@ -27,6 +27,7 @@ body {
 
 .navbar {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
 }
 
 .navbar-brand {
@@ -189,10 +190,10 @@ h6 {
     text-decoration: underline;
 }
 
-/* Custom color scheme - vibrant saturated colors */
+/* Custom color scheme - cooler tones with gradients */
 .bg-custom-purple {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    color: white !important;
+    background: linear-gradient(135deg, #a8a8a8 0%, #c0c0c0 100%) !important;
+    color: #333 !important;
 }
 
 .bg-custom-teal {
@@ -201,37 +202,37 @@ h6 {
 }
 
 .bg-custom-magenta {
-    background: linear-gradient(135deg, #ec38bc 0%, #7303c0 100%) !important;
-    color: white !important;
+    background: linear-gradient(135deg, #a8a8a8 0%, #c0c0c0 100%) !important;
+    color: #333 !important;
 }
 
 .badge-custom-orange {
-    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%) !important;
-    color: #333 !important;
+    background: linear-gradient(135deg, #5f9ea0 0%, #4682b4 100%) !important;
+    color: white !important;
     font-weight: 600;
 }
 
 .badge-custom-purple {
-    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%) !important;
-    color: #333 !important;
+    background: linear-gradient(135deg, #6a5acd 0%, #7b68ee 100%) !important;
+    color: white !important;
     font-weight: 600;
 }
 
 .badge-custom-green {
-    background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%) !important;
-    color: #333 !important;
+    background: linear-gradient(135deg, #48a999 0%, #3cb371 100%) !important;
+    color: white !important;
     font-weight: 600;
 }
 
 .btn-custom-vibrant {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+    background: linear-gradient(135deg, #5f9ea0 0%, #4682b4 100%) !important;
     color: white !important;
     border: none !important;
     font-weight: 600;
 }
 
 .btn-custom-vibrant:hover {
-    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%) !important;
+    background: linear-gradient(135deg, #4682b4 0%, #5f9ea0 100%) !important;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
