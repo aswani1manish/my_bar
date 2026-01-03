@@ -192,8 +192,8 @@ def convert_recipes(cursor, conn, dry_run=False):
                 # Update the recipe in database
                 try:
                     update_query = """
-                        UPDATE recipes 
-                        SET ingredients = %s, updated_at = %s 
+                        UPDATE recipes
+                        SET ingredients = %s, updated_at = %s
                         WHERE id = %s
                     """
                     cursor.execute(
