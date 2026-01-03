@@ -30,6 +30,12 @@ body {
     margin: 0 !important;
 }
 
+/* Main content with padding for static pages */
+.main-content-padded {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
 /* Keep recipes-public-bg for backwards compatibility */
 .recipes-public-bg {
     background-color: var(--color-bg-cream);
