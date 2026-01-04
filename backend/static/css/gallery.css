@@ -1,5 +1,18 @@
 /* Gallery Styles */
 
+/* Centered content containers */
+.content-container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.content-container-wide {
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* Mosaic View (Grid/Tiles) */
 .gallery-mosaic {
     display: grid;
@@ -32,6 +45,52 @@
 }
 
 /* Ribbon View (Horizontal Film Strip) */
+.gallery-ribbon-wrapper {
+    position: relative;
+    padding: 20px 50px;
+}
+
+.gallery-ribbon-scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(126, 200, 204, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.gallery-ribbon-scroll-btn:hover {
+    background-color: var(--color-primary-blue-dark);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.gallery-ribbon-scroll-btn:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.gallery-ribbon-scroll-btn.left {
+    left: 10px;
+}
+
+.gallery-ribbon-scroll-btn.right {
+    right: 10px;
+}
+
+.gallery-ribbon-scroll-btn i {
+    font-size: 20px;
+}
+
 .gallery-ribbon {
     overflow-x: auto;
     overflow-y: hidden;
@@ -40,6 +99,7 @@
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
     scrollbar-color: var(--color-primary-blue) var(--color-bg-light);
+    scroll-behavior: smooth;
 }
 
 .gallery-ribbon::-webkit-scrollbar {
@@ -163,6 +223,19 @@
         height: 250px;
         margin-right: 10px;
     }
+    
+    .gallery-ribbon-wrapper {
+        padding: 20px 40px;
+    }
+    
+    .gallery-ribbon-scroll-btn {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .gallery-ribbon-scroll-btn i {
+        font-size: 18px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -173,5 +246,18 @@
     
     .gallery-ribbon-item {
         height: 200px;
+    }
+    
+    .gallery-ribbon-wrapper {
+        padding: 20px 35px;
+    }
+    
+    .gallery-ribbon-scroll-btn {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .gallery-ribbon-scroll-btn i {
+        font-size: 16px;
     }
 }

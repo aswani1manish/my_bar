@@ -54,12 +54,20 @@ function renderMosaicView(container) {
 // Render ribbon (horizontal strip) view
 function renderRibbonView(container) {
     const html = `
-        <div class="gallery-ribbon">
-            ${galleryImages.map((img, index) => `
-                <div class="gallery-ribbon-item" onclick="openImageModal('${img.url}', '${img.filename}')">
-                    <img src="${img.url}" alt="${img.filename}" loading="lazy">
-                </div>
-            `).join('')}
+        <div class="gallery-ribbon-wrapper">
+            <button class="gallery-ribbon-scroll-btn left" onclick="scrollRibbon('left')" aria-label="Scroll left">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="gallery-ribbon" id="ribbonContainer">
+                ${galleryImages.map((img, index) => `
+                    <div class="gallery-ribbon-item" onclick="openImageModal('${img.url}', '${img.filename}')">
+                        <img src="${img.url}" alt="${img.filename}" loading="lazy">
+                    </div>
+                `).join('')}
+            </div>
+            <button class="gallery-ribbon-scroll-btn right" onclick="scrollRibbon('right')" aria-label="Scroll right">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
     `;
     container.innerHTML = html;
@@ -151,4 +159,23 @@ function showErrorState() {
             <p>There was an error loading the gallery images. Please try again later.</p>
         </div>
     `;
+}
+
+// Scroll the ribbon view left or right
+function scrollRibbon(direction) {
+    const ribbonContainer = document.getElementById('ribbonContainer');
+    if (!ribbonContainer) return;
+    
+    // Use container width for more responsive scrolling
+    const scrollAmount = Math.min(400, ribbonContainer.clientWidth * 0.8);
+    const currentScroll = ribbonContainer.scrollLeft;
+    const targetScroll = direction === 'left' 
+        ? currentScroll - scrollAmount 
+        : currentScroll + scrollAmount;
+    
+    // Use scrollTo for smooth scrolling (leverages CSS smooth scroll behavior)
+    ribbonContainer.scrollTo({
+        left: targetScroll,
+        behavior: 'smooth'
+    });
 }
