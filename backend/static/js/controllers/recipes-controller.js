@@ -75,7 +75,12 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
             filteredRecipes = filteredRecipes.filter(function(recipe) {
                 if (recipe.ingredients && recipe.ingredients.length > 0) {
                     return recipe.ingredients.some(function(ingredient) {
-                        return ingredient.name && ingredient.name.toLowerCase().indexOf($scope.selectedSpirit.toLowerCase()) !== -1;
+                        if (!ingredient.name) return false;
+                        var ingredientNameLower = ingredient.name.toLowerCase();
+                        var spiritLower = $scope.selectedSpirit.toLowerCase();
+                        // Check for word boundary match to avoid false positives like 'Gin' matching 'Ginger'
+                        var regex = new RegExp('\\b' + spiritLower + '\\b', 'i');
+                        return regex.test(ingredient.name);
                     });
                 }
                 return false;
