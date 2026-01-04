@@ -26,24 +26,12 @@
         </div>    
     </div>    
     <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
-        <div class="dropdown" ng-click="toggleTagDropdown($event)">
-            <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button" id="tagDropdownButton">
-                <span ng-if="selectedTags.length === 0">Filter by tags...</span>
-                <span ng-if="selectedTags.length > 0">{{ selectedTags.length }} tag(s) selected</span>
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search by tags..." 
+                   ng-model="tagSearchQuery" ng-change="search()">
+            <button class="btn btn-outline-secondary" type="button" ng-click="search()">
+                <i class="fas fa-search"></i>
             </button>
-            <div class="dropdown-menu tag-dropdown-menu" ng-show="showTagDropdown" ng-click="$event.stopPropagation()">
-                <div class="px-3 py-2" ng-if="uniqueTags.length === 0">
-                    <span class="text-muted">No tags available</span>
-                </div>
-                <div class="px-3 py-2" ng-if="uniqueTags.length > 0">
-                    <div class="form-check" ng-repeat="tag in uniqueTags">
-                        <input class="form-check-input" type="checkbox" ng-model="tagSelection[tag]" ng-change="updateSelectedTags()" id="tag-{{$index}}">
-                        <label class="form-check-label" for="tag-{{$index}}">
-                            {{ tag }}
-                        </label>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
