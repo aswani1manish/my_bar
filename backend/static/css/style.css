@@ -418,17 +418,12 @@ h6 {
         padding-bottom: 0.5rem;
     }
     
-    /* Responsive font size for recipe names on smaller screens */
-    .recipe-name-below-image {
-        font-size: 1rem;
-    }
-    
     /* Reduce image size on mobile for recipe cards */
     .recipe-image-container {
         height: 180px;
     }
     
-    /* Reduce padding on mobile for recipe cards */
+    /* Reduce padding and font size for recipe names on mobile */
     .recipe-name-below-image {
         padding: 0.5rem;
         font-size: 0.9rem;
