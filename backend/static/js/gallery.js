@@ -169,10 +169,13 @@ function scrollRibbon(direction) {
     // Use container width for more responsive scrolling
     const scrollAmount = Math.min(400, ribbonContainer.clientWidth * 0.8);
     const currentScroll = ribbonContainer.scrollLeft;
+    const targetScroll = direction === 'left' 
+        ? currentScroll - scrollAmount 
+        : currentScroll + scrollAmount;
     
-    if (direction === 'left') {
-        ribbonContainer.scrollLeft = currentScroll - scrollAmount;
-    } else {
-        ribbonContainer.scrollLeft = currentScroll + scrollAmount;
-    }
+    // Use scrollTo for smooth scrolling (leverages CSS smooth scroll behavior)
+    ribbonContainer.scrollTo({
+        left: targetScroll,
+        behavior: 'smooth'
+    });
 }

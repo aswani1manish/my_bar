@@ -57,7 +57,7 @@
 }
 
 .gallery-ribbon-scroll-btn:hover {
-    background-color: rgba(95, 165, 168, 1);
+    background-color: var(--color-primary-blue-dark);
     transform: translateY(-50%) scale(1.1);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
