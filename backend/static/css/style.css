@@ -672,3 +672,71 @@ h6 {
 .collection-label {
     white-space: nowrap;
 }
+
+/* Spirit filter styling */
+.spirit-filter-container {
+    margin: 0 1rem;
+}
+
+.spirit-filter-label {
+    white-space: nowrap;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.spirit-tiles {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.spirit-tile {
+    padding: 0.4rem 0.8rem;
+    background-color: var(--color-bg-white);
+    border: 2px solid var(--color-border-gray);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.spirit-tile:hover {
+    background-color: var(--color-bg-pastel-lavender);
+    border-color: var(--color-primary-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.spirit-tile-active {
+    background-color: var(--color-primary-blue) !important;
+    color: white !important;
+    border-color: var(--color-primary-blue) !important;
+}
+
+/* Responsive adjustments for spirit filter */
+@media (max-width: 991px) {
+    .spirit-filter-container {
+        margin: 0.5rem 0;
+        width: 100%;
+    }
+    
+    .spirit-tiles {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 768px) {
+    .spirit-filter-label {
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .spirit-tile {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
+    }
+}
