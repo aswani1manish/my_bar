@@ -9,7 +9,7 @@
 <div class="row mb-4">
     <div class="col-lg-5 col-md-6 col-sm-12 mb-2">
         <div class="d-flex align-items-center">
-            <label class="me-2 mb-0 collection-label">Browse recipes by collection:</label>
+            <label class="me-2 mb-0 collection-label">Browse by collection:</label>
             <select class="form-select" ng-model="selectedCollection" ng-change="filterRecipesByCollection()">
                 <option value="">Show all recipes</option>
                 <option ng-repeat="collection in collections" value="{{ collection.id }}">{{ collection.name }}</option>
