@@ -9,6 +9,7 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     $scope.tagSearchQuery = '';
     $scope.selectedCollection = '4';
     $scope.barShelfMode = false;
+    $scope.selectedSpirit = '';
     $scope.newTag = '';
     $scope.newIngredient = {};
     $scope.apiUrl = API_URL;
@@ -50,10 +51,10 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
 
     // Filter recipes by selected collection
     $scope.filterRecipesByCollection = function() {
-        if (!$scope.selectedCollection) {
-            // Show all recipes when no collection is selected
-            $scope.recipes = $scope.allRecipes;
-        } else {
+        var filteredRecipes = $scope.allRecipes;
+        
+        // Apply collection filter if selected
+        if ($scope.selectedCollection) {
             // Find the selected collection
             var collection = $scope.collections.find(function(c) {
                 return c.id === parseInt($scope.selectedCollection);
@@ -61,13 +62,43 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
             
             if (collection && collection.recipe_ids) {
                 // Filter recipes to only those in the collection
-                $scope.recipes = $scope.allRecipes.filter(function(recipe) {
+                filteredRecipes = filteredRecipes.filter(function(recipe) {
                     return collection.recipe_ids.indexOf(recipe.id) !== -1;
                 });
             } else {
-                $scope.recipes = [];
+                filteredRecipes = [];
             }
         }
+        
+        // Apply spirit filter if selected
+        if ($scope.selectedSpirit) {
+            filteredRecipes = filteredRecipes.filter(function(recipe) {
+                if (recipe.ingredients && recipe.ingredients.length > 0) {
+                    return recipe.ingredients.some(function(ingredient) {
+                        if (!ingredient.name) return false;
+                        var ingredientNameLower = ingredient.name.toLowerCase();
+                        var spiritLower = $scope.selectedSpirit.toLowerCase();
+                        // Check for word boundary match to avoid false positives like 'Gin' matching 'Ginger'
+                        var regex = new RegExp('\\b' + spiritLower + '\\b', 'i');
+                        return regex.test(ingredient.name);
+                    });
+                }
+                return false;
+            });
+        }
+        
+        $scope.recipes = filteredRecipes;
+    };
+
+    // Filter recipes by spirit
+    $scope.filterBySpirit = function(spirit) {
+        // Toggle spirit selection
+        if ($scope.selectedSpirit === spirit) {
+            $scope.selectedSpirit = '';
+        } else {
+            $scope.selectedSpirit = spirit;
+        }
+        $scope.filterRecipesByCollection();
     };
 
     // Search recipes

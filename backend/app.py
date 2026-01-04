@@ -474,7 +474,7 @@ def get_recipes():
     params = []
 
     if search:
-        query += " AND (name LIKE %s OR description LIKE %s)"
+        query += " AND (name LIKE %s OR JSON_SEARCH(LOWER(ingredients), 'one', LOWER(%s)) IS NOT NULL)"
         search_param = f"%{search}%"
         params.extend([search_param, search_param])
 
