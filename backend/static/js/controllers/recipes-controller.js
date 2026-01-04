@@ -6,7 +6,6 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     $scope.currentRecipe = {};
     $scope.isEditing = false;
     $scope.searchQuery = '';
-    $scope.tagSearch = '';
     $scope.selectedCollection = '4';
     $scope.barShelfMode = false;
     $scope.newTag = '';
@@ -14,6 +13,10 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     $scope.apiUrl = API_URL;
     $scope.selectedRecipe = {};
     $scope.recipeModal = null;
+    $scope.uniqueTags = [];
+    $scope.selectedTags = [];
+    $scope.tagSelection = {};
+    $scope.showTagDropdown = false;
 
     // Load all recipes
     $scope.loadRecipes = function() {
@@ -21,8 +24,10 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         // Load collections first, then recipes.
         $scope.loadCollections();
         var barShelfModeParam = $scope.barShelfMode ? 'Y' : '';
-        ApiService.getRecipes($scope.searchQuery, $scope.tagSearch, barShelfModeParam).then(function(response) {
+        // Note: tagSearch is kept empty since we now use client-side tag filtering
+        ApiService.getRecipes($scope.searchQuery, '', barShelfModeParam).then(function(response) {
             $scope.allRecipes = response.data;
+            $scope.extractUniqueTags();
             $scope.filterRecipesByCollection();
         }, function(error) {
             console.error('Error loading recipes:', error);
@@ -50,9 +55,11 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
 
     // Filter recipes by selected collection
     $scope.filterRecipesByCollection = function() {
+        var filteredByCollection = [];
+        
         if (!$scope.selectedCollection) {
             // Show all recipes when no collection is selected
-            $scope.recipes = $scope.allRecipes;
+            filteredByCollection = $scope.allRecipes;
         } else {
             // Find the selected collection
             var collection = $scope.collections.find(function(c) {
@@ -61,12 +68,27 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
             
             if (collection && collection.recipe_ids) {
                 // Filter recipes to only those in the collection
-                $scope.recipes = $scope.allRecipes.filter(function(recipe) {
+                filteredByCollection = $scope.allRecipes.filter(function(recipe) {
                     return collection.recipe_ids.indexOf(recipe.id) !== -1;
                 });
             } else {
-                $scope.recipes = [];
+                filteredByCollection = [];
             }
+        }
+        
+        // Apply tag filter
+        if ($scope.selectedTags.length > 0) {
+            $scope.recipes = filteredByCollection.filter(function(recipe) {
+                if (!recipe.tags || recipe.tags.length === 0) {
+                    return false;
+                }
+                // Check if recipe has at least one of the selected tags
+                return $scope.selectedTags.some(function(selectedTag) {
+                    return recipe.tags.indexOf(selectedTag) !== -1;
+                });
+            });
+        } else {
+            $scope.recipes = filteredByCollection;
         }
     };
 
@@ -79,6 +101,53 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     $scope.toggleBarShelfMode = function() {
         $scope.loadRecipes();
     };
+
+    // Extract unique tags from all recipes
+    $scope.extractUniqueTags = function() {
+        var tagsSet = new Set();
+        $scope.allRecipes.forEach(function(recipe) {
+            if (recipe.tags && recipe.tags.length > 0) {
+                recipe.tags.forEach(function(tag) {
+                    tagsSet.add(tag);
+                });
+            }
+        });
+        $scope.uniqueTags = Array.from(tagsSet).sort();
+    };
+
+    // Toggle tag dropdown visibility
+    $scope.toggleTagDropdown = function(event) {
+        event.stopPropagation();
+        $scope.showTagDropdown = !$scope.showTagDropdown;
+    };
+
+    // Update selected tags when checkboxes change
+    $scope.updateSelectedTags = function() {
+        $scope.selectedTags = Object.keys($scope.tagSelection).filter(function(tag) {
+            return $scope.tagSelection[tag];
+        });
+        $scope.filterRecipesByCollection();
+    };
+
+    // Close dropdown when clicking outside
+    var closeDropdownHandler = function(event) {
+        if ($scope.showTagDropdown) {
+            if (!$scope.$$phase) {
+                $scope.$apply(function() {
+                    $scope.showTagDropdown = false;
+                });
+            } else {
+                $scope.showTagDropdown = false;
+            }
+        }
+    };
+    
+    angular.element(document).on('click', closeDropdownHandler);
+    
+    // Clean up event listener when scope is destroyed
+    $scope.$on('$destroy', function() {
+        angular.element(document).off('click', closeDropdownHandler);
+    });
 
     // // Create or update recipe
     // $scope.saveRecipe = function() {
