@@ -695,3 +695,8 @@ h6 {
     width: 100%;
     user-select: none;
 }
+
+/* Collection label styling */
+.collection-label {
+    white-space: nowrap;
+}

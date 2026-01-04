@@ -25,7 +25,8 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         // Load collections first, then recipes.
         $scope.loadCollections();
         var barShelfModeParam = $scope.barShelfMode ? 'Y' : '';
-        ApiService.getRecipes($scope.searchQuery, $scope.tagSearch, barShelfModeParam).then(function(response) {
+        // Note: tagSearch is kept empty since we now use client-side tag filtering
+        ApiService.getRecipes($scope.searchQuery, '', barShelfModeParam).then(function(response) {
             $scope.allRecipes = response.data;
             $scope.extractUniqueTags();
             $scope.filterRecipesByCollection();
@@ -123,22 +124,26 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
 
     // Update selected tags when checkboxes change
     $scope.updateSelectedTags = function() {
-        $scope.selectedTags = [];
-        for (var tag in $scope.tagSelection) {
-            if ($scope.tagSelection[tag]) {
-                $scope.selectedTags.push(tag);
-            }
-        }
+        $scope.selectedTags = Object.keys($scope.tagSelection).filter(function(tag) {
+            return $scope.tagSelection[tag];
+        });
         $scope.filterRecipesByCollection();
     };
 
     // Close dropdown when clicking outside
-    angular.element(document).on('click', function(event) {
+    var closeDropdownHandler = function(event) {
         if ($scope.showTagDropdown) {
             $scope.$apply(function() {
                 $scope.showTagDropdown = false;
             });
         }
+    };
+    
+    angular.element(document).on('click', closeDropdownHandler);
+    
+    // Clean up event listener when scope is destroyed
+    $scope.$on('$destroy', function() {
+        angular.element(document).off('click', closeDropdownHandler);
     });
 
     // // Create or update recipe
