@@ -54,12 +54,20 @@ function renderMosaicView(container) {
 // Render ribbon (horizontal strip) view
 function renderRibbonView(container) {
     const html = `
-        <div class="gallery-ribbon">
-            ${galleryImages.map((img, index) => `
-                <div class="gallery-ribbon-item" onclick="openImageModal('${img.url}', '${img.filename}')">
-                    <img src="${img.url}" alt="${img.filename}" loading="lazy">
-                </div>
-            `).join('')}
+        <div class="gallery-ribbon-wrapper">
+            <button class="gallery-ribbon-scroll-btn left" onclick="scrollRibbon('left')" aria-label="Scroll left">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="gallery-ribbon" id="ribbonContainer">
+                ${galleryImages.map((img, index) => `
+                    <div class="gallery-ribbon-item" onclick="openImageModal('${img.url}', '${img.filename}')">
+                        <img src="${img.url}" alt="${img.filename}" loading="lazy">
+                    </div>
+                `).join('')}
+            </div>
+            <button class="gallery-ribbon-scroll-btn right" onclick="scrollRibbon('right')" aria-label="Scroll right">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
     `;
     container.innerHTML = html;
@@ -151,4 +159,19 @@ function showErrorState() {
             <p>There was an error loading the gallery images. Please try again later.</p>
         </div>
     `;
+}
+
+// Scroll the ribbon view left or right
+function scrollRibbon(direction) {
+    const ribbonContainer = document.getElementById('ribbonContainer');
+    if (!ribbonContainer) return;
+    
+    const scrollAmount = 400; // Pixels to scroll
+    const currentScroll = ribbonContainer.scrollLeft;
+    
+    if (direction === 'left') {
+        ribbonContainer.scrollLeft = currentScroll - scrollAmount;
+    } else {
+        ribbonContainer.scrollLeft = currentScroll + scrollAmount;
+    }
 }
