@@ -166,7 +166,8 @@ function scrollRibbon(direction) {
     const ribbonContainer = document.getElementById('ribbonContainer');
     if (!ribbonContainer) return;
     
-    const scrollAmount = 400; // Pixels to scroll
+    // Use container width for more responsive scrolling
+    const scrollAmount = Math.min(400, ribbonContainer.clientWidth * 0.8);
     const currentScroll = ribbonContainer.scrollLeft;
     
     if (direction === 'left') {
