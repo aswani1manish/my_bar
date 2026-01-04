@@ -30,23 +30,21 @@
                    ng-model="tagSearch" ng-change="search()">
         </div>
     </div>
-
-
 </div>
 
 <!-- Recipes List -->
 <div class="row">
     <div class="col-12">
-        <h4>All Recipes ({{ recipes.length }})</h4>
-    <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
-        <div class="form-check form-switch d-flex align-items-center bar-shelf-switch">
-            <input class="form-check-input" type="checkbox" id="barShelfModeSwitch" 
-                   ng-model="barShelfMode" ng-change="toggleBarShelfMode()">
-            <label class="form-check-label ms-2" for="barShelfModeSwitch">
-                <!--i class="fas fa-wine-bottle"></i--> Toggle to see what I can make right now!
-            </label>
+        <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
+            <h4>All Recipes ({{ recipes.length }})</h4>
+            <div class="form-check form-switch d-flex align-items-center bar-shelf-switch">
+                <input class="form-check-input" type="checkbox" id="barShelfModeSwitch" 
+                       ng-model="barShelfMode" ng-change="toggleBarShelfMode()">
+                <label class="form-check-label ms-2" for="barShelfModeSwitch">
+                    <!--i class="fas fa-wine-bottle"></i--> Toggle to see what I can make right now!
+                </label>
+            </div>
         </div>
-    </div>
         <div class="row">
             <div class="col-md-6 col-5-per-row mb-3 recipe-card-compact" ng-repeat="recipe in recipes track by $index">
                 <div class="card h-100 recipe-card-hover" ng-click="showRecipeDetails(recipe)" tabindex="0" ng-keypress="$event.keyCode === 13 && showRecipeDetails(recipe)" role="button" aria-label="View details for {{recipe.name}}">
