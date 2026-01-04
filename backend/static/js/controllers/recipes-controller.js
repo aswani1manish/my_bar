@@ -132,9 +132,13 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     // Close dropdown when clicking outside
     var closeDropdownHandler = function(event) {
         if ($scope.showTagDropdown) {
-            $scope.$apply(function() {
+            if (!$scope.$$phase) {
+                $scope.$apply(function() {
+                    $scope.showTagDropdown = false;
+                });
+            } else {
                 $scope.showTagDropdown = false;
-            });
+            }
         }
     };
     
