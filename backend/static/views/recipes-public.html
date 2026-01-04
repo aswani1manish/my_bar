@@ -76,7 +76,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 col-5-per-row mb-3 recipe-card-compact" ng-repeat="recipe in recipes track by $index">
+            <div class="col-6 col-md-6 col-5-per-row mb-3 recipe-card-compact" ng-repeat="recipe in recipes track by $index">
                 <div class="card h-100 recipe-card-hover" ng-click="showRecipeDetails(recipe)" tabindex="0" ng-keypress="$event.keyCode === 13 && showRecipeDetails(recipe)" role="button" aria-label="View details for {{recipe.name}}">
                     <div class="card-body recipe-card-body-image">
                         <!-- Recipe Image - Only first image -->
