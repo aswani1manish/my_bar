@@ -7,7 +7,7 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     $scope.isEditing = false;
     $scope.searchQuery = '';
     $scope.tagSearchQuery = '';
-    $scope.selectedCollection = '4';
+    $scope.selectedCollection = '';
     $scope.barShelfMode = false;
     $scope.selectedSpirit = '';
     $scope.newTag = '';
