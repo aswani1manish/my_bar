@@ -952,6 +952,34 @@ def update_collection(collection_id):
 def health_check():
     return jsonify({'status': 'healthy', 'app': 'Neighborhood Sips'})
 
+# Gallery images endpoint
+@app.route('/api/gallery/images', methods=['GET'])
+def get_gallery_images():
+    """Get list of all images in the gallery directory"""
+    gallery_dir = os.path.join(os.path.dirname(__file__), 'static', 'images', 'gallery')
+    
+    if not os.path.exists(gallery_dir):
+        return jsonify({'images': []})
+    
+    # Get all image files from the gallery directory
+    image_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.JPG', '.JPEG', '.PNG', '.GIF'}
+    images = []
+    
+    try:
+        for filename in os.listdir(gallery_dir):
+            if os.path.splitext(filename)[1] in image_extensions:
+                images.append({
+                    'filename': filename,
+                    'url': f'/images/gallery/{filename}'
+                })
+        
+        # Sort by filename for consistent ordering
+        images.sort(key=lambda x: x['filename'])
+        
+        return jsonify({'images': images})
+    except Exception as e:
+        return jsonify({'error': str(e), 'images': []}), 500
+
 # ============= FRONTEND SERVING (OPTIONAL) =============
 # Uncomment these routes to serve frontend from the same Flask app
 # This is useful for PythonAnywhere deployment where you want everything in one app
