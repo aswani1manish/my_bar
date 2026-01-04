@@ -1,5 +1,18 @@
 /* Gallery Styles */
 
+/* Centered content containers */
+.content-container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.content-container-wide {
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* Mosaic View (Grid/Tiles) */
 .gallery-mosaic {
     display: grid;
