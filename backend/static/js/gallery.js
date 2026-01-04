@@ -87,14 +87,46 @@ function switchView(view) {
 
 // Open image in modal
 function openImageModal(imageUrl, filename) {
-    const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+    const modalElement = document.getElementById('imageModal');
     const modalImage = document.getElementById('modalImage');
     const modalLabel = document.getElementById('imageModalLabel');
     
     modalImage.src = imageUrl;
     modalLabel.textContent = filename;
     
-    modal.show();
+    // Use Bootstrap if available, otherwise show manually
+    if (typeof bootstrap !== 'undefined') {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+    } else {
+        // Fallback: show modal manually
+        modalElement.classList.add('show');
+        modalElement.style.display = 'block';
+        document.body.classList.add('modal-open');
+        
+        // Create backdrop
+        const backdrop = document.createElement('div');
+        backdrop.classList.add('modal-backdrop', 'fade', 'show');
+        backdrop.id = 'modalBackdrop';
+        document.body.appendChild(backdrop);
+        
+        // Close on backdrop click or close button
+        const closeModal = () => {
+            modalElement.classList.remove('show');
+            modalElement.style.display = 'none';
+            document.body.classList.remove('modal-open');
+            const existingBackdrop = document.getElementById('modalBackdrop');
+            if (existingBackdrop) {
+                existingBackdrop.remove();
+            }
+        };
+        
+        backdrop.addEventListener('click', closeModal);
+        const closeBtn = modalElement.querySelector('.btn-close');
+        if (closeBtn) {
+            closeBtn.onclick = closeModal;
+        }
+    }
 }
 
 // Show empty state when no images are found
