@@ -1,0 +1,177 @@
+/* Gallery Styles */
+
+/* Mosaic View (Grid/Tiles) */
+.gallery-mosaic {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.gallery-mosaic-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    background-color: #fff;
+    aspect-ratio: 1 / 1;
+}
+
+.gallery-mosaic-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.gallery-mosaic-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Ribbon View (Horizontal Film Strip) */
+.gallery-ribbon {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding: 20px 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-primary-blue) var(--color-bg-light);
+}
+
+.gallery-ribbon::-webkit-scrollbar {
+    height: 12px;
+}
+
+.gallery-ribbon::-webkit-scrollbar-track {
+    background: var(--color-bg-light);
+    border-radius: 6px;
+}
+
+.gallery-ribbon::-webkit-scrollbar-thumb {
+    background: var(--color-primary-blue);
+    border-radius: 6px;
+}
+
+.gallery-ribbon::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-blue-dark);
+}
+
+.gallery-ribbon-item {
+    display: inline-block;
+    margin-right: 15px;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    background-color: #fff;
+    height: 400px;
+    vertical-align: top;
+}
+
+.gallery-ribbon-item:last-child {
+    margin-right: 0;
+}
+
+.gallery-ribbon-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.gallery-ribbon-item img {
+    height: 100%;
+    width: auto;
+    display: block;
+    object-fit: contain;
+}
+
+/* Loading state */
+.gallery-loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-text-secondary);
+}
+
+/* Empty state */
+.gallery-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--color-text-secondary);
+}
+
+.gallery-empty i {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: var(--color-border-gray);
+}
+
+/* Modal styling */
+#modalImage {
+    max-height: 80vh;
+    object-fit: contain;
+}
+
+/* Modal backdrop (for when Bootstrap JS is not available) */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1040;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+}
+
+.modal-backdrop.show {
+    opacity: 0.5;
+}
+
+.modal.show {
+    display: block !important;
+}
+
+.modal-open {
+    overflow: hidden;
+}
+
+/* Button styling */
+.btn-outline-primary {
+    border-color: var(--color-primary-blue);
+    color: var(--color-primary-blue);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary.active {
+    background-color: var(--color-primary-blue);
+    border-color: var(--color-primary-blue);
+    color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .gallery-mosaic {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+    }
+    
+    .gallery-ribbon-item {
+        height: 250px;
+        margin-right: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-mosaic {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 8px;
+    }
+    
+    .gallery-ribbon-item {
+        height: 200px;
+    }
+}

@@ -1,24 +1,21 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="neighborhoodSipsApp">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neighborhood Sips</title>
+    <title>Gallery - Neighborhood Sips</title>
     
     <!-- Bootstrap CSS for responsive design -->
     <link href="css/vendor/bootstrap.min.css" rel="stylesheet">
     <link href="css/vendor/fontawesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    
-    <!-- AngularJS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+    <link rel="stylesheet" href="css/gallery.css">
 </head>
-<body ng-controller="MainController">
+<body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#!/">
+            <a class="navbar-brand" href="index.html">
                 <i class="fas fa-cocktail"></i> Neighborhood Sips - your neighborhood mixologist!
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -27,7 +24,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#!/">
+                        <a class="nav-link" href="index.html">
                             <i class="fas fa-glass-martini-alt"></i> Recipes
                         </a>
                     </li>
@@ -37,7 +34,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="gallery.html">
+                        <a class="nav-link active" href="gallery.html">
                             <i class="fas fa-images"></i> Gallery
                         </a>
                     </li>
@@ -52,8 +49,50 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="container-fluid recipes-public-bg">
-        <div ng-view></div>
+    <div class="container mt-5 main-content-bg" style="padding-top: 3rem; padding-bottom: 3rem;">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="text-center mb-3">Gallery</h2>
+                <p class="text-center text-muted">Explore our collection of cocktails and moments</p>
+                
+                <!-- View Toggle Buttons -->
+                <div class="text-center mb-4">
+                    <div class="btn-group" role="group" aria-label="View toggle">
+                        <button type="button" class="btn btn-outline-primary active" id="mosaicViewBtn" onclick="switchView('mosaic')">
+                            <i class="fas fa-th"></i> Mosaic View
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" id="ribbonViewBtn" onclick="switchView('ribbon')">
+                            <i class="fas fa-film"></i> Ribbon View
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gallery Container -->
+        <div id="galleryContainer">
+            <!-- Images will be loaded here dynamically -->
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" alt="Gallery image" class="img-fluid">
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Footer -->
@@ -75,15 +114,8 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- App Configuration -->
-    <script src="js/config.js"></script>
-    
-    <!-- App Scripts -->
-    <script src="js/app.js"></script>
-    <script src="js/controllers/main-controller.js"></script>
-    <script src="js/controllers/recipes-controller.js"></script>
-    <script src="js/services/api-service.js"></script>
-    <script src="js/directives/image-upload.js"></script>
+    <!-- Gallery Script -->
+    <script src="js/gallery.js"></script>
     
     <!-- Age gate check -->
     <script>
