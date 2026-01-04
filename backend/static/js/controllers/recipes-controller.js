@@ -80,7 +80,7 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         $scope.loadRecipes();
     };
 
-    // Get ingredient names in recipe
+    // // Create or update recipe
     // $scope.saveRecipe = function() {
     //     if (!$scope.currentRecipe.name) {
     //         alert('Please enter a recipe name');
