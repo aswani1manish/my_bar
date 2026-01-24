@@ -249,6 +249,11 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     $scope.showToast = function() {
         var toastElement = document.getElementById('copyLinkToast');
         if (toastElement) {
+            // Check if toast is already visible to prevent overlapping toasts
+            var existingToast = bootstrap.Toast.getInstance(toastElement);
+            if (existingToast) {
+                existingToast.dispose();
+            }
             var toast = new bootstrap.Toast(toastElement, {
                 autohide: true,
                 delay: 3000
@@ -281,7 +286,8 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         }
     };
 
-    // Fallback copy method using document.execCommand (works better in Edge and older browsers)
+    // Fallback copy method using deprecated document.execCommand
+    // Used for compatibility with older browsers and environments where Clipboard API isn't available
     $scope.fallbackCopyTextToClipboard = function(text) {
         var textArea = document.createElement("textarea");
         textArea.value = text;
@@ -294,11 +300,15 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         textArea.style.height = "1px";
         textArea.style.opacity = "0";
         
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
+        var textAreaAdded = false;
         
         try {
+            document.body.appendChild(textArea);
+            textAreaAdded = true;
+            textArea.focus();
+            textArea.select();
+            
+            // Note: document.execCommand is deprecated but necessary for browser compatibility
             var successful = document.execCommand('copy');
             if (successful) {
                 console.log('Fallback: Recipe link copied successfully:', text);
@@ -313,7 +323,10 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
             // Last resort: show prompt for manual copy
             prompt('Please copy this link manually:', text);
         } finally {
-            document.body.removeChild(textArea);
+            // Only remove if it was successfully added to the DOM
+            if (textAreaAdded && textArea.parentNode) {
+                document.body.removeChild(textArea);
+            }
         }
     };
 
