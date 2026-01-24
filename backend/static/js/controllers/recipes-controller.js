@@ -245,7 +245,24 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         }
     };
 
-    // Copy recipe link to clipboard
+    // Show toast notification
+    $scope.showToast = function() {
+        var toastElement = document.getElementById('copyLinkToast');
+        if (toastElement) {
+            // Check if toast is already visible to prevent overlapping toasts
+            var existingToast = bootstrap.Toast.getInstance(toastElement);
+            if (existingToast) {
+                existingToast.dispose();
+            }
+            var toast = new bootstrap.Toast(toastElement, {
+                autohide: true,
+                delay: 3000
+            });
+            toast.show();
+        }
+    };
+
+    // Copy recipe link to clipboard with multiple fallback strategies
     $scope.copyRecipeLink = function(recipeId) {
         if (!recipeId) return;
         
@@ -253,21 +270,63 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         var baseUrl = window.location.origin + window.location.pathname;
         var deepLink = baseUrl + '?recipe=' + recipeId;
         
-        // Copy to clipboard
+        // Strategy 1: Try modern Clipboard API (works in secure contexts)
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(deepLink).then(function() {
-                // Show success feedback - could be enhanced with a toast notification
                 console.log('Recipe link copied successfully:', deepLink);
-                // Using alert for now, but this could be replaced with a toast notification system
-                alert('Recipe link copied to clipboard!');
+                $scope.showToast();
             }).catch(function(err) {
-                console.error('Failed to copy link:', err);
-                // Fallback: show the link in a prompt for manual copying
-                prompt('Copy this link:', deepLink);
+                console.error('Clipboard API failed:', err);
+                // Try fallback strategy
+                $scope.fallbackCopyTextToClipboard(deepLink);
             });
         } else {
-            // Fallback for older browsers
-            prompt('Copy this link:', deepLink);
+            // Try fallback strategy for browsers without Clipboard API
+            $scope.fallbackCopyTextToClipboard(deepLink);
+        }
+    };
+
+    // Fallback copy method using deprecated document.execCommand
+    // Used for compatibility with older browsers and environments where Clipboard API isn't available
+    $scope.fallbackCopyTextToClipboard = function(text) {
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        
+        // Make the textarea invisible and out of viewport
+        textArea.style.position = "fixed";
+        textArea.style.top = "-9999px";
+        textArea.style.left = "-9999px";
+        textArea.style.width = "1px";
+        textArea.style.height = "1px";
+        textArea.style.opacity = "0";
+        
+        var textAreaAdded = false;
+        
+        try {
+            document.body.appendChild(textArea);
+            textAreaAdded = true;
+            textArea.focus();
+            textArea.select();
+            
+            // Note: document.execCommand is deprecated but necessary for browser compatibility
+            var successful = document.execCommand('copy');
+            if (successful) {
+                console.log('Fallback: Recipe link copied successfully:', text);
+                $scope.showToast();
+            } else {
+                console.error('Fallback copy failed');
+                // Last resort: show prompt for manual copy
+                prompt('Please copy this link manually:', text);
+            }
+        } catch (err) {
+            console.error('Fallback copy error:', err);
+            // Last resort: show prompt for manual copy
+            prompt('Please copy this link manually:', text);
+        } finally {
+            // Only remove if it was successfully added to the DOM
+            if (textAreaAdded && textArea.parentNode) {
+                document.body.removeChild(textArea);
+            }
         }
     };
 
