@@ -22,11 +22,16 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         // Load collections first, then recipes.
         $scope.loadCollections();
         var barShelfModeParam = $scope.barShelfMode ? 'Y' : '';
+        $scope.recipesLoading = true;
         ApiService.getRecipes($scope.searchQuery, $scope.tagSearchQuery, barShelfModeParam).then(function(response) {
             $scope.allRecipes = response.data;
             $scope.filterRecipesByCollection();
+            $scope.recipesLoading = false;
+            // Check for deep link after recipes are loaded
+            $scope.checkUrlForRecipeId();
         }, function(error) {
             console.error('Error loading recipes:', error);
+            $scope.recipesLoading = false;
             alert('Error loading recipes. Make sure the backend is running.');
         });
     };
@@ -233,6 +238,59 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
                 $scope.recipeModal = new bootstrap.Modal(modalElement);
             }
             $scope.recipeModal.show();
+            // Update URL with recipe ID without reloading the page
+            if (recipe && recipe.id) {
+                window.history.pushState({recipeId: recipe.id}, '', '?recipe=' + recipe.id);
+            }
+        }
+    };
+
+    // Copy recipe link to clipboard
+    $scope.copyRecipeLink = function(recipeId) {
+        if (!recipeId) return;
+        
+        // Create the deep link URL
+        var baseUrl = window.location.origin + window.location.pathname;
+        var deepLink = baseUrl + '?recipe=' + recipeId;
+        
+        // Copy to clipboard
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(deepLink).then(function() {
+                // Show success feedback - could be enhanced with a toast notification
+                console.log('Recipe link copied successfully:', deepLink);
+                // Using alert for now, but this could be replaced with a toast notification system
+                alert('Recipe link copied to clipboard!');
+            }).catch(function(err) {
+                console.error('Failed to copy link:', err);
+                // Fallback: show the link in a prompt for manual copying
+                prompt('Copy this link:', deepLink);
+            });
+        } else {
+            // Fallback for older browsers
+            prompt('Copy this link:', deepLink);
+        }
+    };
+
+    // Check for recipe ID in URL on page load and auto-open modal
+    $scope.checkUrlForRecipeId = function() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var recipeId = urlParams.get('recipe');
+        
+        if (recipeId && $scope.allRecipes && $scope.allRecipes.length > 0) {
+            // Find the recipe by ID
+            var recipe = $scope.allRecipes.find(function(r) {
+                return r.id === parseInt(recipeId);
+            });
+            if (recipe) {
+                // Open the modal after a short delay to ensure DOM is ready
+                setTimeout(function() {
+                    $scope.$apply(function() {
+                        $scope.showRecipeDetails(recipe);
+                    });
+                }, 500);
+            } else {
+                console.warn('Recipe with ID', recipeId, 'not found');
+            }
         }
     };
 
@@ -270,4 +328,36 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     // $scope.resetForm();
     $scope.loadRecipes();
     $scope.loadIngredients();
+
+    // Handle modal close - clean up URL
+    angular.element(document).ready(function() {
+        var modalElement = document.getElementById('recipeDetailsModal');
+        if (modalElement) {
+            modalElement.addEventListener('hidden.bs.modal', function() {
+                // Remove recipe parameter from URL when modal is closed
+                var url = window.location.origin + window.location.pathname;
+                window.history.pushState({}, '', url);
+            });
+        }
+    });
+
+    // Handle browser back/forward button
+    window.addEventListener('popstate', function(event) {
+        if (event.state && event.state.recipeId) {
+            // Find and show the recipe
+            var recipe = $scope.allRecipes.find(function(r) {
+                return r.id === event.state.recipeId;
+            });
+            if (recipe) {
+                $scope.$apply(function() {
+                    $scope.showRecipeDetails(recipe);
+                });
+            }
+        } else {
+            // Close modal if going back to page without recipe ID
+            if ($scope.recipeModal) {
+                $scope.recipeModal.hide();
+            }
+        }
+    });
 }]);
