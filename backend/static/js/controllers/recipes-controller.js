@@ -22,13 +22,16 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         // Load collections first, then recipes.
         $scope.loadCollections();
         var barShelfModeParam = $scope.barShelfMode ? 'Y' : '';
+        $scope.recipesLoading = true;
         ApiService.getRecipes($scope.searchQuery, $scope.tagSearchQuery, barShelfModeParam).then(function(response) {
             $scope.allRecipes = response.data;
             $scope.filterRecipesByCollection();
+            $scope.recipesLoading = false;
             // Check for deep link after recipes are loaded
             $scope.checkUrlForRecipeId();
         }, function(error) {
             console.error('Error loading recipes:', error);
+            $scope.recipesLoading = false;
             alert('Error loading recipes. Make sure the backend is running.');
         });
     };
@@ -253,7 +256,9 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         // Copy to clipboard
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(deepLink).then(function() {
-                // Show success feedback
+                // Show success feedback - could be enhanced with a toast notification
+                console.log('Recipe link copied successfully:', deepLink);
+                // Using alert for now, but this could be replaced with a toast notification system
                 alert('Recipe link copied to clipboard!');
             }).catch(function(err) {
                 console.error('Failed to copy link:', err);
@@ -271,30 +276,21 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         var urlParams = new URLSearchParams(window.location.search);
         var recipeId = urlParams.get('recipe');
         
-        if (recipeId) {
-            // Wait for recipes to be loaded, then open the modal
-            var checkRecipes = setInterval(function() {
-                if ($scope.allRecipes && $scope.allRecipes.length > 0) {
-                    clearInterval(checkRecipes);
-                    // Find the recipe by ID
-                    var recipe = $scope.allRecipes.find(function(r) {
-                        return r.id === parseInt(recipeId);
+        if (recipeId && $scope.allRecipes && $scope.allRecipes.length > 0) {
+            // Find the recipe by ID
+            var recipe = $scope.allRecipes.find(function(r) {
+                return r.id === parseInt(recipeId);
+            });
+            if (recipe) {
+                // Open the modal after a short delay to ensure DOM is ready
+                setTimeout(function() {
+                    $scope.$apply(function() {
+                        $scope.showRecipeDetails(recipe);
                     });
-                    if (recipe) {
-                        // Open the modal after a short delay to ensure DOM is ready
-                        setTimeout(function() {
-                            $scope.$apply(function() {
-                                $scope.showRecipeDetails(recipe);
-                            });
-                        }, 500);
-                    }
-                }
-            }, 100);
-            
-            // Timeout after 5 seconds to prevent infinite loop
-            setTimeout(function() {
-                clearInterval(checkRecipes);
-            }, 5000);
+                }, 500);
+            } else {
+                console.warn('Recipe with ID', recipeId, 'not found');
+            }
         }
     };
 
