@@ -245,7 +245,19 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         }
     };
 
-    // Copy recipe link to clipboard
+    // Show toast notification
+    $scope.showToast = function() {
+        var toastElement = document.getElementById('copyLinkToast');
+        if (toastElement) {
+            var toast = new bootstrap.Toast(toastElement, {
+                autohide: true,
+                delay: 3000
+            });
+            toast.show();
+        }
+    };
+
+    // Copy recipe link to clipboard with multiple fallback strategies
     $scope.copyRecipeLink = function(recipeId) {
         if (!recipeId) return;
         
@@ -253,21 +265,55 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         var baseUrl = window.location.origin + window.location.pathname;
         var deepLink = baseUrl + '?recipe=' + recipeId;
         
-        // Copy to clipboard
+        // Strategy 1: Try modern Clipboard API (works in secure contexts)
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(deepLink).then(function() {
-                // Show success feedback - could be enhanced with a toast notification
                 console.log('Recipe link copied successfully:', deepLink);
-                // Using alert for now, but this could be replaced with a toast notification system
-                alert('Recipe link copied to clipboard!');
+                $scope.showToast();
             }).catch(function(err) {
-                console.error('Failed to copy link:', err);
-                // Fallback: show the link in a prompt for manual copying
-                prompt('Copy this link:', deepLink);
+                console.error('Clipboard API failed:', err);
+                // Try fallback strategy
+                $scope.fallbackCopyTextToClipboard(deepLink);
             });
         } else {
-            // Fallback for older browsers
-            prompt('Copy this link:', deepLink);
+            // Try fallback strategy for browsers without Clipboard API
+            $scope.fallbackCopyTextToClipboard(deepLink);
+        }
+    };
+
+    // Fallback copy method using document.execCommand (works better in Edge and older browsers)
+    $scope.fallbackCopyTextToClipboard = function(text) {
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        
+        // Make the textarea invisible and out of viewport
+        textArea.style.position = "fixed";
+        textArea.style.top = "-9999px";
+        textArea.style.left = "-9999px";
+        textArea.style.width = "1px";
+        textArea.style.height = "1px";
+        textArea.style.opacity = "0";
+        
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            var successful = document.execCommand('copy');
+            if (successful) {
+                console.log('Fallback: Recipe link copied successfully:', text);
+                $scope.showToast();
+            } else {
+                console.error('Fallback copy failed');
+                // Last resort: show prompt for manual copy
+                prompt('Please copy this link manually:', text);
+            }
+        } catch (err) {
+            console.error('Fallback copy error:', err);
+            // Last resort: show prompt for manual copy
+            prompt('Please copy this link manually:', text);
+        } finally {
+            document.body.removeChild(textArea);
         }
     };
 
