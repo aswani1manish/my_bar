@@ -62,46 +62,42 @@
             line-height: 1.6;
         }
         
-        .date-input-group {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-        
-        .date-input-field {
-            flex: 1;
-            min-width: 80px;
-            max-width: 120px;
-        }
-        
-        .date-input-field label {
-            display: block;
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-        
-        .date-input-field input {
+        .age-image {
             width: 100%;
-            padding: 12px;
+            max-width: 400px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .age-tagline {
+            font-size: 1.2rem;
+            color: white;
+            margin-bottom: 25px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+        
+        .checkbox-container {
+            margin-bottom: 25px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .checkbox-container label {
             font-size: 1rem;
-            border: 2px solid #cbd5e0;
-            border-radius: 8px;
-            text-align: center;
-            transition: border-color 0.3s ease;
-        }
-        
-        .date-input-field input:focus {
-            outline: none;
-            border-color: #7EC8CC;
-            box-shadow: 0 0 0 3px rgba(126, 200, 204, 0.2);
-        }
-        
-        .date-input-field input.error {
-            border-color: #dc3545;
+            color: white;
+            cursor: pointer;
+            user-select: none;
         }
         
         .btn-enter-site {
@@ -163,17 +159,16 @@
             (e.g., 21+ in USA)
         </div>
         
+        <img src="/images/gallery/gallery (13).JPG" alt="Neighborhood Sips" class="age-image">
+        
+        <div class="age-tagline">
+            Let's create memorable moments, one sip at a time.
+        </div>
+        
         <form id="ageGateForm">
-            <div class="date-input-group">
-                <div class="date-input-field">
-                    <input type="number" id="month" name="month" min="1" max="12" placeholder="MM" required>
-                </div>
-                <div class="date-input-field">
-                    <input type="number" id="day" name="day" min="1" max="31" placeholder="DD" required>
-                </div>
-                <div class="date-input-field">
-                    <input type="number" id="year" name="year" min="1900" max="2099" placeholder="YYYY" required>
-                </div>
+            <div class="checkbox-container">
+                <input type="checkbox" id="ageConfirm" name="ageConfirm">
+                <label for="ageConfirm">Yes, I confirm I am of legal drinking age in my country e.g. 21+ in USA.</label>
             </div>
             
             <button type="submit" id="enterButton" class="btn-enter-site" disabled>Enter your neighborhood</button>
@@ -203,152 +198,20 @@
         document.getElementById('ageGateForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const month = parseInt(document.getElementById('month').value);
-            const day = parseInt(document.getElementById('day').value);
-            const year = parseInt(document.getElementById('year').value);
-            const errorMessage = document.getElementById('errorMessage');
+            const ageConfirm = document.getElementById('ageConfirm');
             
-            // Reset error styling
-            document.querySelectorAll('.date-input-field input').forEach(input => {
-                input.classList.remove('error');
-            });
-            errorMessage.classList.remove('show');
-            
-            // Validate inputs
-            if (!month || !day || !year) {
-                showError('Please enter a complete date.');
-                return;
-            }
-            
-            if (month < 1 || month > 12) {
-                showError('Please enter a valid month (1-12).');
-                document.getElementById('month').classList.add('error');
-                return;
-            }
-            
-            if (day < 1 || day > 31) {
-                showError('Please enter a valid day (1-31).');
-                document.getElementById('day').classList.add('error');
-                return;
-            }
-            
-            if (year < 1900 || year > new Date().getFullYear()) {
-                showError('Please enter a valid year.');
-                document.getElementById('year').classList.add('error');
-                return;
-            }
-            
-            // Validate date exists
-            const birthDate = new Date(year, month - 1, day);
-            if (birthDate.getMonth() !== month - 1 || birthDate.getDate() !== day) {
-                showError('Please enter a valid date.');
-                return;
-            }
-            
-            // Calculate age
-            const today = new Date();
-            let age = today.getFullYear() - year;
-            const monthDiff = today.getMonth() - (month - 1);
-            const dayDiff = today.getDate() - day;
-            
-            if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-                age--;
-            }
-            
-            // Check if 21 or older
-            if (age >= 21) {
+            if (ageConfirm.checked) {
                 // Set session storage to remember verification
                 sessionStorage.setItem('ageVerified', 'true');
                 window.location.href = 'index.html';
-            } else {
-                showError('You must be 21 or older to enter this site.');
             }
         });
         
-        function showError(message) {
-            const errorMessage = document.getElementById('errorMessage');
-            errorMessage.textContent = message;
-            errorMessage.classList.add('show');
-        }
-        
-        // Auto-advance to next field
-        document.getElementById('month').addEventListener('input', function(e) {
-            if (this.value.length === 2) {
-                document.getElementById('day').focus();
-            }
-        });
-        
-        document.getElementById('day').addEventListener('input', function(e) {
-            if (this.value.length === 2) {
-                document.getElementById('year').focus();
-            }
-        });
-        
-        // Real-time validation to enable/disable button
-        function validateAge() {
-            const monthInput = document.getElementById('month');
-            const dayInput = document.getElementById('day');
-            const yearInput = document.getElementById('year');
+        // Enable/disable button based on checkbox state
+        document.getElementById('ageConfirm').addEventListener('change', function() {
             const enterButton = document.getElementById('enterButton');
-            
-            const month = parseInt(monthInput.value);
-            const day = parseInt(dayInput.value);
-            const year = parseInt(yearInput.value);
-            
-            // Check if all fields have values
-            if (!monthInput.value || !dayInput.value || !yearInput.value) {
-                enterButton.disabled = true;
-                return;
-            }
-            
-            // Validate month range
-            if (month < 1 || month > 12) {
-                enterButton.disabled = true;
-                return;
-            }
-            
-            // Validate day range
-            if (day < 1 || day > 31) {
-                enterButton.disabled = true;
-                return;
-            }
-            
-            // Validate year range
-            const currentYear = new Date().getFullYear();
-            if (year < 1900 || year > currentYear) {
-                enterButton.disabled = true;
-                return;
-            }
-            
-            // Validate date exists
-            const birthDate = new Date(year, month - 1, day);
-            if (birthDate.getMonth() !== month - 1 || birthDate.getDate() !== day) {
-                enterButton.disabled = true;
-                return;
-            }
-            
-            // Calculate age
-            const today = new Date();
-            let age = today.getFullYear() - year;
-            const monthDiff = today.getMonth() - (month - 1);
-            const dayDiff = today.getDate() - day;
-            
-            if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-                age--;
-            }
-            
-            // Enable button only if age is 21 or older
-            if (age >= 21) {
-                enterButton.disabled = false;
-            } else {
-                enterButton.disabled = true;
-            }
-        }
-        
-        // Attach validation to input events
-        document.getElementById('month').addEventListener('input', validateAge);
-        document.getElementById('day').addEventListener('input', validateAge);
-        document.getElementById('year').addEventListener('input', validateAge);
+            enterButton.disabled = !this.checked;
+        });
     </script>
 </body>
 </html>
