@@ -151,6 +151,35 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         }
     };
 
+    // Copy recipe link to clipboard
+    $scope.copyRecipeLink = function(recipe, event) {
+        // Stop event propagation to prevent triggering card click
+        if (event) {
+            event.stopPropagation();
+        }
+        
+        // Generate the recipe deeplink URL
+        var recipeUrl = window.location.origin + window.location.pathname + '?recipe=' + recipe.id;
+        
+        // Copy to clipboard
+        navigator.clipboard.writeText(recipeUrl).then(function() {
+            // Show success modal
+            var linkCopiedModalElement = document.getElementById('linkCopiedModal');
+            if (linkCopiedModalElement) {
+                var linkCopiedModal = new bootstrap.Modal(linkCopiedModalElement);
+                linkCopiedModal.show();
+                
+                // Auto-hide the modal after 2 seconds
+                setTimeout(function() {
+                    linkCopiedModal.hide();
+                }, 2000);
+            }
+        }).catch(function(err) {
+            console.error('Failed to copy link:', err);
+            alert('Failed to copy link to clipboard. Please try again.');
+        });
+    };
+
     // Check for recipe ID in URL on page load and auto-open modal
     $scope.checkUrlForRecipeId = function() {
         var urlParams = new URLSearchParams(window.location.search);
