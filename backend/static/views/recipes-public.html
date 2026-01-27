@@ -118,19 +118,7 @@
     </div>
 </div>
 
-<!-- Toast Container for notifications -->
-<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
-    <div id="copyLinkToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header bg-success text-white">
-            <i class="fas fa-check-circle me-2"></i>
-            <strong class="me-auto">Success</strong>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-            Recipe link copied to clipboard!
-        </div>
-    </div>
-</div>
+
 
 <!-- Recipe Details Modal -->
 <div class="modal fade" id="recipeDetailsModal" tabindex="-1" aria-labelledby="recipeDetailsModalLabel" aria-hidden="true">
@@ -138,15 +126,7 @@
         <div class="modal-content">
             <div class="modal-header bg-custom-magenta">
                 <h5 class="modal-title" id="recipeDetailsModalLabel">{{ selectedRecipe.name }}</h5>
-                <div class="d-flex align-items-center gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-light" 
-                            ng-click="copyRecipeLink(selectedRecipe.id, $event)" 
-                            onclick="var scope = angular.element(this).scope(); if (scope && scope.selectedRecipe && scope.selectedRecipe.id) { scope.$apply(function() { scope.copyRecipeLink(scope.selectedRecipe.id, event); }); } return false;"
-                            title="Copy link to this recipe">
-                        <i class="fas fa-link"></i> Copy Link
-                    </button>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <!-- Recipe Images -->
