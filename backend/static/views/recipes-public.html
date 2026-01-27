@@ -141,7 +141,7 @@
                 <div class="d-flex align-items-center gap-2">
                     <button type="button" class="btn btn-sm btn-outline-light" 
                             ng-click="copyRecipeLink(selectedRecipe.id, $event)" 
-                            onclick="var scope = angular.element(this).scope(); if (scope.selectedRecipe && scope.selectedRecipe.id) { scope.copyRecipeLink(scope.selectedRecipe.id, event); } return false;"
+                            onclick="var scope = angular.element(this).scope(); if (scope && scope.selectedRecipe && scope.selectedRecipe.id) { scope.$apply(function() { scope.copyRecipeLink(scope.selectedRecipe.id, event); }); } return false;"
                             title="Copy link to this recipe">
                         <i class="fas fa-link"></i> Copy Link
                     </button>
