@@ -465,7 +465,7 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
                 }
             });
         }
-    }); 
+    });
     
     // Watch for changes in search queries
     // These watchers handle the search input changes for both search boxes
