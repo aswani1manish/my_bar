@@ -185,6 +185,7 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
             });
         } else {
             // Fallback for browsers/environments that don't support clipboard API
+            // Note: execCommand is deprecated but necessary for older browsers and HTTP contexts
             var textArea = document.createElement('textarea');
             textArea.value = recipeUrl;
             textArea.style.position = 'fixed';
