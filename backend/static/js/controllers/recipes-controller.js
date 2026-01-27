@@ -263,7 +263,13 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     };
 
     // Copy recipe link to clipboard with multiple fallback strategies
-    $scope.copyRecipeLink = function(recipeId) {
+    $scope.copyRecipeLink = function(recipeId, $event) {
+        // Stop event propagation to prevent Bootstrap modal from interfering
+        if ($event) {
+            $event.stopPropagation();
+            $event.preventDefault();
+        }
+        
         // DEBUG LOG 1: Function entry
         console.log('[DEBUG] copyRecipeLink called with recipeId:', recipeId);
         alert('DEBUG 1: Copy Recipe Link clicked! Recipe ID: ' + recipeId);
