@@ -151,6 +151,58 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         }
     };
 
+    // Copy recipe link to clipboard
+    $scope.copyRecipeLink = function(recipe, event) {
+        // Stop event propagation to prevent triggering card click
+        if (event) {
+            event.stopPropagation();
+        }
+        
+        // Generate the recipe deeplink URL
+        var recipeUrl = window.location.origin + window.location.pathname + '?recipe=' + recipe.id;
+        
+        // Function to show success modal
+        var showSuccessModal = function() {
+            var linkCopiedModalElement = document.getElementById('linkCopiedModal');
+            if (linkCopiedModalElement) {
+                var linkCopiedModal = new bootstrap.Modal(linkCopiedModalElement);
+                linkCopiedModal.show();
+                
+                // Auto-hide the modal after 2 seconds
+                setTimeout(function() {
+                    linkCopiedModal.hide();
+                }, 2000);
+            }
+        };
+        
+        // Try modern clipboard API first
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(recipeUrl).then(function() {
+                showSuccessModal();
+            }).catch(function(err) {
+                console.error('Failed to copy link:', err);
+                alert('Failed to copy link to clipboard. Please try again.');
+            });
+        } else {
+            // Fallback for browsers/environments that don't support clipboard API
+            // Note: execCommand is deprecated but necessary for older browsers and HTTP contexts
+            var textArea = document.createElement('textarea');
+            textArea.value = recipeUrl;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showSuccessModal();
+            } catch (err) {
+                console.error('Fallback copy failed:', err);
+                alert('Failed to copy link to clipboard. Please try again.');
+            }
+            document.body.removeChild(textArea);
+        }
+    };
+
     // Check for recipe ID in URL on page load and auto-open modal
     $scope.checkUrlForRecipeId = function() {
         var urlParams = new URLSearchParams(window.location.search);
