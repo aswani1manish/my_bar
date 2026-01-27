@@ -96,13 +96,6 @@
                             <span class="badge me-1 mb-1" ng-class="{'badge-custom-orange': $index % 3 === 0, 'badge-custom-purple': $index % 3 === 1, 'badge-custom-green': $index % 3 === 2}" ng-repeat="tag in recipe.tags track by $index">{{ tag }}</span>
                         </div>
                         
-                        <!-- Copy Recipe Link button -->
-                        <div class="recipe-copy-link-container">
-                            <button class="btn btn-sm btn-copy-link" ng-click="copyRecipeLink(recipe, $event)" title="Copy Recipe Link">
-                                <i class="fas fa-link"></i> Copy Recipe Link
-                            </button>
-                        </div>
-                        
                         <!-- Hover overlay with ingredients and button -->
                         <div class="recipe-hover-overlay">
                             <div class="hover-content">
@@ -186,23 +179,6 @@
                 <button type="button" class="btn btn-custom-vibrant" data-bs-dismiss="modal">
                     <i class="fas fa-times"></i> Close
                 </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Link Copied Success Modal -->
-<div class="modal fade" id="linkCopiedModal" tabindex="-1" aria-labelledby="linkCopiedModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content">
-            <div class="modal-header bg-success text-white">
-                <h5 class="modal-title" id="linkCopiedModalLabel">
-                    <i class="fas fa-check-circle"></i> Success!
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <p class="mb-0">Recipe link copied to clipboard!</p>
             </div>
         </div>
     </div>
