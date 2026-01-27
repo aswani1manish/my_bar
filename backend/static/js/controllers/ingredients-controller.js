@@ -161,4 +161,19 @@ app.controller('IngredientsController', ['$scope', 'ApiService', 'API_URL', func
     // Initialize
     $scope.resetForm();
     $scope.loadIngredients();
+    
+    // Handle modal close - prevent aria-hidden warning
+    angular.element(document).ready(function() {
+        var modalElement = document.getElementById('ingredientDetailsModal');
+        if (modalElement) {
+            // Before modal hides, blur any focused element to prevent aria-hidden warning
+            modalElement.addEventListener('hide.bs.modal', function() {
+                // Remove focus from any element inside the modal
+                var focusedElement = document.activeElement;
+                if (focusedElement && modalElement.contains(focusedElement)) {
+                    focusedElement.blur();
+                }
+            });
+        }
+    });
 }]);

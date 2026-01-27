@@ -6,6 +6,19 @@ let galleryImages = [];
 // Load gallery images on page load
 document.addEventListener('DOMContentLoaded', function() {
     loadGalleryImages();
+    
+    // Handle modal close - prevent aria-hidden warning
+    const modalElement = document.getElementById('imageModal');
+    if (modalElement) {
+        // Before modal hides, blur any focused element to prevent aria-hidden warning
+        modalElement.addEventListener('hide.bs.modal', function() {
+            // Remove focus from any element inside the modal
+            const focusedElement = document.activeElement;
+            if (focusedElement && modalElement.contains(focusedElement)) {
+                focusedElement.blur();
+            }
+        });
+    }
 });
 
 // Load images from the API
