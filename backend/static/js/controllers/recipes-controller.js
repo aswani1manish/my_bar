@@ -263,14 +263,17 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     };
 
     // Copy recipe link to clipboard with multiple fallback strategies
-    $scope.copyRecipeLink = function(recipeId) {
-        // DEBUG LOG 1: Function entry
-        console.log('[DEBUG] copyRecipeLink called with recipeId:', recipeId);
-        alert('DEBUG 1: Copy Recipe Link clicked! Recipe ID: ' + recipeId);
+    $scope.copyRecipeLink = function(recipeId, $event) {
+        // Stop event propagation to prevent Bootstrap modal from interfering
+        if ($event) {
+            $event.stopPropagation();
+            $event.preventDefault();
+        }
+        
+        console.log('copyRecipeLink called with recipeId:', recipeId);
         
         if (!recipeId) {
-            console.error('[DEBUG] No recipe ID provided');
-            alert('DEBUG ERROR: No recipe ID provided!');
+            console.error('No recipe ID provided');
             return;
         }
         
@@ -278,27 +281,22 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         var baseUrl = window.location.origin + window.location.pathname;
         var deepLink = baseUrl + '?recipe=' + recipeId;
         
-        // DEBUG LOG 2: URL generated
-        console.log('[DEBUG] Generated deep link:', deepLink);
-        console.log('[DEBUG] navigator.clipboard available?', !!(navigator.clipboard && navigator.clipboard.writeText));
-        alert('DEBUG 2: Generated link: ' + deepLink + '\nClipboard API available: ' + !!(navigator.clipboard && navigator.clipboard.writeText));
+        console.log('Generated deep link:', deepLink);
+        console.log('navigator.clipboard available?', !!(navigator.clipboard && navigator.clipboard.writeText));
         
         // Strategy 1: Try modern Clipboard API (works in secure contexts)
         if (navigator.clipboard && navigator.clipboard.writeText) {
-            console.log('[DEBUG] Attempting to use Clipboard API...');
+            console.log('Attempting to use Clipboard API...');
             navigator.clipboard.writeText(deepLink).then(function() {
-                console.log('[DEBUG] Clipboard API SUCCESS - Recipe link copied:', deepLink);
-                alert('DEBUG 3: Clipboard API worked! Link copied successfully.');
+                console.log('Clipboard API SUCCESS - Recipe link copied:', deepLink);
                 $scope.showToast();
             }).catch(function(err) {
-                console.error('[DEBUG] Clipboard API FAILED:', err);
-                alert('DEBUG ERROR: Clipboard API failed! Error: ' + err.message + '\nTrying fallback method...');
+                console.error('Clipboard API FAILED:', err);
                 // Try fallback strategy
                 $scope.fallbackCopyTextToClipboard(deepLink);
             });
         } else {
-            console.log('[DEBUG] Clipboard API not available, using fallback method');
-            alert('DEBUG INFO: Clipboard API not available. Using fallback method...');
+            console.log('Clipboard API not available, using fallback method');
             // Try fallback strategy for browsers without Clipboard API
             $scope.fallbackCopyTextToClipboard(deepLink);
         }
@@ -307,7 +305,7 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     // Fallback copy method using deprecated document.execCommand
     // Used for compatibility with older browsers and environments where Clipboard API isn't available
     $scope.fallbackCopyTextToClipboard = function(text) {
-        console.log('[DEBUG] fallbackCopyTextToClipboard called with text:', text);
+        console.log('fallbackCopyTextToClipboard called with text:', text);
         
         var textArea = document.createElement("textarea");
         textArea.value = text;
@@ -325,35 +323,32 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         try {
             document.body.appendChild(textArea);
             textAreaAdded = true;
-            console.log('[DEBUG] Textarea element added to DOM');
+            console.log('Textarea element added to DOM');
             textArea.focus();
             textArea.select();
             
-            console.log('[DEBUG] Attempting document.execCommand("copy")...');
+            console.log('Attempting document.execCommand("copy")...');
             // Note: document.execCommand is deprecated but necessary for browser compatibility
             var successful = document.execCommand('copy');
-            console.log('[DEBUG] execCommand result:', successful);
+            console.log('execCommand result:', successful);
             
             if (successful) {
-                console.log('[DEBUG] Fallback SUCCESS - Recipe link copied:', text);
-                alert('DEBUG 3 (FALLBACK): Fallback method worked! Link copied successfully.');
+                console.log('Fallback SUCCESS - Recipe link copied:', text);
                 $scope.showToast();
             } else {
-                console.error('[DEBUG] Fallback FAILED - execCommand returned false');
-                alert('DEBUG ERROR: Fallback copy failed! Showing manual copy prompt...');
+                console.error('Fallback FAILED - execCommand returned false');
                 // Last resort: show prompt for manual copy
                 prompt('Please copy this link manually:', text);
             }
         } catch (err) {
-            console.error('[DEBUG] Fallback copy EXCEPTION:', err);
-            alert('DEBUG ERROR: Exception in fallback! Error: ' + err.message);
+            console.error('Fallback copy EXCEPTION:', err);
             // Last resort: show prompt for manual copy
             prompt('Please copy this link manually:', text);
         } finally {
             // Only remove if it was successfully added to the DOM
             if (textAreaAdded && textArea.parentNode) {
                 document.body.removeChild(textArea);
-                console.log('[DEBUG] Textarea element removed from DOM');
+                console.log('Textarea element removed from DOM');
             }
         }
     };
