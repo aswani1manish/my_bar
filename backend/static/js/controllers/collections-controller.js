@@ -450,7 +450,22 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     // $scope.resetForm();
     $scope.loadRecipes();
     //Need to call this inside load recipes to ensure that recipes are loaded first, before collections. Hence commented out.
-    //$scope.loadCollections(); 
+    //$scope.loadCollections();
+    
+    // Handle modal close - prevent aria-hidden warning
+    angular.element(document).ready(function() {
+        var modalElement = document.getElementById('collectionDetailsModal');
+        if (modalElement) {
+            // Before modal hides, blur any focused element to prevent aria-hidden warning
+            modalElement.addEventListener('hide.bs.modal', function() {
+                // Remove focus from any element inside the modal
+                var focusedElement = document.activeElement;
+                if (focusedElement && modalElement.contains(focusedElement)) {
+                    focusedElement.blur();
+                }
+            });
+        }
+    });
     
     // Watch for changes in search queries
     // These watchers handle the search input changes for both search boxes
