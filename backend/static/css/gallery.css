@@ -199,17 +199,43 @@
     overflow: hidden;
 }
 
-/* Button styling */
-.btn-outline-primary {
-    border-color: var(--color-primary-blue);
-    color: var(--color-primary-blue);
+/* Modal navigation */
+.modal-image-nav {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
 }
 
-.btn-outline-primary:hover,
-.btn-outline-primary.active {
-    background-color: var(--color-primary-blue);
-    border-color: var(--color-primary-blue);
+.modal-nav-btn {
+    background-color: rgba(126, 200, 204, 0.9);
     color: white;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-nav-btn:hover {
+    background-color: var(--color-primary-blue-dark);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.modal-nav-btn:active {
+    transform: scale(0.95);
+}
+
+.modal-nav-btn i {
+    font-size: 20px;
 }
 
 /* Responsive adjustments */

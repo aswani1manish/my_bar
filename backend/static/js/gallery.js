@@ -1,7 +1,8 @@
 // Gallery JavaScript
 
-let currentView = 'mosaic';
 let galleryImages = [];
+let currentModalIndex = 0;
+let bsModal = null;
 
 // Load gallery images on page load
 document.addEventListener('DOMContentLoaded', function() {
@@ -19,6 +20,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Keyboard navigation for modal
+    document.addEventListener('keydown', function(e) {
+        const modalElement = document.getElementById('imageModal');
+        if (modalElement && modalElement.classList.contains('show')) {
+            if (e.key === 'ArrowLeft') navigateModal(-1);
+            else if (e.key === 'ArrowRight') navigateModal(1);
+        }
+    });
 });
 
 // Load images from the API
@@ -39,15 +49,10 @@ async function loadGalleryImages() {
     }
 }
 
-// Render the gallery based on current view
+// Render the gallery (always mosaic view)
 function renderGallery() {
     const container = document.getElementById('galleryContainer');
-    
-    if (currentView === 'mosaic') {
-        renderMosaicView(container);
-    } else {
-        renderRibbonView(container);
-    }
+    renderMosaicView(container);
 }
 
 // Render mosaic (grid) view
@@ -55,7 +60,7 @@ function renderMosaicView(container) {
     const html = `
         <div class="gallery-mosaic">
             ${galleryImages.map((img, index) => `
-                <div class="gallery-mosaic-item" onclick="openImageModal('${img.url}', '${img.filename}')">
+                <div class="gallery-mosaic-item" onclick="openImageModal(${index})">
                     <img src="${img.url}" alt="${img.filename}" loading="lazy">
                 </div>
             `).join('')}
@@ -64,90 +69,76 @@ function renderMosaicView(container) {
     container.innerHTML = html;
 }
 
-// Render ribbon (horizontal strip) view
-function renderRibbonView(container) {
-    const html = `
-        <div class="gallery-ribbon-wrapper">
-            <button class="gallery-ribbon-scroll-btn left" onclick="scrollRibbon('left')" aria-label="Scroll left">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <div class="gallery-ribbon" id="ribbonContainer">
-                ${galleryImages.map((img, index) => `
-                    <div class="gallery-ribbon-item" onclick="openImageModal('${img.url}', '${img.filename}')">
-                        <img src="${img.url}" alt="${img.filename}" loading="lazy">
-                    </div>
-                `).join('')}
-            </div>
-            <button class="gallery-ribbon-scroll-btn right" onclick="scrollRibbon('right')" aria-label="Scroll right">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        </div>
-    `;
-    container.innerHTML = html;
-}
-
-// Switch between mosaic and ribbon views
-function switchView(view) {
-    currentView = view;
-    
-    // Update button states
-    const mosaicBtn = document.getElementById('mosaicViewBtn');
-    const ribbonBtn = document.getElementById('ribbonViewBtn');
-    
-    if (view === 'mosaic') {
-        mosaicBtn.classList.add('active');
-        ribbonBtn.classList.remove('active');
-    } else {
-        ribbonBtn.classList.add('active');
-        mosaicBtn.classList.remove('active');
-    }
-    
-    // Re-render gallery
-    renderGallery();
-}
-
-// Open image in modal
-function openImageModal(imageUrl, filename) {
+// Open image in modal by index
+function openImageModal(index) {
+    currentModalIndex = index;
+    const img = galleryImages[index];
     const modalElement = document.getElementById('imageModal');
     const modalImage = document.getElementById('modalImage');
     const modalLabel = document.getElementById('imageModalLabel');
     
-    modalImage.src = imageUrl;
-    modalLabel.textContent = filename;
+    modalImage.src = img.url;
+    modalLabel.textContent = img.filename;
+    updateModalNavButtons();
     
     // Use Bootstrap if available, otherwise show manually
     if (typeof bootstrap !== 'undefined') {
-        const modal = new bootstrap.Modal(modalElement);
-        modal.show();
+        if (!bsModal) {
+            bsModal = new bootstrap.Modal(modalElement);
+        }
+        bsModal.show();
     } else {
         // Fallback: show modal manually
         modalElement.classList.add('show');
         modalElement.style.display = 'block';
         document.body.classList.add('modal-open');
         
-        // Create backdrop
-        const backdrop = document.createElement('div');
-        backdrop.classList.add('modal-backdrop', 'fade', 'show');
-        backdrop.id = 'modalBackdrop';
-        document.body.appendChild(backdrop);
-        
-        // Close on backdrop click or close button
-        const closeModal = () => {
-            modalElement.classList.remove('show');
-            modalElement.style.display = 'none';
-            document.body.classList.remove('modal-open');
-            const existingBackdrop = document.getElementById('modalBackdrop');
-            if (existingBackdrop) {
-                existingBackdrop.remove();
+        // Create backdrop (only once)
+        if (!document.getElementById('modalBackdrop')) {
+            const backdrop = document.createElement('div');
+            backdrop.classList.add('modal-backdrop', 'fade', 'show');
+            backdrop.id = 'modalBackdrop';
+            document.body.appendChild(backdrop);
+
+            const closeModal = () => {
+                modalElement.classList.remove('show');
+                modalElement.style.display = 'none';
+                document.body.classList.remove('modal-open');
+                const existingBackdrop = document.getElementById('modalBackdrop');
+                if (existingBackdrop) {
+                    existingBackdrop.remove();
+                }
+            };
+            backdrop.addEventListener('click', closeModal);
+            const closeBtn = modalElement.querySelector('.btn-close');
+            if (closeBtn) {
+                closeBtn.onclick = closeModal;
             }
-        };
-        
-        backdrop.addEventListener('click', closeModal);
-        const closeBtn = modalElement.querySelector('.btn-close');
-        if (closeBtn) {
-            closeBtn.onclick = closeModal;
+        } else {
+            // Backdrop already exists; just show the modal
+            modalElement.classList.add('show');
+            modalElement.style.display = 'block';
         }
     }
+}
+
+// Navigate to previous (-1) or next (+1) image in the modal
+function navigateModal(direction) {
+    const newIndex = currentModalIndex + direction;
+    if (newIndex < 0 || newIndex >= galleryImages.length) return;
+    currentModalIndex = newIndex;
+    const img = galleryImages[currentModalIndex];
+    document.getElementById('modalImage').src = img.url;
+    document.getElementById('imageModalLabel').textContent = img.filename;
+    updateModalNavButtons();
+}
+
+// Show/hide navigation buttons based on current index
+function updateModalNavButtons() {
+    const prevBtn = document.getElementById('modalPrevBtn');
+    const nextBtn = document.getElementById('modalNextBtn');
+    if (prevBtn) prevBtn.style.visibility = currentModalIndex > 0 ? 'visible' : 'hidden';
+    if (nextBtn) nextBtn.style.visibility = currentModalIndex < galleryImages.length - 1 ? 'visible' : 'hidden';
 }
 
 // Show empty state when no images are found
@@ -172,23 +163,4 @@ function showErrorState() {
             <p>There was an error loading the gallery images. Please try again later.</p>
         </div>
     `;
-}
-
-// Scroll the ribbon view left or right
-function scrollRibbon(direction) {
-    const ribbonContainer = document.getElementById('ribbonContainer');
-    if (!ribbonContainer) return;
-    
-    // Use container width for more responsive scrolling
-    const scrollAmount = Math.min(400, ribbonContainer.clientWidth * 0.8);
-    const currentScroll = ribbonContainer.scrollLeft;
-    const targetScroll = direction === 'left' 
-        ? currentScroll - scrollAmount 
-        : currentScroll + scrollAmount;
-    
-    // Use scrollTo for smooth scrolling (leverages CSS smooth scroll behavior)
-    ribbonContainer.scrollTo({
-        left: targetScroll,
-        behavior: 'smooth'
-    });
 }
