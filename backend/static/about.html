@@ -102,6 +102,103 @@
         </div>
     </div>
 
+    <!-- Blogs Section -->
+    <div class="container mt-4 main-content-bg" style="padding-bottom: 3rem;">
+        <h2 class="text-center mb-3" style="font-family: 'Great Vibes', cursive; color: #5FA5A8; font-size: 2.2em;">From the Bar Journal</h2>
+        <div class="d-flex justify-content-end mb-3">
+            <label for="blog-sort" class="me-2 align-self-center" style="font-weight:600;">Sort by:</label>
+            <select id="blog-sort" class="form-select w-auto" onchange="sortBlogs(this.value)">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+            </select>
+        </div>
+        <div id="blog-list">
+            <div class="card mb-4 blog-entry" data-date="2025-12-01">
+                <div class="card-body">
+                    <p class="text-muted small mb-1"><i class="fas fa-calendar-alt me-1"></i>December 2025</p>
+                    <h5 class="card-title">Getting into Milk Washing</h5>
+                    <p class="card-text">
+                        Of all the techniques I have explored in mixology, milk washing stands apart as the most sophisticated and rewarding. 
+                        The process is deceptively simple on the surface — you add an acid to a spirit-based mixture and then introduce milk, 
+                        watching it curdle and bind with tannins and impurities before straining everything through cheesecloth. But what emerges 
+                        from that labor is nothing short of alchemy. The cocktail that inspired my deep dive into this method was the Snowflake — 
+                        a drink I crafted to capture the quiet elegance of a winter evening. After milk washing, the spirit loses its harsh edges 
+                        and takes on a velvety, clarified texture that carries the aromatics with extraordinary grace. The smell alone stops people 
+                        mid-conversation. The taste is complex and layered, with subtle sweetness and depth that reveals itself slowly, sip by sip. 
+                        It is the kind of cocktail that reminds you why the craft is worth all the effort — a beautiful result born from patience, 
+                        precision, and a genuine love of the process.
+                    </p>
+                </div>
+            </div>
+            <div class="card mb-4 blog-entry" data-date="2025-10-01">
+                <div class="card-body">
+                    <p class="text-muted small mb-1"><i class="fas fa-calendar-alt me-1"></i>October 2025</p>
+                    <h5 class="card-title">Testing Creativity During Halloween</h5>
+                    <p class="card-text">
+                        Halloween has always been the one time of year when a cocktail menu can be as theatrical as it is delicious, 
+                        and I leaned into that fully this past October. The challenge I set for myself was to create drinks that would 
+                        appeal to a broad crowd while still delivering on the spooky, immersive atmosphere that the holiday demands. 
+                        I started with crowd-pleasing flavor profiles — think smoky, tart, and slightly sweet — and then asked myself 
+                        how the presentation could amplify the experience. The answer came through creative serving: drinks dispensed 
+                        through medical syringes for a chilling effect, rims coated with black lava salt that glistened under candlelight, 
+                        and ice spheres with small eyeball-shaped confections frozen inside that slowly emerged as the glass warmed. 
+                        Guests were equal parts delighted and unsettled, which is exactly the right reaction for Halloween. 
+                        It confirmed something I already believed — that presentation is not just decoration, it is storytelling, 
+                        and that story can transform a good cocktail into an unforgettable one.
+                    </p>
+                </div>
+            </div>
+            <div class="card mb-4 blog-entry" data-date="2025-06-01">
+                <div class="card-body">
+                    <p class="text-muted small mb-1"><i class="fas fa-calendar-alt me-1"></i>June 2025</p>
+                    <h5 class="card-title">How Neighborhood Sips Was Born</h5>
+                    <p class="card-text">
+                        The idea for Neighborhood Sips did not come to me in a bar or a kitchen — it came on a cricket field. 
+                        It was a warm summer afternoon, and while the kids ran around the pitch chasing each other and the ball, 
+                        a small group of us parents gathered on the sideline, cold drinks in hand, talking about everything and nothing. 
+                        Somewhere in that easy, unhurried conversation, the question came up: what if we could bring the quality and 
+                        creativity of a great speakeasy cocktail right into our own gatherings? No reservations, no dress code — just 
+                        good people, good company, and exceptional drinks. We started sketching the concept right there, on phones and 
+                        napkins, tossing around names and ideas while keeping one eye on the game. That afternoon captured everything 
+                        I wanted Neighborhood Sips to be: approachable, joyful, and rooted in real community. The name came naturally — 
+                        because great cocktails should belong to the neighborhood, not just to the elite.
+                    </p>
+                </div>
+            </div>
+            <div class="card mb-4 blog-entry" data-date="2018-12-01">
+                <div class="card-body">
+                    <p class="text-muted small mb-1"><i class="fas fa-calendar-alt me-1"></i>December 2018</p>
+                    <h5 class="card-title">How I Got Interested in Mixology</h5>
+                    <p class="card-text">
+                        My journey into mixology started not in a trendy bar or a culinary school, but on a Disney cruise ship somewhere 
+                        in the Caribbean. My family and I had signed up for an onboard mixology class almost on a whim — it sounded fun, 
+                        and we were in a vacation state of mind. What I did not expect was how quickly the experience would captivate me. 
+                        The instructor walked us through the science and art behind classic cocktails, talking about balance, acidity, 
+                        and technique with a passion that was genuinely infectious. Then came the moment that changed everything: 
+                        I was shown how to make a B-52 layered shot, carefully pouring each spirit over the back of a spoon so that 
+                        the different densities created distinct, beautiful layers in the glass. Watching those layers settle — coffee 
+                        liqueur, Irish cream, and Grand Marnier stacked in perfect order — felt like watching magic happen in slow motion. 
+                        I was hooked instantly. That one shot opened a door I never knew was there, and I have been walking further 
+                        through it ever since.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function sortBlogs(order) {
+            var list = document.getElementById('blog-list');
+            var entries = Array.from(list.querySelectorAll('.blog-entry'));
+            entries.sort(function(a, b) {
+                var dateA = new Date(a.getAttribute('data-date'));
+                var dateB = new Date(b.getAttribute('data-date'));
+                return order === 'newest' ? dateB - dateA : dateA - dateB;
+            });
+            entries.forEach(function(entry) { list.appendChild(entry); });
+        }
+    </script>
+
     <!-- Footer -->
     <footer class="footer-bg py-4">
         <div class="container">
