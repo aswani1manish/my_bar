@@ -10,6 +10,7 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     $scope.selectedCollection = '';
     $scope.barShelfMode = false;
     $scope.selectedSpirit = '';
+    $scope.selectedTag = '';
     $scope.newTag = '';
     $scope.newIngredient = {};
     $scope.apiUrl = API_URL;
@@ -91,6 +92,18 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
                 return false;
             });
         }
+
+        // Apply tag filter if selected
+        if ($scope.selectedTag) {
+            filteredRecipes = filteredRecipes.filter(function(recipe) {
+                if (recipe.tags && recipe.tags.length > 0) {
+                    return recipe.tags.some(function(tag) {
+                        return tag.toLowerCase() === $scope.selectedTag.toLowerCase();
+                    });
+                }
+                return false;
+            });
+        }
         
         $scope.recipes = filteredRecipes;
     };
@@ -102,6 +115,17 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
             $scope.selectedSpirit = '';
         } else {
             $scope.selectedSpirit = spirit;
+        }
+        $scope.filterRecipesByCollection();
+    };
+
+    // Filter recipes by tag
+    $scope.filterByTag = function(tag) {
+        // Toggle tag selection
+        if ($scope.selectedTag === tag) {
+            $scope.selectedTag = '';
+        } else {
+            $scope.selectedTag = tag;
         }
         $scope.filterRecipesByCollection();
     };
