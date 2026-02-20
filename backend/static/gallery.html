@@ -53,18 +53,6 @@
         <div class="row mb-4 content-container-wide">
             <div class="col-12 text-center">
                 <h2 class="text-center mb-3">Where Cocktails Meet Conversations — Memories Made, One Sip at a Time.</h2>
-                
-                <!-- View Toggle Buttons -->
-                <div class="text-center mb-4">
-                    <div class="btn-group" role="group" aria-label="View toggle">
-                        <button type="button" class="btn btn-outline-primary active" id="mosaicViewBtn" onclick="switchView('mosaic')">
-                            <i class="fas fa-th"></i> Mosaic View
-                        </button>
-                        <button type="button" class="btn btn-outline-primary" id="ribbonViewBtn" onclick="switchView('ribbon')">
-                            <i class="fas fa-film"></i> Ribbon View
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -88,7 +76,15 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <img id="modalImage" src="" alt="Gallery image" class="img-fluid">
+                    <div class="modal-image-nav">
+                        <button class="modal-nav-btn modal-nav-prev" id="modalPrevBtn" onclick="navigateModal(-1)" aria-label="Previous image">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <img id="modalImage" src="" alt="Gallery image" class="img-fluid">
+                        <button class="modal-nav-btn modal-nav-next" id="modalNextBtn" onclick="navigateModal(1)" aria-label="Next image">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
