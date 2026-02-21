@@ -692,6 +692,8 @@ h6 {
 /* Spirit filter styling */
 .spirit-filter-container {
     margin: 0 1rem;
+    border: 2px solid var(--color-border-gray);
+    border-radius: 20px;    
 }
 
 .spirit-filter-label {
