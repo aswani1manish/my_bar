@@ -11,6 +11,7 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     $scope.barShelfMode = false;
     $scope.selectedSpirit = '';
     $scope.selectedTag = '';
+    $scope.sortOrder = 'date_desc';
     $scope.newTag = '';
     $scope.newIngredient = {};
     $scope.apiUrl = API_URL;
@@ -106,6 +107,23 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         }
         
         $scope.recipes = filteredRecipes;
+        $scope.sortRecipes();
+    };
+
+    // Sort recipes based on sortOrder
+    $scope.sortRecipes = function() {
+        $scope.recipes = $scope.recipes.slice().sort(function(a, b) {
+            if ($scope.sortOrder === 'date_asc') {
+                return new Date(a.created_at) - new Date(b.created_at);
+            } else if ($scope.sortOrder === 'name_asc') {
+                return (a.name || '').localeCompare(b.name || '');
+            } else if ($scope.sortOrder === 'name_desc') {
+                return (b.name || '').localeCompare(a.name || '');
+            } else {
+                // date_desc (default)
+                return new Date(b.created_at) - new Date(a.created_at);
+            }
+        });
     };
 
     // Filter recipes by spirit
