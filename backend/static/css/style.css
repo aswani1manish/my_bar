@@ -452,7 +452,7 @@ h6 {
 /* Medium screens - slightly smaller than desktop */
 @media (min-width: 769px) and (max-width: 991px) {
     .recipe-name-below-image {
-        font-size: 1.25rem;
+        font-size: 1rem;
     }
 }
 
