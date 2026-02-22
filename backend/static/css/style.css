@@ -395,6 +395,15 @@ h6 {
     box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
 }
 
+.recipe-name-below-image {
+    padding: 1rem;
+    margin: 0;
+    font-size: 1.65rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--color-text-primary);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .hero-section h1 {
@@ -426,7 +435,7 @@ h6 {
     /* Reduce padding and font size for recipe names on mobile */
     .recipe-name-below-image {
         padding: 0.5rem;
-        font-size: 90%;
+        font-size: 0.75rem;
     }
     
     /* Adjust tags display on mobile */
@@ -611,15 +620,6 @@ h6 {
     color: #cbd5e0;
     background-color: #f8f9fa;
     transition: filter 0.3s ease;
-}
-
-.recipe-name-below-image {
-    padding: 1rem;
-    margin: 0;
-    font-size: 1.65rem;
-    font-weight: 600;
-    text-align: center;
-    color: var(--color-text-primary);
 }
 
 .recipe-hover-overlay {
