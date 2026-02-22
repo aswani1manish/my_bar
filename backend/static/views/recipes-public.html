@@ -53,9 +53,13 @@
 <div class="row">
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-            <h4 class="mb-0">Showing <b>{{ recipes.length }}</b> recipes...filter by</h4>
             <div class="d-flex align-items-center spirit-filter-container">
-                <!--label class="me-2 mb-0 spirit-filter-label">Filter by:</label-->
+                <h4 class="mb-0">Showing <b>{{ recipes.length }}</b> recipes</h4>
+            </div>
+            <div class="d-flex align-items-center spirit-filter-container">
+                <label class="me-2 mb-0 spirit-filter-label">Filter by:</label>
+            </div>
+            <div class="d-flex align-items-center spirit-filter-container">
                 <div class="spirit-tiles d-flex flex-wrap gap-2">
                     <span class="spirit-tile" 
                           ng-class="{'spirit-tile-active': selectedSpirit === 'Gin'}"
