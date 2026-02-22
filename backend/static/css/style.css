@@ -435,7 +435,7 @@ h6 {
     /* Reduce padding and font size for recipe names on mobile */
     .recipe-name-below-image {
         padding: 0.5rem;
-        font-size: 0.85rem;
+        font-size: 1.1rem;
     }
     
     /* Adjust tags display on mobile */
@@ -461,7 +461,7 @@ h6 {
 /* Medium screens - slightly smaller than desktop */
 @media (min-width: 769px) and (max-width: 991px) {
     .recipe-name-below-image {
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 }
 
