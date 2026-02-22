@@ -435,7 +435,7 @@ h6 {
     /* Reduce padding and font size for recipe names on mobile */
     .recipe-name-below-image {
         padding: 0.5rem;
-        font-size: 0.75rem;
+        font-size: 0.85rem;
     }
     
     /* Adjust tags display on mobile */
