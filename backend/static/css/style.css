@@ -107,13 +107,13 @@ html, body {
 }
 
 .navbar-brand {
-    font-size: 1.95rem;
+    font-size: 3.9rem;
     font-weight: 600;
     color: #ffffff !important;
 }
 
 .navbar .nav-link {
-    font-size: 1.04rem;
+    font-size: 2.08rem;
     color: #ffffff !important;
     transition: opacity 0.3s ease;
 }
