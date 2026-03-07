@@ -48,11 +48,27 @@
         }
         
         .age-gate-logo {
-            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
             color: white;
             margin-bottom: 20px;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .age-gate-logo-icon {
+            height: 2em;
+            width: auto;
+        }
+
+        .age-gate-logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+            font-size: 2rem;
             font-weight: 600;
-            font-family: 'BioRhyme', serif;
+            text-transform: lowercase;
         }
         
         .age-gate-message {
@@ -151,7 +167,7 @@
 <body>
     <div class="age-gate-container">
         <div class="age-gate-logo">
-            <i class="fas fa-glass-martini-alt"></i> Neighborhood Sips
+            <img src="images/ns_logo_icon_white.png" alt="Neighborhood Sips Logo" class="age-gate-logo-icon"><span class="age-gate-logo-text"><span>neighborhood</span><span>sips</span></span>
         </div>
 
         <div class="age-tagline">
