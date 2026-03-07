@@ -121,10 +121,11 @@ html, body {
     flex-direction: column;
     line-height: 1.1;
     text-transform: lowercase;
+    text-align: left;
 }
 
 .navbar-logo-icon {
-    height: 2em;
+    height: 2.2em;
     width: auto;
 }
 
