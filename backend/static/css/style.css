@@ -112,6 +112,13 @@ html, body {
     color: #ffffff !important;
 }
 
+.navbar-logo {
+    height: 2.5rem;
+    width: auto;
+    vertical-align: middle;
+    margin-right: 0.4rem;
+}
+
 .navbar .nav-link {
     font-size: 2.08rem;
     color: #ffffff !important;
@@ -425,6 +432,7 @@ h6 {
         line-height: 1.2;
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
+        font-size: 2.4rem;
     }
     
     /* Reduce image size on mobile for recipe cards */
@@ -455,6 +463,13 @@ h6 {
         background-image: url('/images/navbar-bg-2-1.jpg');
         background-position: center center;
         background-size: cover;
+    }
+}
+
+/* Mobile portrait mode - reduce navbar brand font size */
+@media (max-width: 768px) and (orientation: portrait) {
+    .navbar-brand {
+        font-size: 1.8rem;
     }
 }
 
