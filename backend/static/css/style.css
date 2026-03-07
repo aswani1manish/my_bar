@@ -112,13 +112,6 @@ html, body {
     color: #ffffff !important;
 }
 
-.navbar-logo {
-    height: 5.0rem;
-    width: auto;
-    vertical-align: middle;
-    margin-right: 0.4rem;
-}
-
 .navbar .nav-link {
     font-size: 2.08rem;
     color: #ffffff !important;
@@ -433,6 +426,11 @@ h6 {
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
         font-size: 2.4rem;
+    }
+
+    /* Reduce nav link font size on mobile */
+    .navbar .nav-link {
+        font-size: 1.2rem;
     }
     
     /* Reduce image size on mobile for recipe cards */
