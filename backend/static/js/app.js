@@ -13,6 +13,10 @@ app.config(['$routeProvider', function($routeProvider) {
             templateUrl: 'views/recipes-public.html',
             controller: 'RecipesController'
         })
+        .when('/viewcollection', {
+            templateUrl: 'views/viewcollection.html',
+            controller: 'ViewCollectionController'
+        })
         .otherwise({
             redirectTo: '/'
         });
