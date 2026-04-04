@@ -481,6 +481,11 @@ h6 {
         font-size: 0.7rem;
         padding: 0.2em 0.4em;
     }
+
+    .recipe-ingredients-display {
+        font-size: 0.7rem;
+        padding: 0 0.5rem 0.4rem 0.5rem;
+    }
 }
 
 /* Mobile portrait mode - single navbar background image */
@@ -700,6 +705,15 @@ h6 {
 .recipe-tags-display {
     padding: 0 1rem 0.75rem 1rem;
     text-align: center;
+}
+
+/* Ingredients list on recipe card (below recipe name) */
+.recipe-ingredients-display {
+    font-size: 0.8rem;
+    color: #666;
+    text-align: center;
+    padding: 0 1rem 0.5rem 1rem;
+    margin: 0;
 }
 
 /* Hover overlay content container */

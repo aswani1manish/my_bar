@@ -1,4 +1,5 @@
 app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function($scope, ApiService, API_URL) {
+    var BASE_SPIRITS = ['Gin', 'Vodka', 'Tequila', 'Rum', 'Bourbon', 'Whiskey', 'Mezcal'];
     $scope.recipes = [];
     $scope.allRecipes = [];
     $scope.ingredients = [];
@@ -158,10 +159,16 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
         $scope.loadRecipes();
     };
 
-    // Get ingredient names in recipe
+    // Get ingredient names in recipe, with the base spirit listed first
     $scope.getIngredientNamesForRecipe = function(recipe) {
-        var names = recipe.ingredients.map(ingr => ingr.name);
-        return names.join(', ');
+        var sorted = recipe.ingredients.slice().sort(function(a, b) {
+            var aIsSpirit = BASE_SPIRITS.indexOf(a.name) !== -1;
+            var bIsSpirit = BASE_SPIRITS.indexOf(b.name) !== -1;
+            if (aIsSpirit && !bIsSpirit) { return -1; }
+            if (!aIsSpirit && bIsSpirit) { return 1; }
+            return 0;
+        });
+        return sorted.map(function(ingr) { return ingr.name; }).join(', ');
     };
     
     // Get ingredient name by ID
