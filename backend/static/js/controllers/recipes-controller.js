@@ -185,11 +185,9 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
             if (!$scope.recipeModal) {
                 $scope.recipeModal = new bootstrap.Modal(modalElement);
             }
+            // Save current scroll position before opening modal (fixes mobile scroll reset)
+            $scope.savedScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
             $scope.recipeModal.show();
-            // Update URL with recipe ID without reloading the page
-            if (recipe && recipe.id) {
-                window.history.pushState({recipeId: recipe.id}, '', '?recipe=' + recipe.id);
-            }
         }
     };
 
@@ -237,7 +235,6 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
     $scope.loadRecipes();
     $scope.loadIngredients();
 
-    // Handle modal close - clean up URL
     angular.element(document).ready(function() {
         var modalElement = document.getElementById('recipeDetailsModal');
         if (modalElement) {
@@ -251,30 +248,12 @@ app.controller('RecipesController', ['$scope', 'ApiService', 'API_URL', function
             });
             
             modalElement.addEventListener('hidden.bs.modal', function() {
-                // Remove recipe parameter from URL when modal is closed
-                var url = window.location.origin + window.location.pathname;
-                window.history.pushState({}, '', url);
+                // Restore scroll position when modal closes (fixes mobile scroll-to-top issue)
+                if ($scope.savedScrollPosition !== undefined) {
+                    window.scrollTo(0, $scope.savedScrollPosition);
+                    delete $scope.savedScrollPosition;
+                }
             });
-        }
-    });
-
-    // Handle browser back/forward button
-    window.addEventListener('popstate', function(event) {
-        if (event.state && event.state.recipeId) {
-            // Find and show the recipe
-            var recipe = $scope.allRecipes.find(function(r) {
-                return r.id === event.state.recipeId;
-            });
-            if (recipe) {
-                $scope.$apply(function() {
-                    $scope.showRecipeDetails(recipe);
-                });
-            }
-        } else {
-            // Close modal if going back to page without recipe ID
-            if ($scope.recipeModal) {
-                $scope.recipeModal.hide();
-            }
         }
     });
 }]);
