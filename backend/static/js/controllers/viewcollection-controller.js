@@ -1,4 +1,4 @@
-app.controller('ViewCollectionController', ['$scope', 'ApiService', 'API_URL', function($scope, ApiService, API_URL) {
+app.controller('ViewCollectionController', ['$scope', '$location', 'ApiService', 'API_URL', function($scope, $location, ApiService, API_URL) {
     var BASE_SPIRITS = ['Gin', 'Vodka', 'Tequila', 'Rum', 'Bourbon', 'Whiskey', 'Mezcal'];
 
     $scope.collections = [];
@@ -51,22 +51,19 @@ app.controller('ViewCollectionController', ['$scope', 'ApiService', 'API_URL', f
 
     // Called when user changes the collection dropdown
     $scope.onCollectionChange = function() {
-        // Update the URL so the current selection is shareable
-        var params = new URLSearchParams(window.location.search);
+        // Update the URL using $location so the hash-based route (#!/viewcollection) is preserved
         if ($scope.selectedCollectionId && $scope.selectedCollectionId !== 'all') {
-            params.set('id', $scope.selectedCollectionId);
+            $location.search('id', $scope.selectedCollectionId);
         } else {
-            params.delete('id');
+            $location.search('id', null);
         }
-        var newSearch = params.toString() ? '?' + params.toString() : window.location.pathname;
-        window.history.replaceState(null, '', newSearch || window.location.pathname);
         $scope.applyCollectionFilter();
     };
 
     // Check URL for ?id= deep-link parameter and pre-select that collection
     $scope.checkUrlForCollectionId = function() {
-        var urlParams = new URLSearchParams(window.location.search);
-        var collectionId = urlParams.get('id');
+        var searchParams = $location.search();
+        var collectionId = searchParams.id;
         if (collectionId) {
             $scope.selectedCollectionId = parseInt(collectionId);
         } else {
