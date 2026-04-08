@@ -203,9 +203,15 @@
         // This approach is standard for informational cocktail recipe websites.
         // For e-commerce or age-restricted sales, server-side verification would be required.
         
+        // Parse optional redirect (deeplink hash) from query string
+        var params = new URLSearchParams(window.location.search);
+        var rawRedirect = params.get('redirect') || '';
+        // Validate: only accept a hashbang route (e.g. #!/viewcollection?id=6)
+        var redirectHash = /^#!\/[A-Za-z0-9\-._~!$&'()*+,;=:@/?%]*$/.test(rawRedirect) ? rawRedirect : '';
+        
         // Check if user has already verified age
         if (sessionStorage.getItem('ageVerified') === 'true') {
-            window.location.href = 'index.html';
+            window.location.href = 'index.html' + redirectHash;
         }
         
         document.getElementById('ageGateForm').addEventListener('submit', function(e) {
@@ -216,7 +222,7 @@
             if (ageConfirm.checked) {
                 // Set session storage to remember verification
                 sessionStorage.setItem('ageVerified', 'true');
-                window.location.href = 'index.html';
+                window.location.href = 'index.html' + redirectHash;
             }
         });
         
