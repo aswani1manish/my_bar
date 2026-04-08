@@ -89,9 +89,13 @@
     
     <!-- Age gate check -->
     <script>
-        // Redirect to age gate if not verified
+        // Redirect to age gate if not verified, preserving the deeplink hash
         if (sessionStorage.getItem('ageVerified') !== 'true') {
-            window.location.href = 'age-gate.html';
+            var hash = window.location.hash;
+            // Only pass the hash if it looks like a valid internal hashbang route
+            var safeHash = /^#!\/[A-Za-z0-9\-._~!$&'()*+,;=:@/?%]*$/.test(hash) ? hash : '';
+            var redirect = safeHash ? 'age-gate.html?redirect=' + encodeURIComponent(safeHash) : 'age-gate.html';
+            window.location.href = redirect;
         }
     </script>
 </body>
