@@ -17,8 +17,8 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     
     // Recipe management variables
     $scope.selectedCollectionId = '';
-    $scope.searchInCollection = '';
-    $scope.searchNotInCollection = '';
+    // Use object notation to avoid AngularJS ng-if child scope shadowing primitives
+    $scope.search = { inCollection: '', notInCollection: '' };
     $scope.filteredRecipesInCollection = [];
     $scope.filteredRecipesNotInCollection = [];
     $scope.recipeSelection = {};
@@ -60,8 +60,8 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
         if (DEBUG_SEARCH) console.log('[onCollectionSelect] Selected collection ID:', $scope.selectedCollectionId);
         $scope.saveMessage = '';
         $scope.saveError = '';
-        $scope.searchInCollection = '';
-        $scope.searchNotInCollection = '';
+        $scope.search.inCollection = '';
+        $scope.search.notInCollection = '';
         
         if (!$scope.selectedCollectionId) {
             $scope.filteredRecipesInCollection = [];
@@ -127,14 +127,14 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     };
     
     // Filter recipes IN the collection based on search query
-    // Accepts optional searchQuery parameter, otherwise uses $scope.searchInCollection
+    // Accepts optional searchQuery parameter, otherwise uses $scope.search.inCollection
     $scope.filterRecipesInCollection = function(searchQuery) {
         // Use parameter if provided, otherwise use scope variable
-        var query = (searchQuery !== undefined ? searchQuery : $scope.searchInCollection || '').toLowerCase();
+        var query = (searchQuery !== undefined ? searchQuery : $scope.search.inCollection || '').toLowerCase();
         if (DEBUG_SEARCH) {
             console.log('[filterRecipesInCollection] Called with parameter:', searchQuery);
             console.log('[filterRecipesInCollection] Using search query:', query);
-            console.log('[filterRecipesInCollection] $scope.searchInCollection value:', $scope.searchInCollection);
+            console.log('[filterRecipesInCollection] $scope.search.inCollection value:', $scope.search.inCollection);
         }
         
         // Get all recipes that are in the collection
@@ -154,14 +154,14 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     };
     
     // Filter recipes NOT in the collection based on search query
-    // Accepts optional searchQuery parameter, otherwise uses $scope.searchNotInCollection
+    // Accepts optional searchQuery parameter, otherwise uses $scope.search.notInCollection
     $scope.filterRecipesNotInCollection = function(searchQuery) {
         // Use parameter if provided, otherwise use scope variable
-        var query = (searchQuery !== undefined ? searchQuery : $scope.searchNotInCollection || '').toLowerCase();
+        var query = (searchQuery !== undefined ? searchQuery : $scope.search.notInCollection || '').toLowerCase();
         if (DEBUG_SEARCH) {
             console.log('[filterRecipesNotInCollection] Called with parameter:', searchQuery);
             console.log('[filterRecipesNotInCollection] Using search query:', query);
-            console.log('[filterRecipesNotInCollection] $scope.searchNotInCollection value:', $scope.searchNotInCollection);
+            console.log('[filterRecipesNotInCollection] $scope.search.notInCollection value:', $scope.search.notInCollection);
         }
         
         // Get all recipes that are NOT in the collection
@@ -469,10 +469,10 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
     
     // Watch for changes in search queries
     // These watchers handle the search input changes for both search boxes
-    $scope.$watch('searchInCollection', function(newVal, oldVal) {
+    $scope.$watch('search.inCollection', function(newVal, oldVal) {
         if (newVal !== oldVal && $scope.selectedCollectionId) {
             if (DEBUG_SEARCH) {
-                console.log('=== [Watch] searchInCollection changed ===');
+                console.log('=== [Watch] search.inCollection changed ===');
                 console.log('[Watch] Old value:', oldVal);
                 console.log('[Watch] New value:', newVal);
                 console.log('[Watch] Calling filterRecipesInCollection with newVal');
@@ -481,10 +481,10 @@ app.controller('CollectionsController', ['$scope', '$timeout', 'ApiService', 'AP
         }
     });
     
-    $scope.$watch('searchNotInCollection', function(newVal, oldVal) {
+    $scope.$watch('search.notInCollection', function(newVal, oldVal) {
         if (newVal !== oldVal && $scope.selectedCollectionId) {
             if (DEBUG_SEARCH) {
-                console.log('=== [Watch] searchNotInCollection changed ===');
+                console.log('=== [Watch] search.notInCollection changed ===');
                 console.log('[Watch] Old value:', oldVal);
                 console.log('[Watch] New value:', newVal);
                 console.log('[Watch] Calling filterRecipesNotInCollection with newVal');
