@@ -69,7 +69,7 @@
 
             if (!recipeId || !/^\d+$/.test(recipeId)) {
                 statusMessage.className = 'alert alert-warning';
-                statusMessage.textContent = 'Invalid or missing recipe id in URL.';
+                statusMessage.textContent = 'Invalid or missing recipe id in URL. Use ?recipe=<id> (or ?id=<id>).';
                 return;
             }
 
@@ -175,11 +175,17 @@
 
                 tags.forEach(function(tag, index) {
                     var span = document.createElement('span');
-                    span.className = 'badge me-1 mb-1 ' + (index % 3 === 0 ? 'badge-custom-orange' : (index % 3 === 1 ? 'badge-custom-purple' : 'badge-custom-green'));
+                    span.className = 'badge me-1 mb-1 ' + getTagBadgeClass(index);
                     span.textContent = tag;
                     container.appendChild(span);
                 });
                 section.classList.remove('d-none');
+            }
+
+            function getTagBadgeClass(index) {
+                if (index % 3 === 0) return 'badge-custom-orange';
+                if (index % 3 === 1) return 'badge-custom-purple';
+                return 'badge-custom-green';
             }
         })();
     </script>
