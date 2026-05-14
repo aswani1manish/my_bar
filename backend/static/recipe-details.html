@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Details - Neighborhood Sips</title>
+    <link rel="icon" type="image/png" href="images/ns_logo_icon_background.png">
+    <link href="css/vendor/bootstrap.min.css" rel="stylesheet">
+    <link href="css/vendor/fontawesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html#!/">
+                <img src="images/ns_logo_icon_white.png" alt="Neighborhood Sips Logo" class="navbar-logo-icon"><span class="navbar-brand-text"><span>neighborhood</span><span>sips</span></span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="container mt-4 mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 id="recipeName" class="mb-0">Recipe details</h1>
+            <a href="index.html#!/" class="btn btn-custom-vibrant">
+                <i class="fas fa-arrow-left"></i> Back to Recipes
+            </a>
+        </div>
+
+        <div id="statusMessage" class="alert alert-info">Loading recipe...</div>
+
+        <div id="recipeContent" class="card d-none">
+            <div class="card-body">
+                <p id="recipeDescription" class="mb-3"></p>
+
+                <div id="recipeImagesSection" class="mb-4 d-none">
+                    <h5><i class="fas fa-images"></i> Pictures</h5>
+                    <div id="recipeImages" class="d-flex flex-wrap gap-2"></div>
+                </div>
+
+                <div id="recipeIngredientsSection" class="mb-4 d-none">
+                    <h5><i class="fas fa-list"></i> Ingredients</h5>
+                    <ul id="recipeIngredients" class="list-group"></ul>
+                </div>
+
+                <div id="recipeInstructionsSection" class="mb-4 d-none">
+                    <h5><i class="fas fa-tasks"></i> Instructions</h5>
+                    <p id="recipeInstructions" style="white-space: pre-wrap;"></p>
+                </div>
+
+                <div id="recipeTagsSection" class="d-none">
+                    <h5><i class="fas fa-tags"></i> Tags</h5>
+                    <div id="recipeTags"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script>
+        (function() {
+            var API_URL = (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.apiUrl)
+                ? APP_CONFIG.apiUrl
+                : 'http://localhost:5000/api';
+            var params = new URLSearchParams(window.location.search);
+            var recipeId = params.get('recipe') || params.get('id');
+
+            var statusMessage = document.getElementById('statusMessage');
+            var recipeContent = document.getElementById('recipeContent');
+
+            if (!recipeId || !/^\d+$/.test(recipeId)) {
+                statusMessage.className = 'alert alert-warning';
+                statusMessage.textContent = 'Invalid or missing recipe id in URL.';
+                return;
+            }
+
+            fetch(API_URL + '/recipes/' + recipeId)
+                .then(function(response) {
+                    if (!response.ok) {
+                        throw new Error('Recipe not found');
+                    }
+                    return response.json();
+                })
+                .then(function(recipe) {
+                    renderRecipe(recipe);
+                    statusMessage.classList.add('d-none');
+                    recipeContent.classList.remove('d-none');
+                })
+                .catch(function(error) {
+                    statusMessage.className = 'alert alert-danger';
+                    statusMessage.textContent = error.message || 'Unable to load recipe details.';
+                });
+
+            function renderRecipe(recipe) {
+                document.getElementById('recipeName').textContent = recipe.name || 'Recipe details';
+
+                var description = document.getElementById('recipeDescription');
+                description.textContent = recipe.description || '';
+                description.classList.toggle('d-none', !recipe.description);
+
+                renderImages(recipe.images || [], recipe.name || 'Recipe image');
+                renderIngredients(recipe.ingredients || []);
+                renderInstructions(recipe.instructions || '');
+                renderTags(recipe.tags || []);
+            }
+
+            function renderImages(images, recipeName) {
+                var section = document.getElementById('recipeImagesSection');
+                var container = document.getElementById('recipeImages');
+                container.innerHTML = '';
+                if (!images.length) {
+                    section.classList.add('d-none');
+                    return;
+                }
+
+                images.forEach(function(imageName) {
+                    var img = document.createElement('img');
+                    img.src = API_URL + '/uploads/' + imageName;
+                    img.alt = recipeName;
+                    img.className = 'img-thumbnail';
+                    img.style.width = '225px';
+                    img.style.height = '225px';
+                    img.style.objectFit = 'cover';
+                    container.appendChild(img);
+                });
+                section.classList.remove('d-none');
+            }
+
+            function renderIngredients(ingredients) {
+                var section = document.getElementById('recipeIngredientsSection');
+                var list = document.getElementById('recipeIngredients');
+                list.innerHTML = '';
+                if (!ingredients.length) {
+                    section.classList.add('d-none');
+                    return;
+                }
+
+                ingredients.forEach(function(ingredient) {
+                    var li = document.createElement('li');
+                    li.className = 'list-group-item';
+                    var quantityText = getQuantityText(ingredient);
+                    li.textContent = (ingredient.name || 'Ingredient') + quantityText;
+                    list.appendChild(li);
+                });
+                section.classList.remove('d-none');
+            }
+
+            function getQuantityText(ingredient) {
+                var amount = ingredient.amount || ingredient.quantity || '';
+                var units = ingredient.units || ingredient.unit || '';
+                if (amount && units) return ': ' + amount + ' ' + units;
+                if (amount) return ': ' + amount;
+                if (units) return ': ' + units;
+                return '';
+            }
+
+            function renderInstructions(instructions) {
+                var section = document.getElementById('recipeInstructionsSection');
+                var element = document.getElementById('recipeInstructions');
+                if (!instructions) {
+                    section.classList.add('d-none');
+                    return;
+                }
+                element.textContent = instructions;
+                section.classList.remove('d-none');
+            }
+
+            function renderTags(tags) {
+                var section = document.getElementById('recipeTagsSection');
+                var container = document.getElementById('recipeTags');
+                container.innerHTML = '';
+                if (!tags.length) {
+                    section.classList.add('d-none');
+                    return;
+                }
+
+                tags.forEach(function(tag, index) {
+                    var span = document.createElement('span');
+                    span.className = 'badge me-1 mb-1 ' + (index % 3 === 0 ? 'badge-custom-orange' : (index % 3 === 1 ? 'badge-custom-purple' : 'badge-custom-green'));
+                    span.textContent = tag;
+                    container.appendChild(span);
+                });
+                section.classList.remove('d-none');
+            }
+        })();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        if (sessionStorage.getItem('ageVerified') !== 'true') {
+            window.location.href = 'age-gate.html';
+        }
+    </script>
+</body>
+</html>
