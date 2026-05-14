@@ -2,6 +2,8 @@ app.controller('RecipesAdminController', ['$scope', '$q', 'ApiService', 'API_URL
     $scope.currentRecipe = {};
     $scope.isEditing = false;
     $scope.lookupId = '';
+    $scope.lookupName = '';
+    $scope.searchResults = [];
     $scope.newTag = '';
     $scope.apiUrl = API_URL;
     $scope.ingredients = [];
@@ -78,6 +80,7 @@ app.controller('RecipesAdminController', ['$scope', '$q', 'ApiService', 'API_URL
         ApiService.getRecipe(parseInt($scope.lookupId)).then(function(response) {
             $scope.currentRecipe = angular.copy(response.data);
             $scope.isEditing = true;
+            $scope.searchResults = [];
             
             // Ensure arrays are initialized
             if (!$scope.currentRecipe.tags) $scope.currentRecipe.tags = [];
@@ -88,6 +91,50 @@ app.controller('RecipesAdminController', ['$scope', '$q', 'ApiService', 'API_URL
             // Convert ingredients to selected format
             $scope.selectedIngredients = angular.copy($scope.currentRecipe.ingredients);
             
+            $scope.updateCollectionSelections();
+        }, function(error) {
+            console.error('Error fetching recipe:', error);
+            alert('Recipe not found or error loading recipe');
+        });
+    };
+
+    // Search recipes by name
+    $scope.searchByName = function() {
+        if (!$scope.lookupName || !$scope.lookupName.trim()) {
+            alert('Please enter a recipe name to search');
+            return;
+        }
+
+        // Search by name (second param is tags filter, empty for name-only search)
+        ApiService.getRecipes($scope.lookupName.trim(), '').then(function(response) {
+            $scope.searchResults = response.data;
+            if ($scope.searchResults.length === 0) {
+                alert('No recipes found matching "' + $scope.lookupName.trim() + '"');
+            }
+        }, function(error) {
+            console.error('Error searching recipes:', error);
+            alert('Error searching recipes');
+        });
+    };
+
+    // Load a recipe selected from search results (fetch full data)
+    $scope.selectRecipeFromSearch = function(recipe) {
+        ApiService.getRecipe(recipe.id).then(function(response) {
+            $scope.currentRecipe = angular.copy(response.data);
+            $scope.isEditing = true;
+            $scope.lookupId = response.data.id;
+            $scope.lookupName = '';
+            $scope.searchResults = [];
+
+            // Ensure arrays are initialized
+            if (!$scope.currentRecipe.tags) $scope.currentRecipe.tags = [];
+            if (!$scope.currentRecipe.images) $scope.currentRecipe.images = [];
+            if (!$scope.currentRecipe.ingredients) $scope.currentRecipe.ingredients = [];
+            if (!$scope.currentRecipe.removed_images) $scope.currentRecipe.removed_images = [];
+
+            // Convert ingredients to selected format
+            $scope.selectedIngredients = angular.copy($scope.currentRecipe.ingredients);
+
             $scope.updateCollectionSelections();
         }, function(error) {
             console.error('Error fetching recipe:', error);
@@ -247,6 +294,8 @@ app.controller('RecipesAdminController', ['$scope', '$q', 'ApiService', 'API_URL
         };
         $scope.isEditing = false;
         $scope.lookupId = '';
+        $scope.lookupName = '';
+        $scope.searchResults = [];
         $scope.newTag = '';
         $scope.selectedIngredients = [];
         $scope.selectAllCollections = false;
