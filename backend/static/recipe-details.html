@@ -63,11 +63,17 @@
                 : 'http://localhost:5000/api';
             var params = new URLSearchParams(window.location.search);
             var recipeId = params.get('recipe') || params.get('id');
-            var recipeNumber = Number(recipeId);
 
             var statusMessage = document.getElementById('statusMessage');
             var recipeContent = document.getElementById('recipeContent');
 
+            if (!recipeId) {
+                statusMessage.className = 'alert alert-warning';
+                statusMessage.textContent = 'Invalid or missing recipe id in URL. Use ?recipe=<id> (or ?id=<id>).';
+                return;
+            }
+
+            var recipeNumber = Number(recipeId);
             if (!Number.isInteger(recipeNumber) || recipeNumber <= 0) {
                 statusMessage.className = 'alert alert-warning';
                 statusMessage.textContent = 'Invalid or missing recipe id in URL. Use ?recipe=<id> (or ?id=<id>).';
@@ -203,6 +209,9 @@
                     return '';
                 }
                 var sanitized = original.replace(/[^A-Za-z0-9._-]/g, '');
+                if (!sanitized || sanitized.charAt(0) === '.' || sanitized.indexOf('..') !== -1) {
+                    return '';
+                }
                 if (!/\.(jpg|jpeg|png|gif|webp)$/i.test(sanitized)) {
                     return '';
                 }
