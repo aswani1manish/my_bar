@@ -198,12 +198,24 @@
             }
 
             function getSafeImageName(imageName) {
-                return String(imageName || '').replace(/[^A-Za-z0-9._-]/g, '');
+                var original = String(imageName || '');
+                if (!original || original.indexOf('/') !== -1 || original.indexOf('\\') !== -1) {
+                    return '';
+                }
+                var sanitized = original.replace(/[^A-Za-z0-9._-]/g, '');
+                if (!/\.(jpg|jpeg|png|gif|webp)$/i.test(sanitized)) {
+                    return '';
+                }
+                return sanitized;
             }
 
             function buildApiUrl(path) {
-                var base = API_URL.endsWith('/') ? API_URL : API_URL + '/';
-                return new URL(path, base).toString();
+                try {
+                    var base = API_URL.endsWith('/') ? API_URL : API_URL + '/';
+                    return new URL(path, base).toString();
+                } catch (error) {
+                    return 'http://localhost:5000/api/' + path.replace(/^\/+/, '');
+                }
             }
         })();
     </script>
