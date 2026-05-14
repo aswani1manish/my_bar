@@ -64,25 +64,26 @@
     <script src="js/config.js"></script>
     <script>
         (function() {
+            var DEFAULT_API_URL = 'http://localhost:5000/api';
             var API_URL = (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.apiUrl)
                 ? APP_CONFIG.apiUrl
-                : 'http://localhost:5000/api';
+                : DEFAULT_API_URL;
             var params = new URLSearchParams(window.location.search);
-            var recipeId = params.get('recipe') || params.get('id');
+            var recipeId = params.get('recipe');
 
             var statusMessage = document.getElementById('statusMessage');
             var recipeContent = document.getElementById('recipeContent');
 
             if (!recipeId) {
                 statusMessage.className = 'alert alert-warning';
-                statusMessage.textContent = 'Invalid or missing recipe id in URL. Use ?recipe=<id> (or ?id=<id>).';
+                statusMessage.textContent = 'Invalid or missing recipe id in URL. Use ?recipe=<id>.';
                 return;
             }
 
             var recipeNumber = Number(recipeId);
             if (!Number.isInteger(recipeNumber) || recipeNumber <= 0) {
                 statusMessage.className = 'alert alert-warning';
-                statusMessage.textContent = 'Invalid or missing recipe id in URL. Use ?recipe=<id> (or ?id=<id>).';
+                statusMessage.textContent = 'Invalid or missing recipe id in URL. Use ?recipe=<id>.';
                 return;
             }
 
@@ -231,13 +232,13 @@
             function buildApiUrl(path) {
                 var safePath = sanitizeApiPath(path);
                 if (!safePath) {
-                    return 'http://localhost:5000/api/';
+                    return DEFAULT_API_URL + '/';
                 }
                 try {
                     var base = API_URL.endsWith('/') ? API_URL : API_URL + '/';
                     return new URL(safePath, base).toString();
                 } catch (error) {
-                    return 'http://localhost:5000/api/' + safePath;
+                    return DEFAULT_API_URL + '/' + safePath;
                 }
             }
 
