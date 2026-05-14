@@ -10,6 +10,12 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <script>
+        if (sessionStorage.getItem('ageVerified') !== 'true') {
+            window.location.href = 'age-gate.html';
+        }
+    </script>
+
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.html#!/">
@@ -205,7 +211,11 @@
 
             function getSafeImageName(imageName) {
                 var original = String(imageName || '');
+                var lowerOriginal = original.toLowerCase();
                 if (!original || original.indexOf('/') !== -1 || original.indexOf('\\') !== -1) {
+                    return '';
+                }
+                if (/%2f|%5c|%2e%2e/i.test(lowerOriginal)) {
                     return '';
                 }
                 var sanitized = original.replace(/[^A-Za-z0-9._-]/g, '');
@@ -219,21 +229,28 @@
             }
 
             function buildApiUrl(path) {
+                var safePath = sanitizeApiPath(path);
+                if (!safePath) {
+                    return 'http://localhost:5000/api/';
+                }
                 try {
                     var base = API_URL.endsWith('/') ? API_URL : API_URL + '/';
-                    return new URL(path, base).toString();
+                    return new URL(safePath, base).toString();
                 } catch (error) {
-                    return 'http://localhost:5000/api/' + path.replace(/^\/+/, '');
+                    return 'http://localhost:5000/api/' + safePath;
                 }
+            }
+
+            function sanitizeApiPath(path) {
+                var value = String(path || '').replace(/^\/+/, '');
+                if (!value || value.indexOf('..') !== -1) {
+                    return '';
+                }
+                return value;
             }
         })();
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        if (sessionStorage.getItem('ageVerified') !== 'true') {
-            window.location.href = 'age-gate.html';
-        }
-    </script>
 </body>
 </html>
