@@ -63,17 +63,18 @@
                 : 'http://localhost:5000/api';
             var params = new URLSearchParams(window.location.search);
             var recipeId = params.get('recipe') || params.get('id');
+            var recipeNumber = Number(recipeId);
 
             var statusMessage = document.getElementById('statusMessage');
             var recipeContent = document.getElementById('recipeContent');
 
-            if (!recipeId || !/^\d+$/.test(recipeId)) {
+            if (!Number.isInteger(recipeNumber) || recipeNumber <= 0) {
                 statusMessage.className = 'alert alert-warning';
                 statusMessage.textContent = 'Invalid or missing recipe id in URL. Use ?recipe=<id> (or ?id=<id>).';
                 return;
             }
 
-            fetch(API_URL + '/recipes/' + recipeId)
+            fetch(buildApiUrl('recipes/' + encodeURIComponent(recipeId)))
                 .then(function(response) {
                     if (!response.ok) {
                         throw new Error('Recipe not found');
@@ -113,8 +114,12 @@
                 }
 
                 images.forEach(function(imageName) {
+                    var safeImageName = getSafeImageName(imageName);
+                    if (!safeImageName) {
+                        return;
+                    }
                     var img = document.createElement('img');
-                    img.src = API_URL + '/uploads/' + imageName;
+                    img.src = buildApiUrl('uploads/' + encodeURIComponent(safeImageName));
                     img.alt = recipeName;
                     img.className = 'img-thumbnail';
                     img.style.width = '225px';
@@ -122,6 +127,10 @@
                     img.style.objectFit = 'cover';
                     container.appendChild(img);
                 });
+                if (!container.children.length) {
+                    section.classList.add('d-none');
+                    return;
+                }
                 section.classList.remove('d-none');
             }
 
@@ -186,6 +195,15 @@
                 if (index % 3 === 0) return 'badge-custom-orange';
                 if (index % 3 === 1) return 'badge-custom-purple';
                 return 'badge-custom-green';
+            }
+
+            function getSafeImageName(imageName) {
+                return String(imageName || '').replace(/[^A-Za-z0-9._-]/g, '');
+            }
+
+            function buildApiUrl(path) {
+                var base = API_URL.endsWith('/') ? API_URL : API_URL + '/';
+                return new URL(path, base).toString();
             }
         })();
     </script>
