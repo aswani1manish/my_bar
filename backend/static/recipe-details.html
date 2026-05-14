@@ -76,14 +76,14 @@
 
             if (!recipeId) {
                 statusMessage.className = 'alert alert-warning';
-                statusMessage.textContent = 'Invalid or missing recipe id in URL. Use ?recipe=<id>.';
+                statusMessage.textContent = 'Missing recipe id. Use ?recipe=<id>.';
                 return;
             }
 
             var recipeNumber = Number(recipeId);
             if (!Number.isInteger(recipeNumber) || recipeNumber <= 0) {
                 statusMessage.className = 'alert alert-warning';
-                statusMessage.textContent = 'Invalid or missing recipe id in URL. Use ?recipe=<id>.';
+                statusMessage.textContent = 'Recipe id must be a positive integer. Use ?recipe=<id>.';
                 return;
             }
 
@@ -220,10 +220,7 @@
                     return '';
                 }
                 var sanitized = original.replace(/[^A-Za-z0-9._-]/g, '');
-                if (!sanitized || sanitized.charAt(0) === '.' || sanitized.indexOf('..') !== -1) {
-                    return '';
-                }
-                if (!/\.(jpg|jpeg|png|gif|webp)$/i.test(sanitized)) {
+                if (!/^[A-Za-z0-9][A-Za-z0-9._-]*\.(jpg|jpeg|png|gif|webp)$/i.test(sanitized)) {
                     return '';
                 }
                 return sanitized;
