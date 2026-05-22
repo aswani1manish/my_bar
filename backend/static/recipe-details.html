@@ -233,14 +233,10 @@
             function buildApiUrl(path) {
                 var safePath = sanitizeApiPath(path);
                 if (!safePath) {
-                    return DEFAULT_API_URL + '/';
+                    return API_URL;
                 }
-                try {
-                    var base = API_URL.endsWith('/') ? API_URL : API_URL + '/';
-                    return new URL(safePath, base).toString();
-                } catch (error) {
-                    return DEFAULT_API_URL + '/' + safePath;
-                }
+                var base = String(API_URL || DEFAULT_API_URL).replace(/\/+$/, '');
+                return base + '/' + safePath;
             }
 
             function sanitizeApiPath(path) {
