@@ -244,7 +244,7 @@
 
             function sanitizeApiPath(path) {
                 var value = String(path || '').replace(/^\/+/, '');
-                if (!value || value.indexOf('..') !== -1 || /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(value)) {
+                if (!value || value.indexOf('..') !== -1 || /[\s?#]/.test(value) || /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(value)) {
                     return '';
                 }
                 return value;
