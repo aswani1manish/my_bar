@@ -232,7 +232,10 @@
 
             function buildApiUrl(path) {
                 var safePath = sanitizeApiPath(path);
-                var base = String(API_URL || DEFAULT_API_URL).replace(/\/+$/, '');
+                var rawBase = (typeof API_URL === 'string' && API_URL.trim())
+                    ? API_URL
+                    : DEFAULT_API_URL;
+                var base = rawBase.replace(/\/+$/, '');
                 if (!safePath) {
                     return base + '/';
                 }
