@@ -235,7 +235,7 @@
                 var rawBase = (typeof API_URL === 'string' && API_URL.trim())
                     ? API_URL
                     : DEFAULT_API_URL;
-                var base = rawBase.replace(/\/+$/, '');
+                var base = rawBase.trim().replace(/\/+$/, '');
                 if (!safePath) {
                     return base + '/';
                 }
@@ -244,7 +244,7 @@
 
             function sanitizeApiPath(path) {
                 var value = String(path || '').replace(/^\/+/, '');
-                if (!value || value.indexOf('..') !== -1) {
+                if (!value || value.indexOf('..') !== -1 || value.indexOf(':') !== -1) {
                     return '';
                 }
                 return value;
