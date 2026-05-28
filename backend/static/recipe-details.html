@@ -12,7 +12,8 @@
 <body>
     <script>
         if (sessionStorage.getItem('ageVerified') !== 'true') {
-            window.location.href = 'age-gate.html';
+            var redirect = encodeURIComponent('recipe-details.html' + window.location.search);
+            window.location.href = 'age-gate.html?redirect=' + redirect;
         }
     </script>
 
