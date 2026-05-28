@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neighborhood Sips</title>
+    <link rel="icon" type="image/png" href="images/ns_logo_icon_background.png">
+
+    <!-- Bootstrap CSS for responsive design -->
+    <link href="css/vendor/bootstrap.min.css" rel="stylesheet">
+    <link href="css/vendor/fontawesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .nav-menu-section {
+            padding: 3rem 0;
+        }
+
+        .nav-menu-welcome {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .nav-menu-welcome h1 {
+            font-family: 'Great Vibes', cursive;
+            color: var(--color-primary-blue-dark);
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-menu-welcome p {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            color: var(--color-text-secondary);
+            font-style: italic;
+        }
+
+        .nav-card {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            height: 100%;
+        }
+
+        .nav-card:hover {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-card .card {
+            height: 100%;
+            text-align: center;
+            padding: 2rem 1.5rem;
+            border-radius: 16px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-card .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-card-icon {
+            font-size: 3.5rem;
+            color: var(--color-primary-blue);
+            margin-bottom: 1.25rem;
+            display: block;
+            line-height: 1;
+        }
+
+        .nav-card .card-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .nav-card .card-text {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        .nav-card-arrow {
+            display: inline-block;
+            margin-top: 1.25rem;
+            color: var(--color-primary-blue);
+            font-size: 1.4rem;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-card .card:hover .nav-card-arrow {
+            transform: translateX(6px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <img src="images/ns_logo_icon_white.png" alt="Neighborhood Sips Logo" class="navbar-logo-icon"><span class="navbar-brand-text"><span>neighborhood</span><span>sips</span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-glass-martini-alt"></i> Recipes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">
+                            <i class="fas fa-info-circle"></i> About
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="services.html">
+                            <i class="fas fa-concierge-bell"></i> Services
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="gallery.html">
+                            <i class="fas fa-images"></i> Gallery
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container main-content-bg nav-menu-section">
+
+        <!-- Welcome heading -->
+        <div class="nav-menu-welcome">
+            <h1>Welcome to the Neighborhood</h1>
+            <p>Where would you like to go?</p>
+        </div>
+
+        <!-- Navigation Cards -->
+        <div class="row g-4 justify-content-center">
+
+            <!-- Recipes Card -->
+            <div class="col-sm-6 col-lg-5">
+                <a class="nav-card" href="index.html">
+                    <div class="card">
+                        <div class="card-body">
+                            <i class="fas fa-glass-martini-alt nav-card-icon"></i>
+                            <h5 class="card-title">Recipes</h5>
+                            <p class="card-text">Explore our curated collection of cocktail recipes — from timeless classics to creative originals inspired by speakeasy bars.</p>
+                            <span class="nav-card-arrow"><i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Gallery Card -->
+            <div class="col-sm-6 col-lg-5">
+                <a class="nav-card" href="gallery.html">
+                    <div class="card">
+                        <div class="card-body">
+                            <i class="fas fa-images nav-card-icon"></i>
+                            <h5 class="card-title">Gallery</h5>
+                            <p class="card-text">Browse photos from our events, tastings, and cocktail creations — memories made, one sip at a time.</p>
+                            <span class="nav-card-arrow"><i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Services Card -->
+            <div class="col-sm-6 col-lg-5">
+                <a class="nav-card" href="services.html">
+                    <div class="card">
+                        <div class="card-body">
+                            <i class="fas fa-concierge-bell nav-card-icon"></i>
+                            <h5 class="card-title">Services</h5>
+                            <p class="card-text">Bring the speakeasy experience to your celebration. We offer mixology services and menu planning for your special events.</p>
+                            <span class="nav-card-arrow"><i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- About Us Card -->
+            <div class="col-sm-6 col-lg-5">
+                <a class="nav-card" href="about.html">
+                    <div class="card">
+                        <div class="card-body">
+                            <i class="fas fa-info-circle nav-card-icon"></i>
+                            <h5 class="card-title">About Us</h5>
+                            <p class="card-text">Meet your mixologist, read our story, and follow along in the bar journal — where cocktails meet conversations.</p>
+                            <span class="nav-card-arrow"><i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-bg py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <p class="mb-0">&copy; Neighborhood Sips 2026 | <a href="mailto:contact@neighborhoodsips.com" class="text-decoration-none">contact@neighborhoodsips.com</a></p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="terms.html" class="text-decoration-none me-3">Terms & Conditions</a>
+                    <a href="privacy.html" class="text-decoration-none me-3">Data Privacy</a>
+                    <a href="cookies.html" class="text-decoration-none">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Age gate check -->
+    <script>
+        // Redirect to age gate if not verified
+        if (sessionStorage.getItem('ageVerified') !== 'true') {
+            window.location.href = 'age-gate.html';
+        }
+    </script>
+</body>
+</html>
