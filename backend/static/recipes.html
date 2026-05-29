@@ -1,18 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="neighborhoodSipsApp">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery - Neighborhood Sips</title>
+    <title>Neighborhood Sips</title>
     <link rel="icon" type="image/png" href="images/ns_logo_icon_background.png">
     
     <!-- Bootstrap CSS for responsive design -->
     <link href="css/vendor/bootstrap.min.css" rel="stylesheet">
     <link href="css/vendor/fontawesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/gallery.css">
+    
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
 </head>
-<body>
+<body ng-controller="MainController">
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
@@ -25,7 +28,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="recipes.html#!/">
+                        <a class="nav-link" href="#!/">
                             <i class="fas fa-glass-martini-alt"></i> Recipes
                         </a>
                     </li>
@@ -40,7 +43,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="gallery.html">
+                        <a class="nav-link" href="gallery.html">
                             <i class="fas fa-images"></i> Gallery
                         </a>
                     </li>
@@ -50,45 +53,8 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="container mt-5 main-content-bg" style="padding-top: 3rem; padding-bottom: 3rem;">
-        <div class="row mb-4 content-container-wide">
-            <div class="col-12 text-center">
-                <h2 class="text-center mb-3">Where Cocktails Meet Conversations — Memories Made, One Sip at a Time.</h2>
-            </div>
-        </div>
-
-        <!-- Gallery Container -->
-        <div id="galleryContainer" class="content-container-wide">
-            <!-- Images will be loaded here dynamically -->
-            <div class="text-center">
-                <div class="spinner-border" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Image Modal -->
-    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="imageModalLabel">Image</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <div class="modal-image-nav">
-                        <button class="modal-nav-btn modal-nav-prev" id="modalPrevBtn" onclick="navigateModal(-1)" aria-label="Previous image">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <img id="modalImage" src="" alt="Gallery image" class="img-fluid">
-                        <button class="modal-nav-btn modal-nav-next" id="modalNextBtn" onclick="navigateModal(1)" aria-label="Next image">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid recipes-public-bg">
+        <div ng-view></div>
     </div>
 
     <!-- Footer -->
@@ -96,7 +62,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    <p class="mb-0">&copy; Neighborhood Sips 2026 | <a href="mailto:contact@neighborhoodsips.com" class="text-decoration-none">contact@neighborhoodsips.com</a></p>
+                    <p class="mb-0">Some cocktail images and recipes are not my creation — just my admiration! All credit goes to the original copyright holder(s). Shared here for appreciation and discussion only. For more info, please contact us: <a href="mailto:contact@neighborhoodsips.com" class="text-decoration-none">contact@neighborhoodsips.com</a></p>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
                     <a href="terms.html" class="text-decoration-none me-3">Terms & Conditions</a>
@@ -110,14 +76,26 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Gallery Script -->
-    <script src="js/gallery.js"></script>
+    <!-- App Configuration -->
+    <script src="js/config.js"></script>
+    
+    <!-- App Scripts -->
+    <script src="js/app.js"></script>
+    <script src="js/controllers/main-controller.js"></script>
+    <script src="js/controllers/recipes-controller.js"></script>
+    <script src="js/controllers/viewcollection-controller.js"></script>
+    <script src="js/services/api-service.js"></script>
+    <script src="js/directives/image-upload.js"></script>
     
     <!-- Age gate check -->
     <script>
-        // Redirect to age gate if not verified
+        // Redirect to age gate if not verified, preserving the deeplink hash
         if (sessionStorage.getItem('ageVerified') !== 'true') {
-            window.location.href = 'age-gate.html';
+            var hash = window.location.hash;
+            // Only pass the hash if it looks like a valid internal hashbang route
+            var safeHash = /^#!\/[A-Za-z0-9\-._~!$&'()*+,;=:@/?%]*$/.test(hash) ? hash : '';
+            var redirect = safeHash ? 'age-gate.html?redirect=' + encodeURIComponent(safeHash) : 'age-gate.html';
+            window.location.href = redirect;
         }
     </script>
 </body>
