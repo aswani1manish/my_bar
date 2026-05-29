@@ -125,15 +125,11 @@
                             <span class="badge me-1 mb-1" ng-class="{'badge-custom-orange': $index % 3 === 0, 'badge-custom-purple': $index % 3 === 1, 'badge-custom-green': $index % 3 === 2}" ng-repeat="tag in recipe.tags track by $index">{{ tag }}</span>
                         </div>
                         
-                        <!-- Hover overlay with ingredients and button -->
+                        <!-- Hover overlay with action button -->
                         <div class="recipe-hover-overlay">
                             <div class="hover-content">
-                                <!-- Ingredients list -->
-                                <div class="recipe-ingredients-hover" ng-if="recipe.ingredients && recipe.ingredients.length > 0">
-                                    {{ getIngredientNamesForRecipe(recipe) }}
-                                </div>
                                 <button class="btn btn-custom-vibrant btn-hover-overlay" tabindex="-1">
-                                    <i class="fas fa-eye"></i> See recipe details
+                                    <i class="fas fa-eye"></i> Take a quick look
                                 </button>
                             </div>
                         </div>
