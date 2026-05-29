@@ -61,7 +61,7 @@ function renderMosaicView(container) {
         <div class="gallery-mosaic">
             ${galleryImages.map((img, index) => `
                 <div class="gallery-mosaic-item" onclick="openImageModal(${index})">
-                    <img src="${img.url}" alt="${img.filename}" loading="lazy">
+                    <img src="${img.url}" alt="Gallery image ${index + 1}" loading="lazy">
                 </div>
             `).join('')}
         </div>
@@ -75,10 +75,8 @@ function openImageModal(index) {
     const img = galleryImages[index];
     const modalElement = document.getElementById('imageModal');
     const modalImage = document.getElementById('modalImage');
-    const modalLabel = document.getElementById('imageModalLabel');
     
     modalImage.src = img.url;
-    modalLabel.textContent = img.filename;
     updateModalNavButtons();
     
     // Use Bootstrap if available, otherwise show manually
@@ -129,7 +127,6 @@ function navigateModal(direction) {
     currentModalIndex = newIndex;
     const img = galleryImages[currentModalIndex];
     document.getElementById('modalImage').src = img.url;
-    document.getElementById('imageModalLabel').textContent = img.filename;
     updateModalNavButtons();
 }
 
