@@ -1,6 +1,8 @@
 // Gallery JavaScript
 
-let galleryImages = [];
+let generalImages = [];
+let menuImages = [];
+let currentSectionImages = [];
 let currentModalIndex = 0;
 let bsModal = null;
 
@@ -38,7 +40,8 @@ async function loadGalleryImages() {
         const data = await response.json();
         
         if (data.images && data.images.length > 0) {
-            galleryImages = data.images;
+            generalImages = data.images.filter(img => !img.filename.toLowerCase().startsWith('menu'));
+            menuImages = data.images.filter(img => img.filename.toLowerCase().startsWith('menu'));
             renderGallery();
         } else {
             showEmptyState();
@@ -49,30 +52,54 @@ async function loadGalleryImages() {
     }
 }
 
-// Render the gallery (always mosaic view)
+// Render the gallery with two sections
 function renderGallery() {
     const container = document.getElementById('galleryContainer');
-    renderMosaicView(container);
-}
+    let html = '';
 
-// Render mosaic (grid) view
-function renderMosaicView(container) {
-    const html = `
-        <div class="gallery-mosaic">
-            ${galleryImages.map((img, index) => `
-                <div class="gallery-mosaic-item" onclick="openImageModal(${index})">
-                    <img src="${img.url}" alt="Gallery image ${index + 1}" loading="lazy">
+    if (generalImages.length === 0 && menuImages.length === 0) {
+        showEmptyState();
+        return;
+    }
+
+    if (generalImages.length > 0) {
+        html += `
+            <div class="gallery-section">
+                <h3 class="gallery-section-title">Gallery</h3>
+                <div class="gallery-mosaic">
+                    ${generalImages.map((img, index) => `
+                        <div class="gallery-mosaic-item" onclick="openImageModal(${index}, 'general')">
+                            <img src="${img.url}" alt="Gallery image ${index + 1}" loading="lazy">
+                        </div>
+                    `).join('')}
                 </div>
-            `).join('')}
-        </div>
-    `;
+            </div>
+        `;
+    }
+
+    if (menuImages.length > 0) {
+        html += `
+            <div class="gallery-section">
+                <h3 class="gallery-section-title">Creative Menus</h3>
+                <div class="gallery-mosaic">
+                    ${menuImages.map((img, index) => `
+                        <div class="gallery-mosaic-item" onclick="openImageModal(${index}, 'menu')">
+                            <img src="${img.url}" alt="Creative menu ${index + 1}" loading="lazy">
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
     container.innerHTML = html;
 }
 
-// Open image in modal by index
-function openImageModal(index) {
+// Open image in modal by index and section
+function openImageModal(index, section) {
+    currentSectionImages = section === 'menu' ? menuImages : generalImages;
     currentModalIndex = index;
-    const img = galleryImages[index];
+    const img = currentSectionImages[index];
     const modalElement = document.getElementById('imageModal');
     const modalImage = document.getElementById('modalImage');
     
@@ -123,9 +150,9 @@ function openImageModal(index) {
 // Navigate to previous (-1) or next (+1) image in the modal
 function navigateModal(direction) {
     const newIndex = currentModalIndex + direction;
-    if (newIndex < 0 || newIndex >= galleryImages.length) return;
+    if (newIndex < 0 || newIndex >= currentSectionImages.length) return;
     currentModalIndex = newIndex;
-    const img = galleryImages[currentModalIndex];
+    const img = currentSectionImages[currentModalIndex];
     document.getElementById('modalImage').src = img.url;
     updateModalNavButtons();
 }
@@ -135,7 +162,7 @@ function updateModalNavButtons() {
     const prevBtn = document.getElementById('modalPrevBtn');
     const nextBtn = document.getElementById('modalNextBtn');
     if (prevBtn) prevBtn.style.visibility = currentModalIndex > 0 ? 'visible' : 'hidden';
-    if (nextBtn) nextBtn.style.visibility = currentModalIndex < galleryImages.length - 1 ? 'visible' : 'hidden';
+    if (nextBtn) nextBtn.style.visibility = currentModalIndex < currentSectionImages.length - 1 ? 'visible' : 'hidden';
 }
 
 // Show empty state when no images are found
