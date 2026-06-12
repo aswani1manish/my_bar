@@ -13,6 +13,19 @@
     margin-right: auto;
 }
 
+/* Gallery section headers */
+.gallery-section {
+    margin-bottom: 3rem;
+}
+
+.gallery-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--color-primary-blue, #7ec8cc);
+}
+
 /* Mosaic View (Grid/Tiles) */
 .gallery-mosaic {
     display: grid;
