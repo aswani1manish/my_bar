@@ -65,7 +65,7 @@ function renderGallery() {
     if (generalImages.length > 0) {
         html += `
             <div class="gallery-section">
-                <h3 class="gallery-section-title">Gallery</h3>
+                <h3 class="gallery-section-title"></h3>
                 <div class="gallery-mosaic">
                     ${generalImages.map((img, index) => `
                         <div class="gallery-mosaic-item" onclick="openImageModal(${index}, 'general')">
@@ -80,7 +80,7 @@ function renderGallery() {
     if (menuImages.length > 0) {
         html += `
             <div class="gallery-section">
-                <h3 class="gallery-section-title">Creative Menus</h3>
+                <h3 class="gallery-section-title">Menus</h3>
                 <div class="gallery-mosaic">
                     ${menuImages.map((img, index) => `
                         <div class="gallery-mosaic-item" onclick="openImageModal(${index}, 'menu')">
